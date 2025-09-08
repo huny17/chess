@@ -9,14 +9,14 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPosition {
-    private int row;
-    private int col;
+    final private int row;
+    final private int col;
 
 
     public ChessPosition(int row, int col) {
-        if (row < 1 || row > 8 || col < 1 || col > 8 ) {
-            throw new RuntimeException("Not valid Position, Out of Bounds");
-        }
+//        if (row < 1 || row > 8 || col < 1 || col > 8 ) {
+//            throw new RuntimeException("Not valid Position, Out of Bounds");
+//        }
             this.row = row;
             this.col = col;
     }
