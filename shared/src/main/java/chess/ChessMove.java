@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Objects;
+
 /**
  * Represents moving a chess piece on a chessboard
  * <p>
@@ -23,7 +25,6 @@ public class ChessMove {
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-
         return startPosition;
     }
 
@@ -31,7 +32,6 @@ public class ChessMove {
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-
         return endPosition;
     }
 
@@ -42,12 +42,26 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-
         return promotionPiece;
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessMove chessMove = (ChessMove) o;
+        return (startPosition.equals(chessMove.startPosition) && endPosition.equals(chessMove.endPosition) && promotionPiece == chessMove.promotionPiece);
+    }
+
+    @Override
+    public int hashCode() {
+        var promoCode = (promotionPiece == null ? 3 : promotionPiece.ordinal());
+        return (43 * startPosition.hashCode()) + endPosition.hashCode() + promoCode;
+    }
+
+    @Override
     public String toString() {
-        return String.format("%s%s", startPosition, endPosition);
+        var promo = (promotionPiece == null ? "" : ":" + promotionPiece);
+        return String.format("%s:%s%s", startPosition.toString(), endPosition.toString(), promo);
     }
 }
