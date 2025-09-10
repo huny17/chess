@@ -14,9 +14,9 @@ public class ChessPosition {
 
 
     public ChessPosition(int row, int col) {
-//        if (row < 1 || row > 8 || col < 1 || col > 8 ) {
-//            throw new RuntimeException("Not valid Position, Out of Bounds");
-//        }
+        if (row < 1 || row > 8 || col < 1 || col > 8 ) {
+            throw new RuntimeException("Not valid Position, Out of Bounds");
+        }
             this.row = row;
             this.col = col;
     }
@@ -41,9 +41,10 @@ public class ChessPosition {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ChessPosition that = (ChessPosition) o;
-        return row == that.row && col == that.col;
+        ChessPosition position = (ChessPosition) o;
+        return row == position.row && col == position.col;
     }
 
     @Override
