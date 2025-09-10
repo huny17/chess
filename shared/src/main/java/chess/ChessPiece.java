@@ -73,9 +73,7 @@ public class ChessPiece {
             case PAWN:
                 break;
         }
-
-
-
+        return moves;
         //return List.of();
     }
 }

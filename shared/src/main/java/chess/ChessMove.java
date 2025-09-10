@@ -42,6 +42,9 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
+        //promo = null
+        //if pieceType = Pawn then promo becomes option
+
         return promotionPiece;
     }
 
@@ -55,7 +58,7 @@ public class ChessMove {
 
     @Override
     public int hashCode() {
-        var promoCode = (promotionPiece == null ? 3 : promotionPiece.ordinal());
+        var promoCode = (promotionPiece == null ? 9: promotionPiece.ordinal());
         return (43 * startPosition.hashCode()) + endPosition.hashCode() + promoCode;
     }
 
