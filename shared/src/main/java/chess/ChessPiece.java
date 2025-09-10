@@ -56,10 +56,10 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> moves = new ArrayList<>();
+        ArrayList<ChessMove> moves = new ArrayList<>(); //array or list of positions
 
         ChessPiece piece = board.getPiece(myPosition);
-        switch (piece.getPieceType()){
+        switch (piece.getPieceType()){ //depending on piece type add to list
             case KING:
                 break;
             case QUEEN:
@@ -71,6 +71,9 @@ public class ChessPiece {
             case ROOK:
                 break;
             case PAWN:
+//                if() {
+//                    moves.add();
+//                }
                 break;
         }
         return moves;
