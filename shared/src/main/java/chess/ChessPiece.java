@@ -48,6 +48,29 @@ public class ChessPiece {
         return type;
     }
 
+    public void left(){
+        ArrayList<ChessPosition> leftList = new ArrayList<>();
+        int increment = 0;
+        ChessPosition newPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-increment);
+        while(increment >= 0){
+            increment += 1;
+            newPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-increment);
+            leftList.add(newPos);
+        }
+    }
+
+    public void right(){
+        ArrayList<ChessPosition> leftList = new ArrayList<>();
+        int increment = 0;
+        ChessPosition newPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+increment);
+        while(increment < 8){
+            increment += 1;
+            newPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+increment);
+            leftList.add(newPos);
+        }
+    }
+
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
