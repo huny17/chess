@@ -3,6 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Represents a single chess piece
@@ -48,26 +49,36 @@ public class ChessPiece {
         return type;
     }
 
-    public void left(){
-        ArrayList<ChessPosition> leftList = new ArrayList<>();
-        int increment = 0;
-        ChessPosition newPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-increment);
-        while(increment >= 0){
-            increment += 1;
-            newPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-increment);
-            leftList.add(newPos);
+    public ArrayList<ChessMove> left(){
+        ArrayList<ChessMove> leftList = new ArrayList<>();
+        ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
+        ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-1);
+        ChessPiece n = board.getPiece(endPos);
+        ChessMove m = new ChessMove(startPos, endPos, null);
+        while((startPos.getRow() > 0) && (n == null)){
+            leftList.add(m);
+            startPos = endPos;
+            endPos = new ChessPosition(startPos.getRow(), startPos.getColumn()-1);
+            n = board.getPiece(endPos);
+            m = new ChessMove(startPos, endPos, null);
         }
+        return leftList;
     }
 
-    public void right(){
-        ArrayList<ChessPosition> leftList = new ArrayList<>();
-        int increment = 0;
-        ChessPosition newPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+increment);
-        while(increment < 8){
-            increment += 1;
-            newPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+increment);
-            leftList.add(newPos);
+    public ArrayList<ChessMove> right(){
+        ArrayList<ChessMove> rightList = new ArrayList<>();
+        ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
+        ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1);
+        ChessPiece n = board.getPiece(endPos);
+        ChessMove m = new ChessMove(startPos, endPos, null);
+        while((startPos.getRow() <= 8) && (n == null)){
+            rightList.add(m);
+            startPos = endPos;
+            endPos = new ChessPosition(startPos.getRow(), startPos.getColumn()+1);
+            n = board.getPiece(endPos);
+            m = new ChessMove(startPos, endPos, null);
         }
+        return rightList;
     }
 
 
@@ -92,6 +103,17 @@ public class ChessPiece {
             case KNIGHT:
                 break;
             case ROOK:
+                ArrayList<ChessMove> leftList = left();
+                ListIterator<ChessMove> l = leftList.listIterator();
+                while(l.hasNext()){
+                    moves.add(l.next());
+                }
+                ArrayList<ChessMove> rightList = right();
+                ListIterator<ChessMove> r = rightList.listIterator();
+                while(r.hasNext()){
+                    moves.add(r.next());
+                }
+
                 break;
             case PAWN:
 //                if() {
