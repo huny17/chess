@@ -49,17 +49,19 @@ public class ChessPiece {
         return type;
     }
 
-    public ArrayList<ChessMove> left(){
+    public ArrayList<ChessMove> left(ChessPosition myPosition){
         ArrayList<ChessMove> leftList = new ArrayList<>();
         ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
-        ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-1);
-        ChessPiece n = board.getPiece(endPos);
+        ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - 1);
+        //ChessPiece n = board.getPiece(endPos);
         ChessMove m = new ChessMove(startPos, endPos, null);
-        while((startPos.getColumn() > 0) && (n == null)){
+        while ((startPos.getColumn()-1 > 0)) {
             leftList.add(m);
             startPos = endPos;
-            endPos = new ChessPosition(startPos.getRow(), startPos.getColumn()-1);
-            n = board.getPiece(endPos);
+            if (startPos.getColumn()-1 > 0) {
+                endPos = new ChessPosition(startPos.getRow(), startPos.getColumn() - 1);
+            }
+            //n = board.getPiece(endPos);
             m = new ChessMove(startPos, endPos, null);
         }
         return leftList;
@@ -69,13 +71,13 @@ public class ChessPiece {
         ArrayList<ChessMove> rightList = new ArrayList<>();
         ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
         ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1);
-        ChessPiece n = board.getPiece(endPos);
+        //ChessPiece n = board.getPiece(endPos);
         ChessMove m = new ChessMove(startPos, endPos, null);
-        while((startPos.getColumn() <= 8) && (n == null)){
+        while((startPos.getColumn() <= 8)){
             rightList.add(m);
             startPos = endPos;
             endPos = new ChessPosition(startPos.getRow(), startPos.getColumn()+1);
-            n = board.getPiece(endPos);
+            //n = board.getPiece(endPos);
             m = new ChessMove(startPos, endPos, null);
         }
         return rightList;
@@ -85,13 +87,13 @@ public class ChessPiece {
         ArrayList<ChessMove> upList = new ArrayList<>();
         ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
         ChessPosition endPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
-        ChessPiece n = board.getPiece(endPos);
+        //ChessPiece n = board.getPiece(endPos);
         ChessMove m = new ChessMove(startPos, endPos, null);
-        while((startPos.getRow() <= 8) && (n == null)){
+        while((startPos.getRow() <= 8)){
             upList.add(m);
             startPos = endPos;
             endPos = new ChessPosition(startPos.getRow() + 1, startPos.getColumn());
-            n = board.getPiece(endPos);
+            //n = board.getPiece(endPos);
             m = new ChessMove(startPos, endPos, null);
         }
         return upList;
@@ -101,13 +103,13 @@ public class ChessPiece {
         ArrayList<ChessMove> downList = new ArrayList<>();
         ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
         ChessPosition endPos = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
-        ChessPiece n = board.getPiece(endPos);
+        //ChessPiece n = board.getPiece(endPos);
         ChessMove m = new ChessMove(startPos, endPos, null);
-        while((startPos.getRow() > 0) && (n == null)){
+        while((startPos.getRow() > 0)){
             downList.add(m);
             startPos = endPos;
             endPos = new ChessPosition(startPos.getRow() - 1, startPos.getColumn()+1);
-            n = board.getPiece(endPos);
+            //n = board.getPiece(endPos);
             m = new ChessMove(startPos, endPos, null);
         }
         return downList;
@@ -134,7 +136,7 @@ public class ChessPiece {
             case KNIGHT:
                 break;
             case ROOK:
-                ArrayList<ChessMove> leftList = left();
+                ArrayList<ChessMove> leftList = left(myPosition);
                 ListIterator<ChessMove> l = leftList.listIterator();
                 while(l.hasNext()){
                     moves.add(l.next());
