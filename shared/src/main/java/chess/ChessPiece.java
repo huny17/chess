@@ -55,7 +55,7 @@ public class ChessPiece {
         ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()-1);
         ChessPiece n = board.getPiece(endPos);
         ChessMove m = new ChessMove(startPos, endPos, null);
-        while((startPos.getRow() > 0) && (n == null)){
+        while((startPos.getColumn() > 0) && (n == null)){
             leftList.add(m);
             startPos = endPos;
             endPos = new ChessPosition(startPos.getRow(), startPos.getColumn()-1);
@@ -71,7 +71,7 @@ public class ChessPiece {
         ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1);
         ChessPiece n = board.getPiece(endPos);
         ChessMove m = new ChessMove(startPos, endPos, null);
-        while((startPos.getRow() <= 8) && (n == null)){
+        while((startPos.getColumn() <= 8) && (n == null)){
             rightList.add(m);
             startPos = endPos;
             endPos = new ChessPosition(startPos.getRow(), startPos.getColumn()+1);
@@ -81,6 +81,37 @@ public class ChessPiece {
         return rightList;
     }
 
+    public ArrayList<ChessMove> up(){
+        ArrayList<ChessMove> upList = new ArrayList<>();
+        ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
+        ChessPosition endPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+        ChessPiece n = board.getPiece(endPos);
+        ChessMove m = new ChessMove(startPos, endPos, null);
+        while((startPos.getRow() <= 8) && (n == null)){
+            upList.add(m);
+            startPos = endPos;
+            endPos = new ChessPosition(startPos.getRow() + 1, startPos.getColumn());
+            n = board.getPiece(endPos);
+            m = new ChessMove(startPos, endPos, null);
+        }
+        return upList;
+    }
+
+    public ArrayList<ChessMove> down(){
+        ArrayList<ChessMove> downList = new ArrayList<>();
+        ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
+        ChessPosition endPos = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
+        ChessPiece n = board.getPiece(endPos);
+        ChessMove m = new ChessMove(startPos, endPos, null);
+        while((startPos.getRow() > 0) && (n == null)){
+            downList.add(m);
+            startPos = endPos;
+            endPos = new ChessPosition(startPos.getRow() - 1, startPos.getColumn()+1);
+            n = board.getPiece(endPos);
+            m = new ChessMove(startPos, endPos, null);
+        }
+        return downList;
+    }
 
     /**
      * Calculates all the positions a chess piece can move to
@@ -112,6 +143,16 @@ public class ChessPiece {
                 ListIterator<ChessMove> r = rightList.listIterator();
                 while(r.hasNext()){
                     moves.add(r.next());
+                }
+                ArrayList<ChessMove> upList = up();
+                ListIterator<ChessMove> u = upList.listIterator();
+                while(u.hasNext()){
+                    moves.add(u.next());
+                }
+                ArrayList<ChessMove> downList = down();
+                ListIterator<ChessMove> d = downList.listIterator();
+                while(d.hasNext()){
+                    moves.add(d.next());
                 }
 
                 break;
