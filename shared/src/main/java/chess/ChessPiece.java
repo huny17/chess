@@ -60,7 +60,9 @@ public class ChessPiece {
             while ((startPos.getColumn() - increment > 0)) { //checking using old start pos
                 leftList.add(m);
                 increment += 1;
+                if (startPos.getColumn() - increment > 0) { //checking using new start pos
                     endPos = new ChessPosition(startPos.getRow(), startPos.getColumn() - increment);
+                }
                 //n = board.getPiece(endPos);
                 m = new ChessMove(startPos, endPos, null);
             }
@@ -71,15 +73,16 @@ public class ChessPiece {
     public ArrayList<ChessMove> right(ChessPosition myPosition){
         ArrayList<ChessMove> rightList = new ArrayList<>();
         ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
-        if(startPos.getColumn()+1 < 8) {
+        int increment = 1;
+        if(startPos.getColumn()+1 <= 8) {
             ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1);
             //ChessPiece n = board.getPiece(endPos);
             ChessMove m = new ChessMove(startPos, endPos, null);
-            while ((startPos.getColumn() + 1 < 8)) {
+            while ((startPos.getColumn() + increment <= 8)) {
                 rightList.add(m);
-                startPos = endPos;
-                if (startPos.getColumn() + 1 < 8) {
-                    endPos = new ChessPosition(startPos.getRow(), startPos.getColumn() + 1);
+                increment += 1;
+                if (startPos.getColumn() + increment <= 8) {
+                    endPos = new ChessPosition(startPos.getRow(), startPos.getColumn() + increment);
                 }
                 //n = board.getPiece(endPos);
                 m = new ChessMove(startPos, endPos, null);
@@ -98,6 +101,7 @@ public class ChessPiece {
             ChessMove m = new ChessMove(startPos, endPos, null);
             while (startPos.getRow() + increment <= 8) {
                 upList.add(m);
+                increment += 1;
                 if (startPos.getRow() + increment <= 8) {
                     endPos = new ChessPosition(startPos.getRow() + increment, startPos.getColumn());
                 }
@@ -119,7 +123,7 @@ public class ChessPiece {
             while (startPos.getRow() - increment > 0) {
                 downList.add(m);
                 increment += 1;
-                if (endPos.getRow() - increment > 0) {
+                if (startPos.getRow() - increment > 0) {
                     endPos = new ChessPosition(startPos.getRow() - increment, startPos.getColumn());
                 }
                 //n = board.getPiece(endPos);
@@ -139,34 +143,47 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessMove> moves = new ArrayList<>(); //array or list of positions
 
+        ArrayList<ChessMove> leftList = left(myPosition);
+        ListIterator<ChessMove> l = leftList.listIterator();
+        ArrayList<ChessMove> rightList = right(myPosition);
+        ListIterator<ChessMove> r = rightList.listIterator();
+        ArrayList<ChessMove> upList = up(myPosition);
+        ListIterator<ChessMove> u = upList.listIterator();
+        ArrayList<ChessMove> downList = down(myPosition);
+        ListIterator<ChessMove> d = downList.listIterator();
+
         ChessPiece piece = board.getPiece(myPosition);
         switch (piece.getPieceType()){ //depending on piece type add to list
             case KING:
                 break;
             case QUEEN:
+                while(l.hasNext()){
+                    moves.add(l.next());
+                }
+                while(r.hasNext()){
+                    moves.add(r.next());
+                }
+                while(u.hasNext()){
+                    moves.add(u.next());
+                }
+                while(d.hasNext()){
+                    moves.add(d.next());
+                }
                 break;
             case BISHOP:
                 break;
             case KNIGHT:
                 break;
             case ROOK:
-                ArrayList<ChessMove> leftList = left(myPosition);
-                ListIterator<ChessMove> l = leftList.listIterator();
                 while(l.hasNext()){
                     moves.add(l.next());
                 }
-                ArrayList<ChessMove> rightList = right(myPosition);
-                ListIterator<ChessMove> r = rightList.listIterator();
                 while(r.hasNext()){
                     moves.add(r.next());
                 }
-                ArrayList<ChessMove> upList = up(myPosition);
-                ListIterator<ChessMove> u = upList.listIterator();
                 while(u.hasNext()){
                     moves.add(u.next());
                 }
-                ArrayList<ChessMove> downList = down(myPosition);
-                ListIterator<ChessMove> d = downList.listIterator();
                 while(d.hasNext()){
                     moves.add(d.next());
                 }
