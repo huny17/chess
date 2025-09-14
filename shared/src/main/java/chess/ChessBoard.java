@@ -147,14 +147,20 @@ public class ChessBoard {
 
     @Override
     public boolean equals(Object o) {
+        if(this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ChessBoard that = (ChessBoard) o;
-        return Objects.deepEquals(board, that.board);
+        ChessBoard chessBoard = (ChessBoard) o;
+        return board.equals(chessBoard);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(board);
+        return (43 * Arrays.deepHashCode(board));
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s", Arrays.toString(board));
     }
 }
 
