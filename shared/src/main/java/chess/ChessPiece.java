@@ -201,11 +201,11 @@ public class ChessPiece {
         ArrayList<ChessMove> diagList = new ArrayList<>();
         ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
         int increment = 1;
-        if ((startPos.getRow() + increment > 0) && (startPos.getColumn() - increment <= 8)) {
-            ChessPosition endPos = new ChessPosition(myPosition.getRow() - increment, myPosition.getColumn());
+        if ((startPos.getRow() + increment <= 8) && (startPos.getColumn() - increment > 0)) {
+            ChessPosition endPos = new ChessPosition(myPosition.getRow() + increment, myPosition.getColumn() - increment);
             if (isPieceHere(endPos, board)) {
                 ChessMove m = new ChessMove(startPos, endPos, null);
-                while ((startPos.getRow() + increment > 0) && (startPos.getColumn() - increment <= 8)) {
+                while ((startPos.getRow() + increment <= 8) && (startPos.getColumn() - increment > 0)) {
                         endPos = new ChessPosition(startPos.getRow() + increment, startPos.getColumn() - increment);
                         if (board.getPiece(endPos) != null){
                             if(board.getPiece(endPos).getTeamColor() != pieceColor) {
@@ -223,20 +223,22 @@ public class ChessPiece {
                 }
             }
         }
-        if ((startPos.getRow() + increment > 0) && (startPos.getColumn() + increment <= 8)) {
-            ChessPosition endPos = new ChessPosition(myPosition.getRow() - increment, myPosition.getColumn());
+        increment = 1;
+        if ((startPos.getRow() + increment <= 8) && (startPos.getColumn() + increment <= 8)) {
+            ChessPosition endPos = new ChessPosition(myPosition.getRow() + increment, myPosition.getColumn() + increment);
             if (isPieceHere(endPos, board)) {
                 ChessMove m = new ChessMove(startPos, endPos, null);
-                while ((startPos.getRow() + increment > 0) && (startPos.getColumn() + increment <= 8)) {
+                outerloop:
+                while ((startPos.getRow() + increment <= 8) && (startPos.getColumn() + increment <= 8)) {
                     endPos = new ChessPosition(startPos.getRow() + increment, startPos.getColumn() + increment);
                     if (board.getPiece(endPos) != null){
                         if(board.getPiece(endPos).getTeamColor() != pieceColor) {
                             m = new ChessMove(startPos, endPos, null);
                             diagList.add(m);
-                            return diagList;
+                            break outerloop;
                         }
                         if(board.getPiece(endPos).getTeamColor() == pieceColor){
-                            return diagList;
+                            break outerloop;
                         }
                     }
                     increment += 1;
@@ -245,20 +247,22 @@ public class ChessPiece {
                 }
             }
         }
+        increment = 1;
         if ((startPos.getRow() - increment > 0) && (startPos.getColumn() + increment <= 8)) {
-            ChessPosition endPos = new ChessPosition(myPosition.getRow() - increment, myPosition.getColumn());
+            ChessPosition endPos = new ChessPosition(myPosition.getRow() - increment, myPosition.getColumn() + increment);
             if (isPieceHere(endPos, board)) {
                 ChessMove m = new ChessMove(startPos, endPos, null);
+                outerloop:
                 while ((startPos.getRow() - increment > 0) && (startPos.getColumn() + increment <= 8)) {
                     endPos = new ChessPosition(startPos.getRow() - increment, startPos.getColumn() + increment);
                     if (board.getPiece(endPos) != null){
                         if(board.getPiece(endPos).getTeamColor() != pieceColor) {
                             m = new ChessMove(startPos, endPos, null);
                             diagList.add(m);
-                            return diagList;
+                            break outerloop;
                         }
                         if(board.getPiece(endPos).getTeamColor() == pieceColor){
-                            return diagList;
+                            break outerloop;
                         }
                     }
                     increment += 1;
@@ -267,20 +271,22 @@ public class ChessPiece {
                 }
             }
         }
-        if ((startPos.getRow() - increment > 0) && (startPos.getColumn() - increment <= 8)) {
-            ChessPosition endPos = new ChessPosition(myPosition.getRow() - increment, myPosition.getColumn());
+        increment = 1;
+        if ((startPos.getRow() - increment > 0) && (startPos.getColumn() - increment > 0)) {
+            ChessPosition endPos = new ChessPosition(myPosition.getRow() - increment, myPosition.getColumn() - increment);
             if (isPieceHere(endPos, board)) {
                 ChessMove m = new ChessMove(startPos, endPos, null);
-                while ((startPos.getRow() - increment > 0) && (startPos.getColumn() - increment <= 8)) {
+                outerloop:
+                while ((startPos.getRow() - increment > 0) && (startPos.getColumn() - increment > 0)) {
                     endPos = new ChessPosition(startPos.getRow() - increment, startPos.getColumn() - increment);
                     if (board.getPiece(endPos) != null){
                         if(board.getPiece(endPos).getTeamColor() != pieceColor) {
                             m = new ChessMove(startPos, endPos, null);
                             diagList.add(m);
-                            return diagList;
+                            break outerloop;
                         }
                         if(board.getPiece(endPos).getTeamColor() == pieceColor){
-                            return diagList;
+                            break outerloop;
                         }
                     }
                     increment += 1;
@@ -330,6 +336,9 @@ public class ChessPiece {
                 }
                 while(d.hasNext()){
                     moves.add(d.next());
+                }
+                while(diag.hasNext()){
+                    moves.add(diag.next());
                 }
                 break;
             case BISHOP:
