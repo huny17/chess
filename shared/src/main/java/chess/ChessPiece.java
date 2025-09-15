@@ -72,6 +72,9 @@ public class ChessPiece {
                                 leftList.add(m);
                                 return leftList;
                             }
+                            if(board.getPiece(endPos).getTeamColor() == pieceColor){
+                                return leftList;
+                            }
                         }
                     }
                     increment += 1;
@@ -98,6 +101,9 @@ public class ChessPiece {
                             if(board.getPiece(endPos).getTeamColor() != pieceColor) {
                                 m = new ChessMove(startPos, endPos, null);
                                 rightList.add(m);
+                                return rightList;
+                            }
+                            if(board.getPiece(endPos).getTeamColor() == pieceColor){
                                 return rightList;
                             }
                         }
@@ -128,6 +134,9 @@ public class ChessPiece {
                                 upList.add(m);
                                 return upList;
                             }
+                            if(board.getPiece(endPos).getTeamColor() == pieceColor){
+                                return upList;
+                            }
                         }
                     }
                     increment += 1;
@@ -154,6 +163,9 @@ public class ChessPiece {
                             if(board.getPiece(endPos).getTeamColor() != pieceColor) {
                                 m = new ChessMove(startPos, endPos, null);
                                 downList.add(m);
+                                return downList;
+                            }
+                            if(board.getPiece(endPos).getTeamColor() == pieceColor){
                                 return downList;
                             }
                         }
