@@ -1,9 +1,6 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 /**
  * Represents a single chess piece
@@ -61,17 +58,25 @@ public class ChessPiece {
         ArrayList<ChessMove> leftList = new ArrayList<>();
         ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
         int increment = 1;
-        if (startPos.getColumn()-1 > 0) {
-            ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - 1);
+        ChessPiece n = board.getPiece(myPosition);
+        if (startPos.getColumn()-increment > 0) {
+            ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - increment);
             if (isPieceHere(endPos, board)) {
                 ChessMove m = new ChessMove(startPos, endPos, null);
                 while ((startPos.getColumn() - increment > 0)) { //checking using old start pos
-                    leftList.add(m);
-                    increment += 1;
                     if (startPos.getColumn() - increment > 0) { //checking using new start pos
                         endPos = new ChessPosition(startPos.getRow(), startPos.getColumn() - increment);
+                        if (board.getPiece(endPos) != null){
+                            if(board.getPiece(endPos).getTeamColor() != pieceColor) {
+                                m = new ChessMove(startPos, endPos, null);
+                                leftList.add(m);
+                                return leftList;
+                            }
+                        }
                     }
+                    increment += 1;
                     m = new ChessMove(startPos, endPos, null);
+                    leftList.add(m);
                 }
             }
         }
@@ -82,17 +87,24 @@ public class ChessPiece {
         ArrayList<ChessMove> rightList = new ArrayList<>();
         ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
         int increment = 1;
-        if(startPos.getColumn()+1 <= 8) {
-            ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1);
+        if (startPos.getColumn()+ increment <= 8) {
+            ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + increment);
             if (isPieceHere(endPos, board)) {
                 ChessMove m = new ChessMove(startPos, endPos, null);
                 while ((startPos.getColumn() + increment <= 8)) {
-                    rightList.add(m);
-                    increment += 1;
                     if (startPos.getColumn() + increment <= 8) {
                         endPos = new ChessPosition(startPos.getRow(), startPos.getColumn() + increment);
+                        if (board.getPiece(endPos) != null){
+                            if(board.getPiece(endPos).getTeamColor() != pieceColor) {
+                                m = new ChessMove(startPos, endPos, null);
+                                rightList.add(m);
+                                return rightList;
+                            }
+                        }
                     }
+                    increment += 1;
                     m = new ChessMove(startPos, endPos, null);
+                    rightList.add(m);
                 }
             }
         }
@@ -107,13 +119,20 @@ public class ChessPiece {
             ChessPosition endPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
             if (isPieceHere(endPos, board)) {
                 ChessMove m = new ChessMove(startPos, endPos, null);
-                while (startPos.getRow() + increment <= 8) {
-                    upList.add(m);
-                    increment += 1;
-                    if (startPos.getRow() + increment <= 8) {
+                while ((startPos.getRow() + increment) <= 8) {
+                    if ((startPos.getRow() + increment) <= 8) {
                         endPos = new ChessPosition(startPos.getRow() + increment, startPos.getColumn());
+                        if (board.getPiece(endPos) != null){
+                            if(board.getPiece(endPos).getTeamColor() != pieceColor) {
+                                m = new ChessMove(startPos, endPos, null);
+                                upList.add(m);
+                                return upList;
+                            }
+                        }
                     }
+                    increment += 1;
                     m = new ChessMove(startPos, endPos, null);
+                    upList.add(m);
                 }
             }
         }
@@ -124,17 +143,24 @@ public class ChessPiece {
         ArrayList<ChessMove> downList = new ArrayList<>();
         ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
         int increment = 1;
-        if (startPos.getRow() - 1 > 0) {
-            ChessPosition endPos = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
+        if (startPos.getRow() - increment > 0) {
+            ChessPosition endPos = new ChessPosition(myPosition.getRow() - increment, myPosition.getColumn());
             if (isPieceHere(endPos, board)) {
                 ChessMove m = new ChessMove(startPos, endPos, null);
                 while (startPos.getRow() - increment > 0) {
-                    downList.add(m);
-                    increment += 1;
                     if (startPos.getRow() - increment > 0) {
                         endPos = new ChessPosition(startPos.getRow() - increment, startPos.getColumn());
+                        if (board.getPiece(endPos) != null){
+                            if(board.getPiece(endPos).getTeamColor() != pieceColor) {
+                                m = new ChessMove(startPos, endPos, null);
+                                downList.add(m);
+                                return downList;
+                            }
+                        }
                     }
+                    increment += 1;
                     m = new ChessMove(startPos, endPos, null);
+                    downList.add(m);
                 }
             }
         }
@@ -227,5 +253,28 @@ public class ChessPiece {
         }
         return moves;
         //return List.of();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type && Objects.equals(board, that.board) && Objects.equals(myPosition, that.myPosition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type, board, myPosition);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                ", board=" + board +
+                ", myPosition=" + myPosition +
+                '}';
     }
 }
