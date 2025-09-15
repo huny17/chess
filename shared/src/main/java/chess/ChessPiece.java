@@ -311,6 +311,8 @@ public class ChessPiece {
         ListIterator<ChessMove> u = upList.listIterator();
         ArrayList<ChessMove> downList = down(myPosition, board);
         ListIterator<ChessMove> d = downList.listIterator();
+        ArrayList<ChessMove> diagList = diagonal(myPosition, board);
+        ListIterator<ChessMove> diag = diagList.listIterator();
 
         ChessPiece piece = board.getPiece(myPosition);
         switch (piece.getPieceType()){ //depending on piece type add to list
@@ -331,6 +333,9 @@ public class ChessPiece {
                 }
                 break;
             case BISHOP:
+                while(diag.hasNext()){
+                    moves.add(diag.next());
+                }
                 break;
             case KNIGHT:
                 break;
