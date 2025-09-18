@@ -54,34 +54,35 @@ public class ChessPiece {
         return false;
     }
 
+    public ChessPosition calculatePos(int row, int col, ChessBoard board) {
+        ChessPosition endPos = new ChessPosition(row,col);
+        if (isPieceHere(endPos, board)) {
+            endPos = new ChessPosition(row, col);
+            if (board.getPiece(endPos) != null) {
+                if (board.getPiece(endPos).getTeamColor() != pieceColor) {
+                    return endPos;
+                }
+                if (board.getPiece(endPos).getTeamColor() == pieceColor) {
+                    return null;
+                }
+            }
+            return endPos;
+        }
+        return null;
+    }
+
     public ArrayList<ChessMove> left(ChessPosition myPosition, ChessBoard board){
         ArrayList<ChessMove> leftList = new ArrayList<>();
         ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
         int increment = 1;
-        ChessPiece n = board.getPiece(myPosition);
-        if (startPos.getColumn()-increment > 0) {
-            ChessPosition endPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - increment);
-            if (isPieceHere(endPos, board)) {
-                ChessMove m = new ChessMove(startPos, endPos, null);
-                while ((startPos.getColumn() - increment > 0)) { //checking using old start pos
-                    if (startPos.getColumn() - increment > 0) { //checking using new start pos
-                        endPos = new ChessPosition(startPos.getRow(), startPos.getColumn() - increment);
-                        if (board.getPiece(endPos) != null){
-                            if(board.getPiece(endPos).getTeamColor() != pieceColor) {
-                                m = new ChessMove(startPos, endPos, null);
-                                leftList.add(m);
-                                return leftList;
-                            }
-                            if(board.getPiece(endPos).getTeamColor() == pieceColor){
-                                return leftList;
-                            }
-                        }
-                    }
-                    increment += 1;
-                    m = new ChessMove(startPos, endPos, null);
-                    leftList.add(m);
-                }
+        while(startPos.getColumn()-increment > 0){
+            ChessPosition endPos = calculatePos(startPos.getRow(), startPos.getColumn()-increment, board);
+            if (endPos == null) {
+                return leftList;
             }
+            ChessMove m = new ChessMove(startPos, endPos, null);
+            leftList.add(m);
+            increment += 1;
         }
         return leftList;
     }
