@@ -166,8 +166,8 @@ public class ChessPiece {
     public ArrayList<ChessMove> diagonal(ChessPosition myPosition, ChessBoard board){
         ArrayList<ChessMove> list = new ArrayList<>();
         ChessPosition start = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
+        //outerloop;
         int i = 1;
-
         while (start.getRow() + i <= 8 && start.getColumn() + i <= 8) {
             ChessMove m = calcMove(start, start.getRow() + i, start.getColumn() + i, board);
             if (m != null) {
@@ -180,6 +180,7 @@ public class ChessPiece {
                 break;
             }
         }
+        i = 1;
         outerloop:
         while(start.getRow()-i > 0 && start.getColumn()-i > 0) {
             ChessMove m = calcMove(start, start.getRow() - i, start.getColumn() - i, board);
@@ -734,28 +735,28 @@ public class ChessPiece {
 //                    moves.add(k.next());
 //                }
 //                break;
-//            case QUEEN:
-//                while(l.hasNext()){
-//                    moves.add(l.next());
-//                }
-//                while(r.hasNext()){
-//                    moves.add(r.next());
-//                }
-//                while(u.hasNext()){
-//                    moves.add(u.next());
-//                }
-//                while(d.hasNext()){
-//                    moves.add(d.next());
-//                }
-//                while(diag.hasNext()){
-//                    moves.add(diag.next());
-//                }
-//                break;
-//            case BISHOP:
-//                while(diag.hasNext()){
-//                    moves.add(diag.next());
-//                }
-//                break;
+            case QUEEN:
+                while(l.hasNext()){
+                    moves.add(l.next());
+                }
+                while(r.hasNext()){
+                    moves.add(r.next());
+                }
+                while(u.hasNext()){
+                    moves.add(u.next());
+                }
+                while(d.hasNext()){
+                    moves.add(d.next());
+                }
+                while(diag.hasNext()){
+                    moves.add(diag.next());
+                }
+                break;
+            case BISHOP:
+                while(diag.hasNext()){
+                    moves.add(diag.next());
+                }
+                break;
 //            case KNIGHT:
 //                while(n.hasNext()){
 //                    moves.add(n.next());
