@@ -54,7 +54,7 @@ public class ChessPiece {
         return false;
     }
 
-    public ChessPosition calculatePos(int row, int col, ChessBoard board) {
+    public ChessPosition calcPos(int row, int col, ChessBoard board) {
         ChessPosition endPos = new ChessPosition(row,col);
         if (isPieceHere(endPos, board)) {
             endPos = new ChessPosition(row, col);
@@ -71,18 +71,29 @@ public class ChessPiece {
         return null;
     }
 
+    public ChessMove calcMove(ChessPosition start, int row, int col, ChessBoard board){
+            ChessPosition end = calcPos(row, col, board);
+            if (end == null) {
+                return null;
+            }
+            ChessMove m = new ChessMove(start, end, null);
+
+        return m;
+    }
+
     public ArrayList<ChessMove> left(ChessPosition myPosition, ChessBoard board){
         ArrayList<ChessMove> leftList = new ArrayList<>();
-        ChessPosition startPos = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
-        int increment = 1;
-        while(startPos.getColumn()-increment > 0){
-            ChessPosition endPos = calculatePos(startPos.getRow(), startPos.getColumn()-increment, board);
-            if (endPos == null) {
+        ChessPosition start = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
+        int i = 1;
+        while(start.getColumn()-i > 0) {
+            ChessMove m = calcMove(start, start.getRow(), start.getColumn() - i, board);
+            if(m != null) {
+                leftList.add(m);
+                i += 1;
+            }
+            else {
                 return leftList;
             }
-            ChessMove m = new ChessMove(startPos, endPos, null);
-            leftList.add(m);
-            increment += 1;
         }
         return leftList;
     }
