@@ -227,7 +227,6 @@ public class ChessPiece {
         return list;
     }
 
-
     public ArrayList<ChessMove> kingMove(ChessPosition myPosition, ChessBoard board){
         ArrayList<ChessMove> list = new ArrayList<>();
         ChessPosition start = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
@@ -336,7 +335,6 @@ public class ChessPiece {
         }
         return list;
     }
-
 
    public ArrayList<ChessMove> pawnMove(ChessPosition start, ChessBoard board){
         ArrayList<ChessMove> list = new ArrayList<>();
@@ -479,8 +477,6 @@ public class ChessPiece {
        }
     return list;
     }
-
-
 
     /**
      * Calculates all the positions a chess piece can move to
