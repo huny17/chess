@@ -341,117 +341,138 @@ public class ChessPiece {
    public ArrayList<ChessMove> pawnMove(ChessPosition start, ChessBoard board){
         ArrayList<ChessMove> list = new ArrayList<>();
         if(board.getPiece(start).getTeamColor() == ChessGame.TeamColor.WHITE) {
-            ChessPosition checkL = new ChessPosition(start.getRow()+1,start.getColumn()-1);
-            ChessPosition checkR = new ChessPosition(start.getRow()+1,start.getColumn()+1);
             if (start.getRow() + 1 <= 8) {
                 ChessMove m = calcMove(start, start.getRow() + 1, start.getColumn(), board);
                 ChessPosition end = new ChessPosition(start.getRow() + 1, start.getColumn());
                 if (m != null) {
-                    if (start.getRow() + 1 == 8) {
-                        m = new ChessMove(start, end, PieceType.QUEEN);
-                        list.add(m);
-                        m = new ChessMove(start, end, PieceType.BISHOP);
-                        list.add(m);
-                        m = new ChessMove(start, end, PieceType.KNIGHT);
-                        list.add(m);
-                        m = new ChessMove(start, end, PieceType.ROOK);
-                        list.add(m);
-                    } else {
-                        list.add(m);
+                    if(!isPiece(end,board)) {
+                        if (start.getRow() + 1 == 8) {
+                            m = new ChessMove(start, end, PieceType.QUEEN);
+                            list.add(m);
+                            m = new ChessMove(start, end, PieceType.BISHOP);
+                            list.add(m);
+                            m = new ChessMove(start, end, PieceType.KNIGHT);
+                            list.add(m);
+                            m = new ChessMove(start, end, PieceType.ROOK);
+                            list.add(m);
+                        } else {
+                            list.add(m);
+                        }
                     }
                 }
-                if (isPiece(checkL, board)) {
-                    m = calcMove(start, start.getRow() + 1, start.getColumn() - 1, board);
-                    if (start.getRow() + 1 == 8) {
-                        m = new ChessMove(start, checkL, PieceType.QUEEN);
-                        list.add(m);
-                        m = new ChessMove(start, checkL, PieceType.BISHOP);
-                        list.add(m);
-                        m = new ChessMove(start, checkL, PieceType.KNIGHT);
-                        list.add(m);
-                        m = new ChessMove(start, checkL, PieceType.ROOK);
-                        list.add(m);
-                    } else {
-                        list.add(m);
+                if((start.getRow() + 1 <= 8) && (start.getColumn() - 1 > 0)) {
+                    ChessPosition checkL = new ChessPosition(start.getRow()+1,start.getColumn()-1);
+                    if (isPiece(checkL, board)) {
+                        m = calcMove(start, start.getRow() + 1, start.getColumn() - 1, board);
+                        if (start.getRow() + 1 == 8) {
+                            m = new ChessMove(start, checkL, PieceType.QUEEN);
+                            list.add(m);
+                            m = new ChessMove(start, checkL, PieceType.BISHOP);
+                            list.add(m);
+                            m = new ChessMove(start, checkL, PieceType.KNIGHT);
+                            list.add(m);
+                            m = new ChessMove(start, checkL, PieceType.ROOK);
+                            list.add(m);
+                        } else {
+                            list.add(m);
+                        }
                     }
                 }
-                if (isPiece(checkR, board)) {
-                    m = calcMove(start, start.getRow() + 1, start.getColumn() + 1, board);
-                    if (start.getRow() + 1 == 8) {
-                        m = new ChessMove(start, checkR, PieceType.QUEEN);
-                        list.add(m);
-                        m = new ChessMove(start, checkR, PieceType.BISHOP);
-                        list.add(m);
-                        m = new ChessMove(start, checkR, PieceType.KNIGHT);
-                        list.add(m);
-                        m = new ChessMove(start, checkR, PieceType.ROOK);
-                        list.add(m);
-                    } else {
-                        list.add(m);
+                if((start.getRow() + 1 <= 8) && (start.getColumn() + 1 <= 8)){
+                    ChessPosition checkR = new ChessPosition(start.getRow() + 1, start.getColumn() + 1);
+                    if (isPiece(checkR, board)) {
+
+                        m = calcMove(start, start.getRow() + 1, start.getColumn() + 1, board);
+                        if (start.getRow() + 1 == 8) {
+                            m = new ChessMove(start, checkR, PieceType.QUEEN);
+                            list.add(m);
+                            m = new ChessMove(start, checkR, PieceType.BISHOP);
+                            list.add(m);
+                            m = new ChessMove(start, checkR, PieceType.KNIGHT);
+                            list.add(m);
+                            m = new ChessMove(start, checkR, PieceType.ROOK);
+                            list.add(m);
+                        } else {
+                            list.add(m);
+                        }
                     }
-                }
-                if (start.getRow() == 2) {
-                    m = calcMove(start, start.getRow() + 2, start.getColumn(), board);
-                    if (m != null) {
-                        list.add(m);
+                    if (start.getRow() == 2) {
+                        m = calcMove(start, start.getRow() + 2, start.getColumn(), board);
+                        if (m != null) {
+                            ChessPiece n = board.getPiece(end);
+                            ChessPiece j = board.getPiece(m.getEndPosition());
+                            if(n == null && j == null) {
+                                list.add(m);
+                            }
+                        }
                     }
                 }
             }
         }
        if(board.getPiece(start).getTeamColor() == ChessGame.TeamColor.BLACK) {
-           ChessPosition checkL = new ChessPosition(start.getRow()-1,start.getColumn()-1);
-           ChessPosition checkR = new ChessPosition(start.getRow()-1,start.getColumn()+1);
            if (start.getRow() - 1 > 0) {
                ChessMove m = calcMove(start, start.getRow() - 1, start.getColumn(), board);
                ChessPosition end = new ChessPosition(start.getRow() - 1, start.getColumn());
                if (m != null) {
-                   if (start.getRow() - 1 == 1) {
-                       m = new ChessMove(start, end, PieceType.QUEEN);
-                       list.add(m);
-                       m = new ChessMove(start, end, PieceType.BISHOP);
-                       list.add(m);
-                       m = new ChessMove(start, end, PieceType.KNIGHT);
-                       list.add(m);
-                       m = new ChessMove(start, end, PieceType.ROOK);
-                       list.add(m);
-                   } else {
-                       list.add(m);
+                   if(!isPiece(end,board)) {
+                       if (start.getRow() - 1 == 1) {
+                           m = new ChessMove(start, end, PieceType.QUEEN);
+                           list.add(m);
+                           m = new ChessMove(start, end, PieceType.BISHOP);
+                           list.add(m);
+                           m = new ChessMove(start, end, PieceType.KNIGHT);
+                           list.add(m);
+                           m = new ChessMove(start, end, PieceType.ROOK);
+                           list.add(m);
+                       } else {
+                           list.add(m);
+                       }
                    }
                }
-               if (isPiece(checkL, board)) {
-                   m = calcMove(start, start.getRow() - 1, start.getColumn() - 1, board);
-                   if (start.getRow() - 1 == 1) {
-                       m = new ChessMove(start, checkL, PieceType.QUEEN);
-                       list.add(m);
-                       m = new ChessMove(start, checkL, PieceType.BISHOP);
-                       list.add(m);
-                       m = new ChessMove(start, checkL, PieceType.KNIGHT);
-                       list.add(m);
-                       m = new ChessMove(start, checkL, PieceType.ROOK);
-                       list.add(m);
-                   } else {
-                       list.add(m);
+               if((start.getRow() - 1 > 0) && (start.getColumn() - 1 > 0)) {
+                   ChessPosition checkL = new ChessPosition(start.getRow()-1,start.getColumn()-1);
+                   if (isPiece(checkL, board)) {
+                       m = calcMove(start, start.getRow() - 1, start.getColumn() - 1, board);
+                       if (start.getRow() - 1 == 1) {
+                           m = new ChessMove(start, checkL, PieceType.QUEEN);
+                           list.add(m);
+                           m = new ChessMove(start, checkL, PieceType.BISHOP);
+                           list.add(m);
+                           m = new ChessMove(start, checkL, PieceType.KNIGHT);
+                           list.add(m);
+                           m = new ChessMove(start, checkL, PieceType.ROOK);
+                           list.add(m);
+                       } else {
+                           list.add(m);
+                       }
                    }
                }
-               if (isPiece(checkR, board)) {
-                   m = calcMove(start, start.getRow() - 1, start.getColumn() + 1, board);
-                   if (start.getRow() - 1 == 1) {
-                       m = new ChessMove(start, checkR, PieceType.QUEEN);
-                       list.add(m);
-                       m = new ChessMove(start, checkR, PieceType.BISHOP);
-                       list.add(m);
-                       m = new ChessMove(start, checkR, PieceType.KNIGHT);
-                       list.add(m);
-                       m = new ChessMove(start, checkR, PieceType.ROOK);
-                       list.add(m);
-                   } else {
-                       list.add(m);
+               if((start.getRow() - 1 > 0) && (start.getColumn() + 1 <= 8)) {
+                   ChessPosition checkR = new ChessPosition(start.getRow() - 1, start.getColumn() + 1);
+                   if (isPiece(checkR, board)) {
+                       m = calcMove(start, start.getRow() - 1, start.getColumn() + 1, board);
+                       if (start.getRow() - 1 == 1) {
+                           m = new ChessMove(start, checkR, PieceType.QUEEN);
+                           list.add(m);
+                           m = new ChessMove(start, checkR, PieceType.BISHOP);
+                           list.add(m);
+                           m = new ChessMove(start, checkR, PieceType.KNIGHT);
+                           list.add(m);
+                           m = new ChessMove(start, checkR, PieceType.ROOK);
+                           list.add(m);
+                       } else {
+                           list.add(m);
+                       }
                    }
                }
                if (start.getRow() == 7) {
                    m = calcMove(start, start.getRow() - 2, start.getColumn(), board);
                    if (m != null) {
-                       list.add(m);
+                       ChessPiece n = board.getPiece(end);
+                       ChessPiece j = board.getPiece(m.getEndPosition());
+                       if(n == null && j == null) {
+                           list.add(m);
+                       }
                    }
                }
            }
