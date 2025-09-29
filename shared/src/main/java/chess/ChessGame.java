@@ -65,7 +65,8 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        //ChessBoard.move(move);
+        ChessBoard board = getBoard();
+        board.move(move);
         //void - no return
     }
 
@@ -86,7 +87,15 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece king = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
+        ChessBoard board = getBoard();
+//        king.pieceMoves(board, )
+
+
+//        if(validMoves(king.startposition).isempty()) {
+//          return true;
+//        }
+        return false;
     }
 
     /**
@@ -106,7 +115,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        //new ChessBoard() = board;
+
         //void - no return
     }
 

@@ -38,12 +38,10 @@ public class ChessBoard {
     }
 
     public void move(ChessMove move) {
+        ChessGame game = new ChessGame();
         addPiece((move.getEndPosition()), getPiece(move.getStartPosition()));
         addPiece((move.getStartPosition()), null);
     }
-
-
-
 
     /**
      * Sets the board to the default starting board
