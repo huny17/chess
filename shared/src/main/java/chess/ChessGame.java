@@ -27,7 +27,12 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        switch(team){
+            case WHITE:
+                break;
+            case BLACK:
+                break;
+        }
     }
 
     /**
