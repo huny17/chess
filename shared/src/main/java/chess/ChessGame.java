@@ -10,6 +10,8 @@ import java.util.Collection;
  */
 public class ChessGame {
 
+    ChessBoard board = getBoard();
+
     public ChessGame() {
 
     }
@@ -53,8 +55,9 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessBoard board = getBoard();
+
         ChessPiece piece = board.getPiece(startPosition);
+
         return piece.pieceMoves(board, startPosition);
     }
 
@@ -66,8 +69,10 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessBoard board = getBoard();
-        board.move(move);
-        //void - no return
+        if(!validMoves(move.getStartPosition()).isEmpty()) {
+                board.move(move);
+        }
+        throw new chess.InvalidMoveException(move.toString());
     }
 
     /**
@@ -88,7 +93,6 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         ChessPiece king = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
-        ChessBoard board = getBoard();
 //        king.pieceMoves(board, )
 
 
