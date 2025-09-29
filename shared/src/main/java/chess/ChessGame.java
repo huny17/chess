@@ -1,6 +1,6 @@
 package chess;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -55,10 +55,25 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        ArrayList<ChessMove> list = new ArrayList<>();
 
         ChessPiece piece = board.getPiece(startPosition);
+        if(piece == null){
+            return null;
+        }
 
-        return piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
+
+        ChessMove[] move = moves.toArray(new ChessMove[0]);
+
+        for (int i=0; i < moves.size(); i++){
+            if(isInCheck(piece.getTeamColor())){
+                break;
+            }
+            list.add(move[i]);
+        }
+
+        return list;
     }
 
     /**
@@ -69,7 +84,7 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessBoard board = getBoard();
-        if(!validMoves(move.getStartPosition()).isEmpty()) {
+        if(validMoves(move.getStartPosition()) != null) {
                 board.move(move);
         }
         throw new chess.InvalidMoveException(move.toString());
@@ -110,7 +125,11 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
+        if (!isInCheck(teamColor) & !isInCheckmate(teamColor)) { //& if no leagl moves
+            return true;
+        }
+        return false;
     }
 
     /**
