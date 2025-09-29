@@ -27,6 +27,8 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
+        //void - no return
+        //flags?
         switch(team){
             case WHITE:
                 break;
@@ -64,6 +66,7 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         //ChessBoard.move(move);
+        //void - no return
     }
 
     /**
@@ -104,6 +107,7 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         //new ChessBoard() = board;
+        //void - no return
     }
 
     /**
