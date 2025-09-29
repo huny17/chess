@@ -10,7 +10,9 @@ import java.util.*;
  */
 public class ChessGame {
 
-    ChessBoard board = getBoard();
+
+    //ChessPiece[][] theBoard = new ChessPiece[8][8];
+    ChessBoard theBoard = new ChessBoard();
 
     public ChessGame() {
 
@@ -57,12 +59,12 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ArrayList<ChessMove> list = new ArrayList<>();
 
-        ChessPiece piece = board.getPiece(startPosition);
+        ChessPiece piece = theBoard.getPiece(startPosition);
         if(piece == null){
             return null;
         }
 
-        Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> moves = piece.pieceMoves(theBoard, startPosition);
 
         ChessMove[] move = moves.toArray(new ChessMove[0]);
 
@@ -138,8 +140,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-
-        //void - no return
+        theBoard = board;
     }
 
     /**
@@ -148,7 +149,8 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return new ChessBoard();
+        theBoard.resetBoard();
+        return theBoard;
     }
 
 
