@@ -17,6 +17,7 @@ public class ChessGame {
     ChessKing kingW;
     ChessKing kingB;
     TeamColor turn;
+    ArrayList<ChessPosition> starts;
 
     public ChessGame() {
 
@@ -76,6 +77,31 @@ public class ChessGame {
         }
     }
 
+    public void populateMoves (ChessPosition start){
+        ChessPiece piece = theBoard.getPiece(start);
+        if(piece != null){
+            getWhiteMoves(start);
+            getBlackMoves(start);
+        }
+    }
+
+    public void getStarts(ChessPosition start){
+        ChessPiece piece = theBoard.getPiece(start);
+        if(piece != null){
+            starts.add(start);
+        }
+
+        //getting kings
+        if(piece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (piece.getTeamColor() == TeamColor.WHITE) {
+                kingW = new ChessKing(piece.getTeamColor(), piece.getPieceType(), start);
+            }
+            if (piece.getTeamColor() == TeamColor.BLACK) {
+                kingB = new ChessKing(piece.getTeamColor(), piece.getPieceType(), start);
+            }
+        }
+    }
+
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -87,20 +113,9 @@ public class ChessGame {
         ArrayList<ChessMove> list = new ArrayList<>();
 
         ChessPiece piece = theBoard.getPiece(startPosition);
+
         if(piece == null){
             return null;
-        }
-
-
-
-        //getting kings
-        if(piece.getPieceType() == ChessPiece.PieceType.KING) {
-            if (piece.getTeamColor() == TeamColor.WHITE) {
-                kingW = new ChessKing(piece.getTeamColor(), piece.getPieceType(), startPosition);
-            }
-            if (piece.getTeamColor() == TeamColor.BLACK) {
-                kingB = new ChessKing(piece.getTeamColor(), piece.getPieceType(), startPosition);
-            }
         }
 
         //convert collection to array to iterate and index
