@@ -14,6 +14,7 @@ public class ChessGame {
     ChessBoard theBoard = new ChessBoard();
     ChessKing kingW;
     ChessKing kingB;
+    TeamColor turn;
 
     public ChessGame() {
 
@@ -23,7 +24,7 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return turn;
     }
 
     /**
@@ -32,14 +33,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        //void - no return
-        //flags?
-        switch(team){
-            case WHITE:
-                break;
-            case BLACK:
-                break;
-        }
+        turn = team;
     }
 
     /**
