@@ -12,8 +12,8 @@ public class ChessGame {
 
     ChessMove theMove = null;
     ChessBoard theBoard = new ChessBoard();
-    ArrayList<ChessMove> whiteMoves = null;
-    ArrayList<ChessMove> blackMoves = null;
+    ArrayList<ChessMove> whiteMoves;
+    ArrayList<ChessMove> blackMoves;
     ChessKing kingW;
     ChessKing kingB;
     TeamColor turn;
@@ -48,7 +48,6 @@ public class ChessGame {
     }
 
     public void getWhiteMoves(ChessPosition start){
-
         ChessPiece piece = theBoard.getPiece(start);
         if(piece != null) {
             if (piece.getTeamColor() == TeamColor.WHITE) {
@@ -63,7 +62,6 @@ public class ChessGame {
     }
 
     public void getBlackMoves(ChessPosition start){
-
         ChessPiece piece = theBoard.getPiece(start);
         if(piece != null) {
             if (piece.getTeamColor() == TeamColor.BLACK) {
@@ -90,16 +88,6 @@ public class ChessGame {
         if(piece != null){
             starts.add(start);
         }
-
-        //getting kings
-        if(piece.getPieceType() == ChessPiece.PieceType.KING) {
-            if (piece.getTeamColor() == TeamColor.WHITE) {
-                kingW = new ChessKing(piece.getTeamColor(), piece.getPieceType(), start);
-            }
-            if (piece.getTeamColor() == TeamColor.BLACK) {
-                kingB = new ChessKing(piece.getTeamColor(), piece.getPieceType(), start);
-            }
-        }
     }
 
     /**
@@ -116,6 +104,18 @@ public class ChessGame {
 
         if(piece == null){
             return null;
+        }
+
+        populateMoves(startPosition);
+
+        //getting kings
+        if(piece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (piece.getTeamColor() == TeamColor.WHITE) {
+                kingW = new ChessKing(piece.getTeamColor(), piece.getPieceType(), startPosition);
+            }
+            if (piece.getTeamColor() == TeamColor.BLACK) {
+                kingB = new ChessKing(piece.getTeamColor(), piece.getPieceType(), startPosition);
+            }
         }
 
         //convert collection to array to iterate and index
@@ -157,18 +157,22 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         if(teamColor == TeamColor.WHITE) {
-            for(int i=0; i< blackMoves.size(); i++) {
-                ChessMove m = blackMoves.get(i);
-                if( m.getEndPosition() == kingW.getStart()) {
-                    return true;
+            if (blackMoves != null){
+                for (int i = 0; i < blackMoves.size(); i++) {
+                    ChessMove m = blackMoves.get(i);
+                    if (m.getEndPosition() == kingW.getStart()) {
+                        return true;
+                    }
                 }
             }
         }
         if (teamColor == TeamColor.BLACK) {
-            for(int i=0; i< whiteMoves.size(); i++) {
-                ChessMove m = whiteMoves.get(i);
-                if( m.getEndPosition() == kingB.getStart()) {
-                    return true;
+            if(whiteMoves != null) {
+                for (int i = 0; i < whiteMoves.size(); i++) {
+                    ChessMove m = whiteMoves.get(i);
+                    if (m.getEndPosition() == kingB.getStart()) {
+                        return true;
+                    }
                 }
             }
         }
