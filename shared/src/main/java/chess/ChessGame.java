@@ -113,11 +113,15 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        if (kingW.getStart() == theMove.getEndPosition()) {
-            return true;
+        if(kingW != null) {
+            if (kingW.getStart() == theMove.getEndPosition()) {
+                return true;
+            }
         }
-        if (kingB.getStart() == theMove.getEndPosition()){
-            return true;
+        if (kingB != null) {
+            if (kingB.getStart() == theMove.getEndPosition()) {
+                return true;
+            }
         }
         return false;
     }
@@ -172,5 +176,23 @@ public class ChessGame {
         return theBoard;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessGame chessGame = (ChessGame) o;
+        return Objects.equals(theMove, chessGame.theMove) && Objects.equals(theBoard, chessGame.theBoard) && Objects.equals(kingW, chessGame.kingW) && Objects.equals(kingB, chessGame.kingB);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(theMove, theBoard, kingW, kingB);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "theMove=" + theMove +
+                ", theBoard=" + theBoard +
+                '}';
+    }
 }
