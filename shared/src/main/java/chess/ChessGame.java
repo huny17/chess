@@ -12,6 +12,8 @@ public class ChessGame {
 
     ChessMove theMove = null;
     ChessBoard theBoard = new ChessBoard();
+    ChessKing kingW;
+    ChessKing kingB;
 
     public ChessGame() {
 
@@ -63,6 +65,16 @@ public class ChessGame {
             return null;
         }
 
+        //getting kings
+        if(piece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (piece.getTeamColor() == TeamColor.WHITE) {
+                kingW = new ChessKing(piece.getTeamColor(), piece.getPieceType(), startPosition);
+            }
+            if (piece.getTeamColor() == TeamColor.BLACK) {
+                kingB = new ChessKing(piece.getTeamColor(), piece.getPieceType(), startPosition);
+            }
+        }
+
         //convert collection to array to iterate and index
         Collection<ChessMove> moves = piece.pieceMoves(theBoard, startPosition);
         ChessMove[] move = moves.toArray(new ChessMove[0]);
@@ -94,12 +106,6 @@ public class ChessGame {
     }
 
 
-//    public void compare(TeamColor color, ChessPiece king, ){
-//
-//
-//    }
-
-
     /**
      * Determines if the given team is in check
      *
@@ -107,9 +113,12 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-//        if(){
-//            return true;
-//        }
+        if (kingW.getStart() == theMove.getEndPosition()) {
+            return true;
+        }
+        if (kingB.getStart() == theMove.getEndPosition()){
+            return true;
+        }
         return false;
     }
 

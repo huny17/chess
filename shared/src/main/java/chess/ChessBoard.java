@@ -98,7 +98,7 @@ public class ChessBoard {
 
     @Override
     public String toString() { //print out board?
-        return Arrays.toString(board);
+        return Arrays.deepToString(board);
     }
 }
 
