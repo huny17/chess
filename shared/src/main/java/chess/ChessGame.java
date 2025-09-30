@@ -12,6 +12,8 @@ public class ChessGame {
 
     ChessMove theMove = null;
     ChessBoard theBoard = new ChessBoard();
+    ArrayList<ChessMove> whiteMoves = null;
+    ArrayList<ChessMove> blackMoves = null;
     ChessKing kingW;
     ChessKing kingB;
     TeamColor turn;
@@ -44,6 +46,36 @@ public class ChessGame {
         BLACK
     }
 
+    public void getWhiteMoves(ChessPosition start){
+
+        ChessPiece piece = theBoard.getPiece(start);
+        if(piece != null) {
+            if (piece.getTeamColor() == TeamColor.WHITE) {
+                //convert collection to array to iterate and index
+                Collection<ChessMove> moves = piece.pieceMoves(theBoard, start);
+                ChessMove[] move = moves.toArray(new ChessMove[0]);
+                for (int i = 0; i < moves.size(); i++) {
+                    whiteMoves.add(move[i]);
+                }
+            }
+        }
+    }
+
+    public void getBlackMoves(ChessPosition start){
+
+        ChessPiece piece = theBoard.getPiece(start);
+        if(piece != null) {
+            if (piece.getTeamColor() == TeamColor.BLACK) {
+                //convert collection to array to iterate and index
+                Collection<ChessMove> moves = piece.pieceMoves(theBoard, start);
+                ChessMove[] move = moves.toArray(new ChessMove[0]);
+                for (int i = 0; i < moves.size(); i++) {
+                    blackMoves.add(move[i]);
+                }
+            }
+        }
+    }
+
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -58,6 +90,8 @@ public class ChessGame {
         if(piece == null){
             return null;
         }
+
+
 
         //getting kings
         if(piece.getPieceType() == ChessPiece.PieceType.KING) {
@@ -107,14 +141,20 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        if(kingW != null) {
-            if (kingW.getStart() == theMove.getEndPosition()) {
-                return true;
+        if(teamColor == TeamColor.WHITE) {
+            for(int i=0; i< blackMoves.size(); i++) {
+                ChessMove m = blackMoves.get(i);
+                if( m.getEndPosition() == kingW.getStart()) {
+                    return true;
+                }
             }
         }
-        if (kingB != null) {
-            if (kingB.getStart() == theMove.getEndPosition()) {
-                return true;
+        if (teamColor == TeamColor.BLACK) {
+            for(int i=0; i< whiteMoves.size(); i++) {
+                ChessMove m = whiteMoves.get(i);
+                if( m.getEndPosition() == kingB.getStart()) {
+                    return true;
+                }
             }
         }
         return false;

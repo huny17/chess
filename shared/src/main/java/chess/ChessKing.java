@@ -5,10 +5,29 @@ import java.util.ArrayList;
 public class ChessKing extends ChessPiece {
 
     private ChessPosition startPosition;
+    private ChessKing BlackKing;
+    private ChessKing WhiteKing;
 
     public ChessKing(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type, ChessPosition start) {
         super(pieceColor, type);
         this.startPosition = start;
+    }
+
+    public void setKing(){
+        if (pieceColor == ChessGame.TeamColor.WHITE){
+            WhiteKing = this;
+        }
+        if (pieceColor == ChessGame.TeamColor.BLACK){
+            BlackKing = this;
+        }
+    }
+
+    public ChessKing getWhite(){
+        return WhiteKing;
+    }
+
+    public ChessKing getBlack(){
+        return BlackKing;
     }
 
 
