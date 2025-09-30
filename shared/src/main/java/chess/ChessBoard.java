@@ -98,9 +98,7 @@ public class ChessBoard {
 
     @Override
     public String toString() { //print out board?
-        return "ChessBoard{" +
-                "board=" + Arrays.toString(board) +
-                '}';
+        return Arrays.toString(board);
     }
 }
 

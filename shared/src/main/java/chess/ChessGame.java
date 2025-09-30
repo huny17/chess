@@ -10,8 +10,7 @@ import java.util.*;
  */
 public class ChessGame {
 
-
-    //ChessPiece[][] theBoard = new ChessPiece[8][8];
+    ChessMove theMove = null;
     ChessBoard theBoard = new ChessBoard();
 
     public ChessGame() {
@@ -64,10 +63,9 @@ public class ChessGame {
             return null;
         }
 
+        //convert collection to array to iterate and index
         Collection<ChessMove> moves = piece.pieceMoves(theBoard, startPosition);
-
         ChessMove[] move = moves.toArray(new ChessMove[0]);
-
         for (int i=0; i < moves.size(); i++){
             if(isInCheck(piece.getTeamColor())){
                 break;
@@ -85,12 +83,22 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+
+        theMove = move;
+
         ChessBoard board = getBoard();
         if(validMoves(move.getStartPosition()) != null) {
                 board.move(move);
         }
         throw new chess.InvalidMoveException(move.toString());
     }
+
+
+//    public void compare(TeamColor color, ChessPiece king, ){
+//
+//
+//    }
+
 
     /**
      * Determines if the given team is in check
@@ -99,7 +107,10 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+//        if(){
+//            return true;
+//        }
+        return false;
     }
 
     /**
@@ -127,8 +138,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-
-        if (!isInCheck(teamColor) & !isInCheckmate(teamColor)) { //& if no leagl moves
+        if (validMoves(theMove.getStartPosition()) == null & !isInCheck(teamColor) & !isInCheckmate(teamColor) ) { //& if no legal moves
             return true;
         }
         return false;

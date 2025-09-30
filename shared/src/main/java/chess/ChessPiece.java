@@ -10,8 +10,8 @@ import java.util.*;
  */
 public class ChessPiece {
 
-    private final ChessGame.TeamColor pieceColor;
-    private final PieceType type;
+    public ChessGame.TeamColor pieceColor;
+    public PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
@@ -532,8 +532,6 @@ public class ChessPiece {
         Iterator<ChessMove> d = dList.iterator();
         ArrayList<ChessMove> diList = diag(myPosition, board);
         Iterator<ChessMove> di = diList.iterator();
-        ArrayList<ChessMove> kiList = king(myPosition, board);
-        Iterator<ChessMove> ki = kiList.iterator();
         ArrayList<ChessMove> kList = knight(myPosition, board);
         Iterator<ChessMove> k = kList.iterator();
         ArrayList<ChessMove> pList = pawn(myPosition, board);
@@ -542,9 +540,14 @@ public class ChessPiece {
 
         switch(piece.getPieceType()){
             case KING:
+                ChessKing king = new ChessKing(pieceColor, PieceType.KING, myPosition);
+
+                ArrayList<ChessMove> kiList = king.move(myPosition, board);
+                Iterator<ChessMove> ki = kiList.iterator();
                 while(ki.hasNext()){
                     moves.add(ki.next());
                 }
+
                 break;
             case QUEEN:
                 while(di.hasNext()){
