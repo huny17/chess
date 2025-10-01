@@ -64,7 +64,7 @@ public class ChessGame {
         Collection<ChessMove> moves = piece.pieceMoves(theBoard, startPosition);
         ChessMove[] move = moves.toArray(new ChessMove[0]);
         for (int i=0; i < moves.size(); i++){
-            if(copyCheck(piece, startPosition)){
+            if(copyCheck(move[i], piece.getTeamColor())){
                 break;
             }
             list.add(move[i]);
@@ -79,19 +79,14 @@ public class ChessGame {
 //        return;
 //    }
 
-    public boolean copyCheck(ChessPiece piece, ChessPosition startPosition){
+    public boolean copyCheck(ChessMove move, TeamColor color){
         ChessGame game = new ChessGame();
-//        game.theBoard = ;
-//        theBoard.move();
+//        game.theBoard = ; //need deep copy
+        theBoard.move(move);
 
-        //convert collection to array to iterate and index
-        Collection<ChessMove> moves = piece.pieceMoves(theBoard, startPosition);
-        ChessMove[] move = moves.toArray(new ChessMove[0]);
-        for (int i=0; i < moves.size(); i++) {
-            if (isInCheck(piece.getTeamColor())) {
+            if (isInCheck(color)) {
                 return true;
             }
-        }
         return false;
     }
 
