@@ -43,6 +43,18 @@ public class ChessBoard {
         addPiece((move.getStartPosition()), null);
     }
 
+    public int size(){
+        return board.length;
+    }
+
+    public ChessPiece[][] getBoard() {
+        return board;
+    }
+
+    public ChessPosition getPos(int i, int j){
+        return new ChessPosition(i, j);
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
