@@ -76,7 +76,7 @@ public class ChessGame {
         oldBoard = new ChessBoard(currentBoard);
         currentBoard.move(move);
 
-        currentBoard.toString();
+        System.out.println(currentBoard);
 
         if (isInCheck(color)) {
             setBoard(oldBoard);

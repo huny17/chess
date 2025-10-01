@@ -124,20 +124,19 @@ public class ChessBoard {
                 ChessPiece piece = board[i][j];
 
                 if (piece == null){
-                    str = str.concat("|   ");
+                    str = str.concat("| ");
                     if(j == 7){
-                        str = str.concat("\n");
+                        str = str.concat("|\n");
                     }
                 }
                 else{
-                    str = str.concat("| "+ piece.toString()+ " ");
+                    str = str.concat("|"+ piece.toString());
                     if(j == 7){
-                        str = str.concat("\n");
+                        str = str.concat("|\n");
                     }
                 }
             }
         }
-        str = str.concat("|");
         return str;
     }
 }
