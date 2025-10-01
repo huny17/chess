@@ -1,7 +1,6 @@
 package chess;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -16,9 +15,9 @@ public class ChessBoard {
     public ChessBoard() {
     }
 
-//    public ChessBoard(ChessBoard copy){
-//        board = Arrays.copyOf(copy.board);
-//    }
+    public ChessBoard(ChessBoard copy) {
+        ChessPiece [][] board = Arrays.copyOf(copy.board, copy.size());
+    }
 
     /**
      * Adds a chess piece to the chessboard
@@ -42,7 +41,6 @@ public class ChessBoard {
     }
 
     public void move(ChessMove move) {
-        ChessGame game = new ChessGame();
         addPiece((move.getEndPosition()), getPiece(move.getStartPosition()));
         addPiece((move.getStartPosition()), null);
     }

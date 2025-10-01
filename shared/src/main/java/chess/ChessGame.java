@@ -11,6 +11,7 @@ import java.util.*;
  */
 public class ChessGame {
     ChessBoard theBoard = new ChessBoard();
+    ChessBoard hold;
     TeamColor turn;
     ChessPosition pos;
     ChessMove theMove;
@@ -63,7 +64,7 @@ public class ChessGame {
         Collection<ChessMove> moves = piece.pieceMoves(theBoard, startPosition);
         ChessMove[] move = moves.toArray(new ChessMove[0]);
         for (int i=0; i < moves.size(); i++){
-            if(copyCheck(move[i], piece.getTeamColor())){
+            if(moveCheck(move[i], piece.getTeamColor())){
                 break;
             }
             list.add(move[i]);
@@ -78,13 +79,14 @@ public class ChessGame {
 //        ChessPosition pos;
 //    }
 
-    public boolean copyCheck(ChessMove move, TeamColor color){
-        ChessGame game = new ChessGame();
-//        game.theBoard = ; //need deep copy
+    public boolean moveCheck(ChessMove move, TeamColor color){
+        hold = new ChessBoard(theBoard);
         theBoard.move(move);
         if (isInCheck(color)) {
+            setBoard(hold);
             return true;
         }
+        setBoard(hold);
         return false;
     }
 
