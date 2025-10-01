@@ -83,10 +83,9 @@ public class ChessGame {
         ChessGame game = new ChessGame();
 //        game.theBoard = ; //need deep copy
         theBoard.move(move);
-
-            if (isInCheck(color)) {
-                return true;
-            }
+        if (isInCheck(color)) {
+            return true;
+        }
         return false;
     }
 
