@@ -55,27 +55,26 @@ public class ChessGame {
         ArrayList<ChessMove> list = new ArrayList<>();
         ChessPiece piece = currentBoard.getPiece(startPosition);
 
+        System.out.println(currentBoard);
+
         if(piece == null){
             return null;
         }
 
         //convert collection to array to iterate and index
         Collection<ChessMove> moves = piece.pieceMoves(currentBoard, startPosition);
-        ChessMove[] move = moves.toArray(new ChessMove[0]);
-        for (int i=0; i < moves.size(); i++){
-            if(moveCheck(move[i], piece.getTeamColor())){
-                break;
+        for(ChessMove move : moves){
+            if(moveCheck(move, piece.getTeamColor())){
+                continue;
             }
-            list.add(move[i]);
+            list.add(move);
         }
-
         return list;
     }
 
     public boolean moveCheck(ChessMove move, TeamColor color){
         oldBoard = new ChessBoard(currentBoard);
-        currentBoard.move(move);
-
+        currentBoard.movePiece(move);
         System.out.println(currentBoard);
 
         if (isInCheck(color)) {
@@ -97,7 +96,7 @@ public class ChessGame {
 
         ChessBoard board = getBoard();
         if(validMoves(move.getStartPosition()) != null) {
-                board.move(move);
+                board.movePiece(move);
         }
         throw new chess.InvalidMoveException(move.toString());
     }
@@ -110,19 +109,17 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        for (int i = 1; i < 8; i++) {
-            for (int j = 1; j < 8; j++) {
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
                 pos = currentBoard.getPos(i, j);
                 ChessPiece piece = currentBoard.getPiece(pos);
                 if(piece != null) {
                     if (piece.getTeamColor() != teamColor) {
-                        //convert collection to array to iterate and index
                         Collection<ChessMove> moves = piece.pieceMoves(currentBoard, pos);
-                        ChessMove[] move = moves.toArray(new ChessMove[0]);
-                        for (int k = 0; k < moves.size(); k++) {
-                            ChessPiece check = currentBoard.getPiece(move[k].getEndPosition());
-                            if (check != null){
-                                if (check.getPieceType() == ChessPiece.PieceType.KING) {
+                        for(ChessMove move : moves){
+                            ChessPiece pieceAtEnd = currentBoard.getPiece(move.getEndPosition());
+                            if (pieceAtEnd != null){
+                                if (pieceAtEnd.getPieceType() == ChessPiece.PieceType.KING) {
                                     return true;
                                 }
                             }
@@ -184,19 +181,22 @@ public class ChessGame {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ChessGame chessGame = (ChessGame) o;
-        return Objects.equals(theMove, chessGame.theMove) && Objects.equals(currentBoard, chessGame.currentBoard);
+        return Objects.equals(currentBoard, chessGame.currentBoard) && Objects.equals(oldBoard, chessGame.oldBoard) && turn == chessGame.turn && Objects.equals(pos, chessGame.pos) && Objects.equals(theMove, chessGame.theMove);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(theMove, currentBoard);
+        return Objects.hash(currentBoard, oldBoard, turn, pos, theMove);
     }
 
     @Override
     public String toString() {
         return "ChessGame{" +
-                "theMove=" + theMove +
-                ", Board=" + currentBoard +
+                "currentBoard=" + currentBoard +
+                ", oldBoard=" + oldBoard +
+                ", turn=" + turn +
+                ", pos=" + pos +
+                ", theMove=" + theMove +
                 '}';
     }
 }

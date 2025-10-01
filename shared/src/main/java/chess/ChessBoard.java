@@ -46,7 +46,7 @@ public class ChessBoard {
         return board[pos.getRow() - 1] [pos.getColumn() - 1];
     }
 
-    public void move(ChessMove move) {
+    public void movePiece(ChessMove move) {
         addPiece((move.getEndPosition()), getPiece(move.getStartPosition()));
         addPiece((move.getStartPosition()), null);
     }
