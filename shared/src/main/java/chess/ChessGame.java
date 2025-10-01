@@ -10,11 +10,10 @@ import java.util.*;
  * signature of the existing methods.
  */
 public class ChessGame {
-
-    ChessMove theMove = null;
     ChessBoard theBoard = new ChessBoard();
     TeamColor turn;
     ChessPosition pos;
+    ChessMove theMove;
 
     public ChessGame() {
 
@@ -73,10 +72,10 @@ public class ChessGame {
         return list;
     }
 
-//    public ChessBoard copyBoard(){
-//
-//
-//        return;
+//    public ChessGame(ChessGame copy){
+//        ChessBoard theBoard = ChessBoard.copyOf(copy.theBoard);
+//        TeamColor turn = T.copyOf(copy.theBoard);
+//        ChessPosition pos;
 //    }
 
     public boolean copyCheck(ChessMove move, TeamColor color){
@@ -96,7 +95,6 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-
         theMove = move;
 
         ChessBoard board = getBoard();

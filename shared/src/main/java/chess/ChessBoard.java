@@ -16,6 +16,10 @@ public class ChessBoard {
     public ChessBoard() {
     }
 
+//    public ChessBoard(ChessBoard copy){
+//        board = Arrays.copyOf(copy.board);
+//    }
+
     /**
      * Adds a chess piece to the chessboard
      *
