@@ -64,13 +64,35 @@ public class ChessGame {
         Collection<ChessMove> moves = piece.pieceMoves(theBoard, startPosition);
         ChessMove[] move = moves.toArray(new ChessMove[0]);
         for (int i=0; i < moves.size(); i++){
-            if(isInCheck(piece.getTeamColor())){
+            if(copyCheck(piece, startPosition)){
                 break;
             }
             list.add(move[i]);
         }
 
         return list;
+    }
+
+//    public ChessBoard copyBoard(){
+//
+//
+//        return;
+//    }
+
+    public boolean copyCheck(ChessPiece piece, ChessPosition startPosition){
+        ChessGame game = new ChessGame();
+//        game.theBoard = ;
+//        theBoard.move();
+
+        //convert collection to array to iterate and index
+        Collection<ChessMove> moves = piece.pieceMoves(theBoard, startPosition);
+        ChessMove[] move = moves.toArray(new ChessMove[0]);
+        for (int i=0; i < moves.size(); i++) {
+            if (isInCheck(piece.getTeamColor())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -98,18 +120,22 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        for (int i = 0; i < theBoard.size(); i++) {
-            for (int j = 0; j < theBoard.size(); j++) {
+        for (int i = 1; i < 8; i++) {
+            for (int j = 1; j < 8; j++) {
                 pos = theBoard.getPos(i, j);
                 ChessPiece piece = theBoard.getPiece(pos);
-                if (piece.getTeamColor() != teamColor) {
-                    //convert collection to array to iterate and index
-                    Collection<ChessMove> moves = piece.pieceMoves(theBoard, pos);
-                    ChessMove[] move = moves.toArray(new ChessMove[0]);
-                    for (int k=0; k < moves.size(); k++){
-                        ChessPiece check = theBoard.getPiece(move[k].getEndPosition());
-                        if(check.getPieceType() == ChessPiece.PieceType.KING){
-                            return true;
+                if(piece != null) {
+                    if (piece.getTeamColor() != teamColor) {
+                        //convert collection to array to iterate and index
+                        Collection<ChessMove> moves = piece.pieceMoves(theBoard, pos);
+                        ChessMove[] move = moves.toArray(new ChessMove[0]);
+                        for (int k = 0; k < moves.size(); k++) {
+                            ChessPiece check = theBoard.getPiece(move[k].getEndPosition());
+                            if (check != null){
+                                if (check.getPieceType() == ChessPiece.PieceType.KING) {
+                                    return true;
+                                }
+                            }
                         }
                     }
                 }
