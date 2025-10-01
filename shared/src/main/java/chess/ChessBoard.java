@@ -16,7 +16,13 @@ public class ChessBoard {
     }
 
     public ChessBoard(ChessBoard copy) {
-        ChessPiece [][] board = Arrays.copyOf(copy.board, copy.size());
+        for(int i=0; i < copy.board.length; i++){
+            for(int j=0; j < copy.board[i].length; j++){
+                board[i][j] = copy.board[i][j];
+            }
+        }
+
+        //board = Arrays.copyOf(copy.board, copy.size());
     }
 
     /**
@@ -112,7 +118,27 @@ public class ChessBoard {
 
     @Override
     public String toString() { //print out board?
-        return Arrays.deepToString(board);
+        String str = "";
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                ChessPiece piece = board[i][j];
+
+                if (piece == null){
+                    str = str.concat("|   ");
+                    if(j == 7){
+                        str = str.concat("\n");
+                    }
+                }
+                else{
+                    str = str.concat("| "+ piece.toString()+ " ");
+                    if(j == 7){
+                        str = str.concat("\n");
+                    }
+                }
+            }
+        }
+        str = str.concat("|");
+        return str;
     }
 }
 

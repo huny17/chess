@@ -613,7 +613,59 @@ public class ChessPiece {
 
     @Override
     public String toString() {
-        return String.format("[%s, %s]", pieceColor,type);
+        String thePiece = "";
+        switch(type) {
+            case KING:
+                if (pieceColor == ChessGame.TeamColor.BLACK) {
+                    thePiece = "k";
+                }
+                if (pieceColor == ChessGame.TeamColor.WHITE) {
+                    thePiece = "K";
+                }
+                break;
+            case QUEEN:
+                if (pieceColor == ChessGame.TeamColor.BLACK) {
+                    thePiece = "q";
+                }
+                if (pieceColor == ChessGame.TeamColor.WHITE) {
+                    thePiece = "Q";
+                }
+                break;
+            case BISHOP:
+                if (pieceColor == ChessGame.TeamColor.BLACK) {
+                    thePiece = "b";
+                }
+                if (pieceColor == ChessGame.TeamColor.WHITE) {
+                    thePiece = "B";
+                }
+                break;
+            case KNIGHT:
+                if (pieceColor == ChessGame.TeamColor.BLACK) {
+                    thePiece = "n";
+                }
+                if (pieceColor == ChessGame.TeamColor.WHITE) {
+                    thePiece = "N";
+                }
+                break;
+            case ROOK:
+                if (pieceColor == ChessGame.TeamColor.BLACK) {
+                    thePiece = "r";
+                }
+                if (pieceColor == ChessGame.TeamColor.WHITE) {
+                    thePiece = "R";
+                }
+                break;
+            case PAWN:
+                if (pieceColor == ChessGame.TeamColor.BLACK) {
+                    thePiece = "p";
+                }
+                if (pieceColor == ChessGame.TeamColor.WHITE) {
+                    thePiece = "P";
+                }
+                break;
+        }
+
+        return String.format("%s", thePiece);
     }
 }
 

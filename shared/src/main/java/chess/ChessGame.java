@@ -10,8 +10,8 @@ import java.util.*;
  * signature of the existing methods.
  */
 public class ChessGame {
-    ChessBoard theBoard = new ChessBoard();
-    ChessBoard hold;
+    ChessBoard currentBoard = new ChessBoard();
+    ChessBoard oldBoard;
     TeamColor turn;
     ChessPosition pos;
     ChessMove theMove;
@@ -53,15 +53,14 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ArrayList<ChessMove> list = new ArrayList<>();
-
-        ChessPiece piece = theBoard.getPiece(startPosition);
+        ChessPiece piece = currentBoard.getPiece(startPosition);
 
         if(piece == null){
             return null;
         }
 
         //convert collection to array to iterate and index
-        Collection<ChessMove> moves = piece.pieceMoves(theBoard, startPosition);
+        Collection<ChessMove> moves = piece.pieceMoves(currentBoard, startPosition);
         ChessMove[] move = moves.toArray(new ChessMove[0]);
         for (int i=0; i < moves.size(); i++){
             if(moveCheck(move[i], piece.getTeamColor())){
@@ -73,20 +72,17 @@ public class ChessGame {
         return list;
     }
 
-//    public ChessGame(ChessGame copy){
-//        ChessBoard theBoard = ChessBoard.copyOf(copy.theBoard);
-//        TeamColor turn = T.copyOf(copy.theBoard);
-//        ChessPosition pos;
-//    }
-
     public boolean moveCheck(ChessMove move, TeamColor color){
-        hold = new ChessBoard(theBoard);
-        theBoard.move(move);
+        oldBoard = new ChessBoard(currentBoard);
+        currentBoard.move(move);
+
+        currentBoard.toString();
+
         if (isInCheck(color)) {
-            setBoard(hold);
+            setBoard(oldBoard);
             return true;
         }
-        setBoard(hold);
+        setBoard(oldBoard);
         return false;
     }
 
@@ -116,15 +112,15 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         for (int i = 1; i < 8; i++) {
             for (int j = 1; j < 8; j++) {
-                pos = theBoard.getPos(i, j);
-                ChessPiece piece = theBoard.getPiece(pos);
+                pos = currentBoard.getPos(i, j);
+                ChessPiece piece = currentBoard.getPiece(pos);
                 if(piece != null) {
                     if (piece.getTeamColor() != teamColor) {
                         //convert collection to array to iterate and index
-                        Collection<ChessMove> moves = piece.pieceMoves(theBoard, pos);
+                        Collection<ChessMove> moves = piece.pieceMoves(currentBoard, pos);
                         ChessMove[] move = moves.toArray(new ChessMove[0]);
                         for (int k = 0; k < moves.size(); k++) {
-                            ChessPiece check = theBoard.getPiece(move[k].getEndPosition());
+                            ChessPiece check = currentBoard.getPiece(move[k].getEndPosition());
                             if (check != null){
                                 if (check.getPieceType() == ChessPiece.PieceType.KING) {
                                     return true;
@@ -145,7 +141,9 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        ChessPiece king = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
+        if (validMoves(theMove.getStartPosition()) == null & isInCheck(teamColor)){
+            return true;
+        }
         return false;
     }
 
@@ -169,7 +167,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        theBoard = board;
+        currentBoard = board;
     }
 
     /**
@@ -178,27 +176,27 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        theBoard.resetBoard();
-        return theBoard;
+        currentBoard.resetBoard();
+        return currentBoard;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ChessGame chessGame = (ChessGame) o;
-        return Objects.equals(theMove, chessGame.theMove) && Objects.equals(theBoard, chessGame.theBoard);
+        return Objects.equals(theMove, chessGame.theMove) && Objects.equals(currentBoard, chessGame.currentBoard);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(theMove, theBoard);
+        return Objects.hash(theMove, currentBoard);
     }
 
     @Override
     public String toString() {
         return "ChessGame{" +
                 "theMove=" + theMove +
-                ", theBoard=" + theBoard +
+                ", Board=" + currentBoard +
                 '}';
     }
 }
