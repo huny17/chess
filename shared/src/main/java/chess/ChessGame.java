@@ -67,12 +67,6 @@ public class ChessGame {
             }
             list.add(move);
         }
-        if(!list.isEmpty()){
-            movesAreValid = true;
-        }
-        else{
-            movesAreValid = false;
-        }
         return list;
     }
 
@@ -154,7 +148,8 @@ public class ChessGame {
         return false;
     }
 
-    public void validateMoves(TeamColor color){
+    public void validateMoves(TeamColor color) {
+        movesAreValid = false;
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 pos = currentBoard.getPos(i, j);
@@ -163,7 +158,10 @@ public class ChessGame {
                     if (piece.getTeamColor() == color) {
                         Collection<ChessMove> moves = piece.pieceMoves(currentBoard, pos);
                         for (ChessMove move : moves) {
-                            validMoves(move.getStartPosition());
+                            if(!validMoves(move.getStartPosition()).isEmpty()){
+                                movesAreValid = true;
+                                break;
+                            }
                         }
                     }
                 }
