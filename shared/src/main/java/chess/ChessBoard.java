@@ -47,12 +47,19 @@ public class ChessBoard {
     }
 
     public void movePiece(ChessMove move) {
-        addPiece((move.getEndPosition()), getPiece(move.getStartPosition()));
-        addPiece((move.getStartPosition()), null);
-    }
+        if(move.getPromotionPiece() != null){
+            ChessPosition pos = move.getStartPosition();
+            ChessPiece.PieceType type = move.getPromotionPiece();
+            ChessGame.TeamColor color = getPiece(pos).getTeamColor();
+            ChessPiece piece = new ChessPiece(color,type);
+            addPiece((move.getEndPosition()), piece);
+            addPiece((move.getStartPosition()), null);
+        }
+        else {
+            addPiece((move.getEndPosition()), getPiece(move.getStartPosition()));
+            addPiece((move.getStartPosition()), null);
+        }
 
-    public int size(){
-        return board.length;
     }
 
     public ChessPiece[][] getBoard() {
@@ -119,7 +126,7 @@ public class ChessBoard {
     @Override
     public String toString() { //print out board?
         String str = "";
-        for (int i = 0; i < board.length; i++) {
+        for (int i = board.length-1; i >= 0; i--) {
             for (int j = 0; j < board[i].length; j++) {
                 ChessPiece piece = board[i][j];
 
