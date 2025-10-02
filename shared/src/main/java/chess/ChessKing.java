@@ -4,32 +4,9 @@ import java.util.ArrayList;
 
 public class ChessKing extends ChessPiece {
 
-    private ChessPosition startPosition;
-    private ChessKing BlackKing;
-    private ChessKing WhiteKing;
-
     public ChessKing(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type, ChessPosition start) {
         super(pieceColor, type);
-        this.startPosition = start;
     }
-
-    public void setKing(){
-        if (pieceColor == ChessGame.TeamColor.WHITE){
-            WhiteKing = this;
-        }
-        if (pieceColor == ChessGame.TeamColor.BLACK){
-            BlackKing = this;
-        }
-    }
-
-    public ChessKing getWhite(){
-        return WhiteKing;
-    }
-
-    public ChessKing getBlack(){
-        return BlackKing;
-    }
-
 
     public boolean canMove(int row, int col, ChessBoard b){
         ChessPosition e = new ChessPosition(row, col);
@@ -71,7 +48,6 @@ public class ChessKing extends ChessPiece {
     }
 
     public ArrayList<ChessMove> move(ChessPosition start, ChessBoard board){
-        this.startPosition = start;
         ArrayList<ChessMove> list = new ArrayList<>();
         int i = 1;
         if((start.getRow()+i <= 8) && (start.getColumn()+i <= 8)){
@@ -151,10 +127,6 @@ public class ChessKing extends ChessPiece {
 
         }
         return list;
-    }
-
-    public ChessPosition getStart(){
-        return this.startPosition;
     }
 
 }

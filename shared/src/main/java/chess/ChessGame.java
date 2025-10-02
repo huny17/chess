@@ -14,6 +14,7 @@ public class ChessGame {
     ChessBoard oldBoard;
     TeamColor turn = TeamColor.WHITE;
     ChessPosition pos;
+    boolean movesAreValid = false;
 
     public ChessGame() {
 
@@ -54,8 +55,6 @@ public class ChessGame {
         ArrayList<ChessMove> list = new ArrayList<>();
         ChessPiece piece = currentBoard.getPiece(startPosition);
 
-        //System.out.println(currentBoard);
-
         if(piece == null){
             return list;
         }
@@ -66,6 +65,9 @@ public class ChessGame {
                 continue;
             }
             list.add(move);
+        }
+        if(!list.isEmpty()){
+            movesAreValid = true;
         }
         return list;
     }
@@ -148,6 +150,23 @@ public class ChessGame {
         return false;
     }
 
+    public void validateMoves(TeamColor color){
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                pos = currentBoard.getPos(i, j);
+                ChessPiece piece = currentBoard.getPiece(pos);
+                if (piece != null) {
+                    if (piece.getTeamColor() == color) {
+                        Collection<ChessMove> moves = piece.pieceMoves(currentBoard, pos);
+                        for (ChessMove move : moves) {
+                            validMoves(move.getStartPosition());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -155,18 +174,9 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        for (int i = 1; i <= 8; i++) {
-            for (int j = 1; j <= 8; j++) {
-                pos = currentBoard.getPos(i, j);
-                ChessPiece piece = currentBoard.getPiece(pos);
-                if (piece != null) {
-                    if (piece.getTeamColor() != teamColor) {
-                        if (validMoves(pos) == null & isInCheck(teamColor)) {
-                            return true;
-                        }
-                    }
-                }
-            }
+        validateMoves(teamColor);
+        if (!movesAreValid & isInCheck(teamColor)) {
+            return true;
         }
         return false;
     }
@@ -179,7 +189,8 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        if (!isInCheck(teamColor) & !isInCheckmate(teamColor)) { //& if no legal moves
+        validateMoves(teamColor);
+        if (!isInCheck(teamColor) & !isInCheckmate(teamColor) & !movesAreValid) { //& if no legal moves
             return true;
         }
         return false;
@@ -200,6 +211,14 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
+        for (int i = currentBoard.board.length-1; i >= 0; i--) {
+            for (int j = 0; j < currentBoard.board[i].length; j++) {
+                if(currentBoard.board[i][j] != null) {
+                    return currentBoard;
+                }
+            }
+        }
+        currentBoard.resetBoard();
         return currentBoard;
     }
 
@@ -207,12 +226,12 @@ public class ChessGame {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ChessGame chessGame = (ChessGame) o;
-        return Objects.equals(currentBoard, chessGame.currentBoard) && Objects.equals(oldBoard, chessGame.oldBoard) && turn == chessGame.turn && Objects.equals(pos, chessGame.pos);
+        return movesAreValid == chessGame.movesAreValid && Objects.equals(currentBoard, chessGame.currentBoard) && Objects.equals(oldBoard, chessGame.oldBoard) && turn == chessGame.turn && Objects.equals(pos, chessGame.pos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(currentBoard, oldBoard, turn, pos);
+        return Objects.hash(currentBoard, oldBoard, turn, pos, movesAreValid);
     }
 
     @Override
@@ -222,6 +241,7 @@ public class ChessGame {
                 ", oldBoard=" + oldBoard +
                 ", turn=" + turn +
                 ", pos=" + pos +
-                "}";
+                ", movesAreValid=" + movesAreValid +
+                '}';
     }
 }
