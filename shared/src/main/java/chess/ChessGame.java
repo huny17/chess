@@ -53,6 +53,7 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ArrayList<ChessMove> list = new ArrayList<>();
+        getBoard();
         ChessPiece piece = currentBoard.getPiece(startPosition);
 
         if(piece == null){
@@ -68,6 +69,9 @@ public class ChessGame {
         }
         if(!list.isEmpty()){
             movesAreValid = true;
+        }
+        else{
+            movesAreValid = false;
         }
         return list;
     }

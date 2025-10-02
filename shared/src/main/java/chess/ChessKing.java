@@ -129,4 +129,6 @@ public class ChessKing extends ChessPiece {
         return list;
     }
 
+
+
 }

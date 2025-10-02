@@ -602,13 +602,13 @@ public class ChessPiece {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        ChessPiece that = (ChessPiece) o;
-        return pieceColor == that.pieceColor && type == that.type;
+        ChessPiece piece = (ChessPiece) o;
+        return (pieceColor.equals(piece.pieceColor) && type.equals(piece.type));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pieceColor, type);
+        return (43 * pieceColor.hashCode() + type.hashCode());
     }
 
     @Override
