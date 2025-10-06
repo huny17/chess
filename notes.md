@@ -5,7 +5,6 @@ shortcuts
     multiple lines = shift + alt + click
 
 # Phase 2
-
 actor Client
 participant Server
 participant Handler
@@ -103,13 +102,11 @@ Service --> Server: UserDoesNotExistException
 Server --> Client: 500\n{"message": "Error: User does not exist"}
 end
 DataAccess --> Service: null
-Service -> DataAccess:returnUser(userData)
-DataAccess -> db:Clean UserData
-Service -> DataAccess:removeAuth(authData)
-DataAccess -> db:Remove AuthData
-Service --> Handler: LogoutResult
-Handler --> Server: {"username" : " ", "authToken" : " "}
-Server --> Client: 200\n{ "games": [{"gameID": 1234, "whiteUsername":"", "blackUsername":"", "gameName:""} ]}
+Service -> DataAccess:returnGames(GamesData)
+DataAccess -> db:Get GamesData
+Service --> Handler: GamesResult
+Handler --> Server: { "games": [{"gameID" : " " ,  "whiteUsername" : " ", "blackUsername" : " " , "gameName" : " " }]}
+Server --> Client: 200\n{ "games": [{"gameID" : " ", "whiteUsername" : " ", "blackUsername" : " ", "gameName" : " " } ]}
 end
 
 group#d790e0 #E3CCE6 Create Game
