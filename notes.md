@@ -62,22 +62,20 @@ group#green #lightgreen Logout
 Client -> Server: [DELETE] /session\nauthToken
 Server -> Handler: {"authToken":" "}
 Handler -> Service: logout(LogoutRequest)
-Service -> DataAccess: getUser(username)
+Service -> DataAccess: getUser(token)
 DataAccess -> db:Find AuthData by token
 break Username and authToken don't match
 DataAccess --> Service: AuthData
 Service --> Server: NoMatchException
 Server --> Client: 401\n{"message": "unauthorized"}
 end
-DataAccess -> db:Find UserData by username
 break User not found
 DataAccess --> Service: UserData
 Service --> Server: UserDoesNotExistException
 Server --> Client: 500\n{"message": "Error: User does not exist"}
 end
-DataAccess --> Service: UserData
 Service -> DataAccess: RemoveAuth(authData)
-DataAccess -> db: Remove AuthData
+DataAccess -> db: Remove token from AuthData
 DataAccess --> Service: null
 Service --> Handler: LogoutResult
 Handler --> Server: {}
@@ -88,13 +86,14 @@ group#red #pink List Games
 Client -> Server: [GET] /game\nauthToken
 Server -> Handler: {"authToken":" "}
 Handler -> Service: getGames(GamesRequest)
-Service -> DataAccess: VerifyToken(UserData)
-DataAccess -> db: Find UserData by Token
+Service -> DataAccess: VerifyToken(AuthData)
+DataAccess -> db: Find AuthData by Token
 break AuthToken not valid
 DataAccess --> Service: AuthData
 Service --> Server: NotValidTokenException
 Server --> Client: 401\n{"message": "unauthorized"}
 end
+Service -> DataAccess: getGames()
 DataAccess -> db: Find available games
 break No Games Found
 DataAccess --> Service: GameData
@@ -110,23 +109,24 @@ end
 
 group#d790e0 #E3CCE6 Create Game
 Client -> Server: [POST] /game\nauthToken\n{gameName}
-Server -> Handler: {"authToken":" "}
+Server -> Handler: {"authToken":" ", "gameName": " "}
 Handler -> Service: CreateGame(CreateRequest)
-Service -> DataAccess: CreateGame(CreateRequest)
-DataAccess -> db: Create Game
+Service -> DataAccess: verify(token)
+DataAccess -> db: verify(AuthData)
+
 break AuthToken not valid
 DataAccess --> Service: AuthData
 Service --> Server: NotValidTokenException
 Server --> Client: 401\n{"message": "unauthorized"}
 end
+Service -> DataAccess: CreateGame(CreateRequest)
+DataAccess -> db: Add GameData
 break No Games Found
 DataAccess --> Service: GameData
 Service --> Server: NoGamesException
 Server --> Client: 500\n{"message": "Error: Could not create Game"}
 end
-DataAccess --> Service: null
-Service -> DataAccess: returnGame(GameData)
-DataAccess -> db: Add GameData
+DataAccess --> Service: GameData
 Service --> Handler: GameResult
 Handler --> Server: { "gameID" : " " }
 Server --> Client: 200\n{ "gameID" : " " }
@@ -136,21 +136,21 @@ group#yellow #lightyellow Join Game #black
 Client -> Server: [PUT] /game\nauthToken\n{playerColor, gameID}
 Server -> Handler: { "playerColor": " ", "gameID": " " }
 Handler -> Service: JoinGame(JoinRequest)
-Service -> DataAccess: JoinGame(JoinRequest)
-DataAccess -> db: Join Game
+Service -> DataAccess: verify(token)
+DataAccess -> db: verify(AuthData)
 break AuthToken not valid
 DataAccess --> Service: AuthData
 Service --> Server: NotValidTokenException
 Server --> Client: 401\n{"message": "unauthorized"}
 end
+Service -> DataAccess: JoinGame(JoinRequest)
+DataAccess -> db: Join Game/Get GameData
 break Game Not Found
 DataAccess --> Service: GameData
 Service --> Server: GameNotFoundException
 Server --> Client: 500\n{"message": "Error: Game Not Found"}
 end
-DataAccess --> Service: null
-Service -> DataAccess: returnGame(GameData)
-DataAccess -> db: Get GameData
+DataAccess --> Service: GameData
 Service --> Handler: GameResult
 Handler --> Server: { "gameID" : " " }
 Server --> Client: 200\n{}
@@ -160,6 +160,13 @@ group#gray #lightgray Clear application
 Client -> Server: [DELETE] /db
 Server -> Handler: {}
 Handler -> Service: ClearGame(ClearRequest)
+Service -> DataAccess: verify(token)
+DataAccess -> db: verify(AuthData)
+break AuthToken not valid
+DataAccess --> Service: AuthData
+Service --> Server: NotValidTokenException
+Server --> Client: 401\n{"message": "unauthorized"}
+end
 Service -> DataAccess: ClearGame(ClearRequest)
 DataAccess -> db: Clear Game
 break Game Not Found
@@ -168,7 +175,7 @@ Service --> Server: GameNotFoundException
 Server --> Client: 500\n{"message": "Error: Game could not be cleared"}
 end
 DataAccess --> Service: null
-Service --> Handler: GameResult
+Service --> Handler: ClearResult
 Handler --> Server: {}
 Server --> Client: 200\n{}
 end
