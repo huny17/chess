@@ -60,7 +60,7 @@ end
 
 group#green #lightgreen Logout
 Client -> Server: [DELETE] /session\nauthToken
-Server -> Handler: {"authToken":" "}
+Server -> Handler: authToken
 Handler -> Service: logout(LogoutRequest)
 Service -> DataAccess: getUser(token)
 DataAccess -> db:Find AuthData by token
@@ -84,9 +84,9 @@ end
 
 group#red #pink List Games
 Client -> Server: [GET] /game\nauthToken
-Server -> Handler: {"authToken":" "}
+Server -> Handler: authToken
 Handler -> Service: getGames(GamesRequest)
-Service -> DataAccess: VerifyToken(AuthData)
+Service -> DataAccess: VerifyToken(token)
 DataAccess -> db: Find AuthData by Token
 break AuthToken not valid
 DataAccess --> Service: AuthData
@@ -111,9 +111,8 @@ group#d790e0 #E3CCE6 Create Game
 Client -> Server: [POST] /game\nauthToken\n{gameName}
 Server -> Handler: authToken, {"gameName": " "}
 Handler -> Service: CreateGame(CreateRequest)
-Service -> DataAccess: verify(token)
-DataAccess -> db: verify(AuthData)
-
+Service -> DataAccess: VerifyToken(token)
+DataAccess -> db: Find AuthData by Token
 break AuthToken not valid
 DataAccess --> Service: AuthData
 Service --> Server: NotValidTokenException
@@ -134,10 +133,10 @@ end
 
 group#yellow #lightyellow Join Game #black
 Client -> Server: [PUT] /game\nauthToken\n{playerColor, gameID}
-Server -> Handler: { "playerColor": " ", "gameID": " " }
+Server -> Handler: authToken, { "playerColor": " ", "gameID": " " }
 Handler -> Service: JoinGame(JoinRequest)
-Service -> DataAccess: verify(token)
-DataAccess -> db: verify(AuthData)
+Service -> DataAccess: VerifyToken(token)
+DataAccess -> db: Find AuthData by Token
 break AuthToken not valid
 DataAccess --> Service: AuthData
 Service --> Server: NotValidTokenException
