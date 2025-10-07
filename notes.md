@@ -109,7 +109,7 @@ end
 
 group#d790e0 #E3CCE6 Create Game
 Client -> Server: [POST] /game\nauthToken\n{gameName}
-Server -> Handler: {"authToken":" ", "gameName": " "}
+Server -> Handler: authToken, {"gameName": " "}
 Handler -> Service: CreateGame(CreateRequest)
 Service -> DataAccess: verify(token)
 DataAccess -> db: verify(AuthData)
@@ -160,13 +160,6 @@ group#gray #lightgray Clear application
 Client -> Server: [DELETE] /db
 Server -> Handler: {}
 Handler -> Service: ClearGame(ClearRequest)
-Service -> DataAccess: verify(token)
-DataAccess -> db: verify(AuthData)
-break AuthToken not valid
-DataAccess --> Service: AuthData
-Service --> Server: NotValidTokenException
-Server --> Client: 401\n{"message": "unauthorized"}
-end
 Service -> DataAccess: ClearGame(ClearRequest)
 DataAccess -> db: Clear Game
 break Game Not Found
