@@ -30,8 +30,8 @@ DataAccess -> db: Add UserData
 Service -> DataAccess: createAuth(authData)
 DataAccess -> db: Add AuthData
 Service --> Handler: RegisterResult
-Handler --> Server: {"username" : " ", "authToken" : " "}
-Server --> Client: 200\n{"username" : " ", "authToken" : " "}
+Handler --> Server: {"username" : "Alec", "authToken" : "XYZ"}
+Server --> Client: 200\n{"username" : "Alec", "authToken" : "XYZ"}
 end
 
 group#orange #FCEDCA Login
@@ -54,8 +54,8 @@ DataAccess --> Service: UserData
 Service -> DataAccess: createAuth(authData)
 DataAccess -> db: Add AuthData
 Service --> Handler: LoginResult
-Handler --> Server: {"username" : " ", "authToken" : " "}
-Server --> Client: 200\n{"username" : " ", "authToken" : " "}
+Handler --> Server: {"username" : "Alec", "authToken" : "XYZ"}
+Server --> Client: 200\n{"username" : "Alec", "authToken" : "XYZ"}
 end
 
 group#green #lightgreen Logout
@@ -133,15 +133,15 @@ Server --> Client: 401\n{"message": "unauthorized"}
 end
 Service -> DataAccess: JoinGame(JoinRequest)
 DataAccess -> db: Get GameData
-break Team color not available
-DataAccess --> Service: GameData
-Service --> Server: Team color not available
-Server --> Client: 403\n{"message": "unauthorized"}
-end
 break Game Not Found
 DataAccess --> Service: null
 Service --> Server: GameNotFoundException
 Server --> Client: 400\n{"message": "Error: Game Not Found"}
+end
+break Team color not available
+DataAccess --> Service: GameData
+Service --> Server: Team color not available
+Server --> Client: 403\n{"message": "unauthorized"}
 end
 DataAccess -> db: Join Game
 DataAccess --> Service: GameData
@@ -155,6 +155,8 @@ Client -> Server: [DELETE] /db
 Server -> Handler: {}
 Handler -> Service: ClearGame(ClearRequest)
 Service -> DataAccess: ClearGame(ClearRequest)
+Service -> DataAccess: ClearUser(ClearRequest)
+Service -> DataAccess: ClearAuth(ClearRequest)
 DataAccess -> db: Clear GameData
 DataAccess -> db: Clear UserData
 DataAccess -> db: Clear AuthData
