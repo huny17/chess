@@ -11,10 +11,17 @@ public class Server {
 
     public Server() {
         server = Javalin.create(config -> config.staticFiles.add("web"));
-
+        /*clear*/
         server.delete("db", ctx -> ctx.result("{}"));
+        /*register*/
         server.post("user", this::register); //trying to see if can pass given tests
-
+        /*login*/
+        server.post("session", this::register); //can combine Login with Register??
+        /*log out*/
+        server.
+        /*list games*/
+        /*create game*/
+        /*join game*/
         // Register your endpoints and exception handlers here.
 
     }
