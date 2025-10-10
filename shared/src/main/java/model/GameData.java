@@ -55,13 +55,10 @@ public class GameData {
     @Override
     public String toString() {
 
-        String str = String.format("W");
+        String str = String.format("W: %s, B: %s, Name: %s", whiteUser, blackUser, name);
 
         return "GameData{" +
-                "id=" + id +
-                ", whiteUser='" + whiteUser + '\'' +
-                ", blackUser='" + blackUser + '\'' +
-                ", name='" + name + '\'' +
+                "id=" + id + str +
                 ", game=" + game +
                 '}';
     }
