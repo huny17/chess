@@ -4,41 +4,7 @@ import chess.ChessGame;
 
 import java.util.Objects;
 
-public class GameData {
-
-    private final int id;
-    private final String whiteUser;
-    private final String blackUser;
-    private final String name;
-    private final ChessGame game;
-
-    GameData(int ID, String whiteUser, String blackUser, String name, ChessGame game){
-        id = ID;
-        this.whiteUser = whiteUser;
-        this.blackUser = blackUser;
-        this.name = name;
-        this.game = game;
-    }
-
-    public int getId(){
-        return id;
-    }
-
-    public String getWhiteUser(){
-        return whiteUser;
-    }
-
-    public String getBlackUser(){
-        return blackUser;
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public ChessGame getGame(){
-        return game;
-    }
+public record GameData(int id, String whiteUser, String blackUser, String name, ChessGame game) {
 
     @Override
     public boolean equals(Object o) {
