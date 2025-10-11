@@ -2,23 +2,7 @@ package model;
 
 import java.util.Objects;
 
-public class AuthData {
-    private final String token;
-    private final String name;
-
-    AuthData(String token, String name){
-        this.token = token;
-        this.name = name;
-    }
-
-    public String getToken(){
-        return token;
-    }
-
-    public String getName(){
-        return name;
-    }
-
+public record AuthData(String token, String name){
 
     @Override
     public boolean equals(Object o) {
