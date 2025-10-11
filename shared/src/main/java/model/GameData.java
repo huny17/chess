@@ -59,7 +59,7 @@ public class GameData {
 
         return "GameData{" +
                 "id=" + id + str +
-                ", game=" + game +
+                ", game=" + game.toString() +
                 '}';
     }
 }
