@@ -3,6 +3,8 @@ package server;
 import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.Context;
+import model.UserData;
+
 import java.util.Map;
 
 public class Server {
@@ -10,6 +12,9 @@ public class Server {
     private final Javalin server;
 
     public Server() {
+
+        userService =
+
         server = Javalin.create(config -> config.staticFiles.add("web"));
         /*register*/
         server.post("user", this::register); //trying to see if can pass given tests
@@ -31,10 +36,12 @@ public class Server {
 
     private void register(Context ctx) { //created func to be called
         var serializer = new Gson();
-        var req = serializer.fromJson(ctx.body(), Map.class);
-        req.put("authToken", "LOL"); //just trying to see if test pass
-        var res = serializer.toJson(req);
-        ctx.result(res);
+        String reqJson = ctx.body();
+
+        //call to service
+        var res = serializer.fromJson(reqJson, UserData.class);
+        ctx.result(serializer.toJson(res));
+
     }
 
     private void logout(Context ctx) { //created func to be called
