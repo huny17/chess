@@ -26,6 +26,7 @@ public class UserService {
         return authData;
     }
 
-    private void generateAuthToken() {
+    private String generateAuthToken() {
+        return "";
     }
 }
