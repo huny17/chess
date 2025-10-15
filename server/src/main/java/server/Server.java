@@ -4,16 +4,19 @@ import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.UserData;
+import services.UserService;
 
 import java.util.Map;
 
 public class Server {
 
     private final Javalin server;
+    private UserService userService;
+    private DataAccess dataAccess;
 
     public Server() {
-
-        userService =
+        dataAccess = newMemoryDataAccess();
+        userService = new UserService(dataAccess);
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
         /*register*/
