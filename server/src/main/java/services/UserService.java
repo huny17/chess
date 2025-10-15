@@ -1,5 +1,6 @@
 package services;
 
+import dataaccess.DataAccess;
 import model.AuthData;
 import model.RegistrationResult;
 import model.UserData;
@@ -12,8 +13,19 @@ public class UserService {
         this.dataAccess = dataAccess;
     }
 
-    public RegisterationResult register(UserData user){
-        dataAccess.saveUser(user);
-        return new RegistrationResult(new AuthData(user.username(), "token"));
+    public void clear(){
+        dataAccess.clear();
+    }
+
+    public AuthData register(UserData user) throws Exception{
+        if(dataAccess.getUser(user.username()) != null){
+            throw new Exception();
+        }
+        dataAccess.createUser(user);
+        var authData = new AuthData(user.username(), generateAuthToken());
+        return authData;
+    }
+
+    private void generateAuthToken() {
     }
 }
