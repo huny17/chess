@@ -1,15 +1,16 @@
 package services;
 
-import dataaccess.DataAccess;
+import dataaccess.UserDAO;
 import model.AuthData;
-import model.RegistrationResult;
 import model.UserData;
+
+import java.util.UUID;
 
 public class UserService {
 
-    private DataAccess dataAccess;
+    private UserDAO dataAccess;
 
-    public UserService(DataAccess dataAccess){
+    public UserService(UserDAO dataAccess){
         this.dataAccess = dataAccess;
     }
 
@@ -19,7 +20,7 @@ public class UserService {
 
     public AuthData register(UserData user) throws Exception{
         if(dataAccess.getUser(user.username()) != null){
-            throw new Exception();
+            throw new Exception("username already taken");
         }
         dataAccess.createUser(user);
         var authData = new AuthData(user.username(), generateAuthToken());
@@ -27,6 +28,6 @@ public class UserService {
     }
 
     private String generateAuthToken() {
-        return "";
+        return UUID.randomUUID().toString();
     }
 }

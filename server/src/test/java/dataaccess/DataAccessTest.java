@@ -10,7 +10,7 @@ class DataAccessTest {
     @Test
     void clear() {
         var user = new UserData("joe", "j@j", "j");
-        DataAccess da = new MemoryDataAccess();
+        UserDAO da = new MemoryUserDAO();
         da.createUser(user);
         assertNotNull(da.getUser(user.username()));
         da.clear();

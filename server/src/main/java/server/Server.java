@@ -1,8 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccess;
-import dataaccess.MemoryDataAccess;
+import dataaccess.UserDAO;
+import dataaccess.MemoryUserDAO;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.UserData;
@@ -14,10 +14,10 @@ public class Server {
 
     private final Javalin server;
     private UserService userService;
-    private DataAccess dataAccess;
+    private UserDAO dataAccess;
 
     public Server() {
-        dataAccess = new MemoryDataAccess();
+        dataAccess = new MemoryUserDAO();
         userService = new UserService(dataAccess);
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
@@ -40,15 +40,17 @@ public class Server {
     }
 
     private void register(Context ctx) { //created func to be called
-        var serializer = new Gson();
-        String reqJson = ctx.body();
-        var req = serializer.fromJson(reqJson, UserData.class);
+        var serializer = new Gson(); //Gson = google json
+
+        String reqJson = ctx.body(); //string from request
+        var req = serializer.fromJson(reqJson, UserData.class); //serializer = Gson, makes json request from ctx body
 
         //call to service
 
-        var res = Map.of('username', req.get('username'), 'authToken', 'Token');
+        //var res = Map.of("username", req.get("username", "authToken", "Token"));
+        var res = Map.of("username", req.username(),"authToken", "Token"); // to give to json to make json response
 
-        ctx.result(serializer.toJson(res));
+        ctx.result(serializer.toJson(res)); //json response
 
 
 
