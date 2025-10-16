@@ -1,12 +1,12 @@
 package dataaccess;
 
-import model.UserData;
+import model.GameData;
 
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
 
-    private HashMap<String, UserData> games = new HashMap<>();
+    private HashMap<String, GameData> games = new HashMap<>();
 
     @Override
     public void clear(){
