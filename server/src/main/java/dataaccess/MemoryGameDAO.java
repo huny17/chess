@@ -3,7 +3,6 @@ package dataaccess;
 import model.GameData;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class MemoryGameDAO implements GameDAO{
 
@@ -16,17 +15,17 @@ public class MemoryGameDAO implements GameDAO{
 
     @Override
     public void createGame(GameData game) {
-        games.put();
+        games.put(game.name(), game);
     }
 
     @Override
     public GameData getGame(GameData game) {
-        return games.get(game);
+        return games.get(game.name());
     }
 
     @Override
-    public List listGames() {
-        return List.of(games);
+    public HashMap<String, GameData> listGames() {
+        return games;
     }
 
     @Override

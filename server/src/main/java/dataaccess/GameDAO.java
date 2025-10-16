@@ -2,12 +2,12 @@ package dataaccess;
 
 import model.GameData;
 
-import java.util.List;
+import java.util.HashMap;
 
 public interface GameDAO {
     void clear();
     void createGame(GameData game);
     GameData getGame(GameData game);
-    List listGames();
+    HashMap<String, GameData> listGames();
     void updateGame();
 }
