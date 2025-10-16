@@ -10,7 +10,7 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public void clear(){
-        //delete users in database
+        users.clear();
     }
 
     @Override
