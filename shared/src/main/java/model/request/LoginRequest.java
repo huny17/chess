@@ -1,4 +1,4 @@
 package model.request;
 
-public class LoginRequest {
+record LoginRequest(String username, String password){
 }

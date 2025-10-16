@@ -19,9 +19,17 @@ class DataAccessTest {
 
     @Test
     void createUser() {
+        var user = new UserData("joe", "j@j", "j");
+        UserDAO da = new MemoryUserDAO();
+        da.createUser(user);
+        assertNotNull(da);
     }
 
     @Test
     void getUser() {
+        var user = new UserData("joe", "j@j", "j");
+        UserDAO da = new MemoryUserDAO();
+        da.createUser(user);
+        assertNotNull(da.getUser(user.username()));
     }
 }
