@@ -1,4 +1,4 @@
 package model.result;
 
-public class JoinGameResult {
+record JoinGameResult(String empty) {
 }

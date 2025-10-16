@@ -1,6 +1,4 @@
 package model.result;
 
-import model.AuthData;
-
-public record RegisterResult(AuthData auth) {
+public record RegisterResult(String username, String authToken) {
 }

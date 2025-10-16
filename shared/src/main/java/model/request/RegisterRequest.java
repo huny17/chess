@@ -1,4 +1,4 @@
 package model.request;
 
-public class RegisterRequest {
+record RegisterRequest(String username, String password, String email){
 }

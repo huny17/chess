@@ -1,4 +1,4 @@
 package model.request;
 
-public class JoinGameRequest {
+record JoinGameRequest(String playerColor, String gameId) {
 }
