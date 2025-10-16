@@ -1,5 +1,6 @@
 package services;
 
+import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.AuthData;
 import model.UserData;
@@ -17,8 +18,9 @@ class UserServiceTest {
     void register() {
         var user = new UserData("joe","j@j","j");
         var at = "xyz";
-        var da = new MemoryUserDAO();
-        var service = new UserService(da);
+        var userDA = new MemoryUserDAO();
+        var authDA = new MemoryAuthDAO();
+        var service = new UserService(userDA, authDA);
         assertDoesNotThrow(()-> {
             AuthData res = service.register(user);
             assertNotNull(res);

@@ -12,13 +12,14 @@ public class UserService {
     private UserDAO userDataAccess;
     private AuthDAO authDataAccess;
 
-    public UserService(UserDAO userDataAccess){
+    public UserService(UserDAO userDataAccess, AuthDAO authDataAccess){
         this.userDataAccess = userDataAccess;
+        this.authDataAccess = authDataAccess;
     }
 
-    public void clear(){
-        userDataAccess.clear();
-    }
+    //public void clear(){
+    //    userDataAccess.clear();
+    //}
 
     public AuthData register(UserData user) throws Exception{
         if(userDataAccess.getUser(user.username()) != null){

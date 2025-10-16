@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.AuthDAO;
+import dataaccess.MemoryAuthDAO;
 import dataaccess.UserDAO;
 import dataaccess.MemoryUserDAO;
 import io.javalin.*;
@@ -14,11 +16,13 @@ public class Server {
 
     private final Javalin server;
     private UserService userService;
-    private UserDAO dataAccess;
+    private UserDAO userDataAccess;
+    private AuthDAO authDataAccess;
 
     public Server() {
-        dataAccess = new MemoryUserDAO();
-        userService = new UserService(dataAccess);
+        userDataAccess = new MemoryUserDAO();
+        authDataAccess = new MemoryAuthDAO();
+        userService = new UserService(userDataAccess, authDataAccess);
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
         /*register*/
@@ -51,9 +55,6 @@ public class Server {
         var res = Map.of("username", req.username(),"authToken", "Token"); // to give to json to make json response
 
         ctx.result(serializer.toJson(res)); //json response
-
-
-
     }
 
     private void logout(Context ctx) { //created func to be called
