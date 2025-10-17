@@ -8,6 +8,8 @@ import dataaccess.MemoryUserDAO;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.UserData;
+import model.request.RegisterRequest;
+import model.result.RegisterResult;
 import services.UserService;
 
 import java.util.Map;
@@ -50,6 +52,8 @@ public class Server {
         var req = serializer.fromJson(reqJson, UserData.class); //serializer = Gson, makes json request from ctx body
 
         //call to service
+        //var req = RegisterRequest(); ?
+        //var result = new RegisterResult(); ?
 
         //var res = Map.of("username", req.get("username", "authToken", "Token"));
         var res = Map.of("username", req.username(),"authToken", "Token"); // to give to json to make json response
@@ -59,10 +63,10 @@ public class Server {
 
     private void logout(Context ctx) { //created func to be called
         var serializer = new Gson();
-        var req = serializer.fromJson(ctx.body(), Map.class);
+        String reqJson = ctx.body();
+        var req = serializer.fromJson(reqJson, Map.class);
         //req.put("{}"); //just trying to see if test pass
-        var res = serializer.toJson(req);
-        ctx.result("{}");
+        ctx.result(serializer.toJson("{}"));
     }
 
     public int run(int desiredPort) {

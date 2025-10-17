@@ -1,4 +1,4 @@
 package model.request;
 
-record LogoutRequest() {
+public record LogoutRequest() {
 }

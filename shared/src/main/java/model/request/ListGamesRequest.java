@@ -1,4 +1,4 @@
 package model.request;
 
-record ListGamesRequest() {
+public record ListGamesRequest() {
 }

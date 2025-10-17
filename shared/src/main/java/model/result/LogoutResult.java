@@ -1,4 +1,4 @@
 package model.result;
 
-record LogoutResult() {
+public record LogoutResult() {
 }
