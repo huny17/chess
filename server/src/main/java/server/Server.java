@@ -28,9 +28,9 @@ public class Server {
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
         /*register*/
-        server.post("user", this::register); //trying to see if can pass given tests
+        server.post("user", this::registerHandler); //trying to see if can pass given tests
         /*login*/
-        server.post("session", this::register); //can combine Login with Register??
+        server.post("session", this::registerHandler); //can combine Login with Register??
         /*log out*/
         server.delete("session", this::logout);
         /*list games*/
@@ -41,22 +41,19 @@ public class Server {
         server.put("game", this::logout);
         /*clear*/
         server.delete("db", ctx -> ctx.result("{}"));
-        // Register your endpoints and exception handlers here.
+        /*exception*/
+        server.exception()
 
     }
 
-    private void register(Context ctx) { //created func to be called
+    private void registerHandler(Context ctx) { //created func to be called
         var serializer = new Gson(); //Gson = google json
 
-        String reqJson = ctx.body(); //string from request
-        var req = serializer.fromJson(reqJson, UserData.class); //serializer = Gson, makes json request from ctx body
+        String reqJson = ctx.body(); //Json string format from request
+        RegisterRequest req = serializer.fromJson(reqJson, RegisterRequest.class); //serializer = Gson, makes json request from ctx body
 
-        //call to service
-        //var req = RegisterRequest(); ?
-        //var result = new RegisterResult(); ?
 
-        //var res = Map.of("username", req.get("username", "authToken", "Token"));
-        var res = Map.of("username", req.username(),"authToken", "Token"); // to give to json to make json response
+        RegisterResult res = userService.register(req);
 
         ctx.result(serializer.toJson(res)); //json response
     }

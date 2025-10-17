@@ -4,6 +4,9 @@ import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
+import model.request.RegisterRequest;
+import model.result.RegisterResult;
+import org.eclipse.jetty.server.Authentication;
 
 import java.util.UUID;
 
@@ -21,13 +24,19 @@ public class UserService {
     //    userDataAccess.clear();
     //}
 
-    public AuthData register(UserData user) throws Exception{
-        if(userDataAccess.getUser(user.username()) != null){
+    public RegisterResult register(RegisterRequest req) throws Exception{
+        if(userDataAccess.getUser(req.username()) != null){
             throw new Exception("username already taken");
         }
+
+        UserData user = new UserData(req.username(), req.password(), req.email());
         userDataAccess.createUser(user);
-        var authData = new AuthData(user.username(), generateAuthToken());
-        return authData;
+
+        AuthData auth = new AuthData(user.username(), generateAuthToken());
+        authDataAccess.createAuth(auth);
+
+        RegisterResult res = new RegisterResult(auth.username(), auth.authToken());
+        return res;
     }
 
     private String generateAuthToken() {
