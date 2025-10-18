@@ -1,7 +1,11 @@
 package dataaccess;
 
 public class GeneralException extends Exception {
-    public GeneralException(Type String message) {
+
+    private final String type;
+
+    public GeneralException(String type, String message) {
         super(message);
+        this.type = type;
     }
 }

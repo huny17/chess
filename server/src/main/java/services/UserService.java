@@ -1,6 +1,7 @@
 package services;
 
 import dataaccess.AuthDAO;
+import dataaccess.GeneralException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -28,9 +29,9 @@ public class UserService {
     //    userDataAccess.clear();
     //}
 
-    public RegisterResult register(RegisterRequest req) throws Exception{
+    public RegisterResult register(RegisterRequest req) throws GeneralException{
         if(userDataAccess.getUser(req.username()) != null){
-            throw new Exception("username already taken");
+            throw new GeneralException("403","Username already taken");
         }
 
         UserData user = new UserData(req.username(), req.password(), req.email());
@@ -43,9 +44,13 @@ public class UserService {
         return res;
     }
 
-    public LoginResult login(LoginRequest req) throws Exception{
+    public LoginResult login(LoginRequest req) throws GeneralException{
         if(!userDataAccess.getUser(req.username()).password().equals(req.password())){
-            throw new Exception("wrong password");
+            throw new GeneralException("401","Wrong password");
+        }
+
+        if(userDataAccess.getUser(req.username()) == null){ //no user obtained
+            throw new GeneralException("400","User does not exist");
         }
 
         AuthData auth = new AuthData(req.username(), generateAuthToken());
@@ -55,9 +60,9 @@ public class UserService {
         return res;
     }
 
-    public LogoutResult logout(LogoutRequest req) throws Exception{
-        if(authDataAccess.getAuth(req.authToken()) != null){
-            throw new Exception("username already taken");
+    public LogoutResult logout(LogoutRequest req) throws GeneralException{
+        if(authDataAccess.getAuth(req.authToken()) == null){
+            throw new GeneralException("401","Unauthorized");
         }
 
         authDataAccess.deleteAuth(req.authToken());
