@@ -9,6 +9,7 @@ import io.javalin.*;
 import io.javalin.http.Context;
 import model.UserData;
 import model.request.LoginRequest;
+import model.request.LogoutRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.RegisterResult;
@@ -34,7 +35,7 @@ public class Server {
         /*login*/
         server.post("session", this::registerHandler); //can combine Login with Register??
         /*log out*/
-        server.delete("session", this::logout);
+        server.delete("session", this::logoutHandlers);
         /*list games*/
         server.get("game", this::logout);
         /*create game*/
@@ -48,7 +49,7 @@ public class Server {
 
     }
 
-    private void registerHandler throws Exception(Context ctx) { //created func to be called
+    private void registerHandler(Context ctx) { //created func to be called
         var serializer = new Gson(); //Gson = google json
 
         String reqJson = ctx.body(); //Json string format from request
@@ -65,10 +66,11 @@ public class Server {
         }
     }
 
-    private void logout(Context ctx) { //created func to be called
+    private void logoutHandlers(Context ctx) { //created func to be called
         var serializer = new Gson();
         String reqJson = ctx.body();
-        var req = serializer.fromJson(reqJson, Map.class);
+        LogoutRequest req = serializer.fromJson(reqJson, LogoutRequest.class);
+        LoginResult res = userService.logout(req);
         //req.put("{}"); //just trying to see if test pass
         ctx.result(serializer.toJson("{}"));
     }

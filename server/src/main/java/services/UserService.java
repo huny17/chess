@@ -5,8 +5,10 @@ import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
 import model.request.LoginRequest;
+import model.request.LogoutRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
+import model.result.LogoutResult;
 import model.result.RegisterResult;
 import org.eclipse.jetty.server.Authentication;
 
@@ -53,6 +55,16 @@ public class UserService {
         return res;
     }
 
+    public LogoutResult logout(LogoutRequest req) throws Exception{
+        if(authDataAccess.getAuth(req.authToken()) != null){
+            throw new Exception("username already taken");
+        }
+
+        authDataAccess.deleteAuth(req.authToken());
+
+        LogoutResult res = new LogoutResult();
+        return res;
+    }
 
     private String generateAuthToken() {
         return UUID.randomUUID().toString();
