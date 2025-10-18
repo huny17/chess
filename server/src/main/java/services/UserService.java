@@ -4,7 +4,9 @@ import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
+import model.request.LoginRequest;
 import model.request.RegisterRequest;
+import model.result.LoginResult;
 import model.result.RegisterResult;
 import org.eclipse.jetty.server.Authentication;
 
@@ -38,6 +40,19 @@ public class UserService {
         RegisterResult res = new RegisterResult(auth.username(), auth.authToken());
         return res;
     }
+
+    public LoginResult login(LoginRequest req) throws Exception{
+        if(!userDataAccess.getUser(req.username()).password().equals(req.password())){
+            throw new Exception("wrong password");
+        }
+
+        AuthData auth = new AuthData(req.username(), generateAuthToken());
+        authDataAccess.createAuth(auth);
+
+        LoginResult res = new LoginResult(auth.username(), auth.authToken());
+        return res;
+    }
+
 
     private String generateAuthToken() {
         return UUID.randomUUID().toString();

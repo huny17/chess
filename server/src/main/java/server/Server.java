@@ -8,7 +8,9 @@ import dataaccess.MemoryUserDAO;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.UserData;
+import model.request.LoginRequest;
 import model.request.RegisterRequest;
+import model.result.LoginResult;
 import model.result.RegisterResult;
 import services.UserService;
 
@@ -42,7 +44,7 @@ public class Server {
         /*clear*/
         server.delete("db", ctx -> ctx.result("{}"));
         /*exception*/
-        server.exception()
+        server.exception();
 
     }
 
@@ -50,12 +52,17 @@ public class Server {
         var serializer = new Gson(); //Gson = google json
 
         String reqJson = ctx.body(); //Json string format from request
-        RegisterRequest req = serializer.fromJson(reqJson, RegisterRequest.class); //serializer = Gson, makes json request from ctx body
 
-
-        RegisterResult res = userService.register(req);
-
-        ctx.result(serializer.toJson(res)); //json response
+        if (reqJson.contains("email")) {
+            RegisterRequest req = serializer.fromJson(reqJson, RegisterRequest.class); //serializer = Gson, makes json request from ctx body
+            RegisterResult res = userService.register(req);
+            ctx.result(serializer.toJson(res)); //json response
+        }
+        else{
+            LoginRequest req = serializer.fromJson(reqJson, LoginRequest.class); //serializer = Gson, makes json request from ctx body
+            LoginResult res = userService.login(req);
+            ctx.result(serializer.toJson(res));
+        }
     }
 
     private void logout(Context ctx) { //created func to be called

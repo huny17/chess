@@ -3,6 +3,7 @@ package passoff.server;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.UserData;
+import model.request.RegisterRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import services.UserService;
@@ -18,7 +19,7 @@ public class ServiceTest {
         var userService = new UserService(userDataAccess, authDataAccess);
 
         assertDoesNotThrow(()-> {
-            var res = userService.register(new UserData("cow", "rat", "j@j"));
+            var res = userService.register(new RegisterRequest("cow", "rat", "j@j"));
             Assertions.assertNotNull(res);
         });
     }
