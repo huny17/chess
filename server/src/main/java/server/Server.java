@@ -48,7 +48,7 @@ public class Server {
 
     }
 
-    private void registerHandler(Context ctx) { //created func to be called
+    private void registerHandler throws Exception(Context ctx) { //created func to be called
         var serializer = new Gson(); //Gson = google json
 
         String reqJson = ctx.body(); //Json string format from request
