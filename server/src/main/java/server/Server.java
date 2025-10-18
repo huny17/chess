@@ -13,6 +13,7 @@ import model.request.LogoutRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.RegisterResult;
+import services.ClearService;
 import services.UserService;
 
 import java.util.Map;
@@ -23,6 +24,7 @@ public class Server {
     private UserService userService;
     private UserDAO userDataAccess;
     private AuthDAO authDataAccess;
+    private ClearService clearService;
 
     public Server() {
         userDataAccess = new MemoryUserDAO();
@@ -35,7 +37,7 @@ public class Server {
         /*login*/
         server.post("session", this::registerHandler); //can combine Login with Register??
         /*log out*/
-        server.delete("session", this::logoutHandlers);
+        server.delete("session", this::logoutHandler);
         /*list games*/
         server.get("game", this::logout);
         /*create game*/
@@ -43,15 +45,16 @@ public class Server {
         /*join game*/
         server.put("game", this::logout);
         /*clear*/
-        server.delete("db", ctx -> ctx.result("{}"));
+        server.delete("db", this::clearHandler);
         /*exception*/
         server.exception();
 
     }
 
+    //Call User Service
+
     private void registerHandler(Context ctx) { //created func to be called
         var serializer = new Gson(); //Gson = google json
-
         String reqJson = ctx.body(); //Json string format from request
 
         if (reqJson.contains("email")) {
@@ -66,13 +69,23 @@ public class Server {
         }
     }
 
-    private void logoutHandlers(Context ctx) { //created func to be called
+    private void logoutHandler(Context ctx) { //created func to be called
         var serializer = new Gson();
         String reqJson = ctx.body();
         LogoutRequest req = serializer.fromJson(reqJson, LogoutRequest.class);
         LoginResult res = userService.logout(req);
         ctx.result(serializer.toJson(res));
     }
+
+    //Call Game Service
+
+    //Call Clear Service
+
+    private void clearHandler(Context ctx){
+        clearService.clear();
+        ctx.result("{}");
+    }
+
 
     public int run(int desiredPort) {
         server.start(desiredPort);
