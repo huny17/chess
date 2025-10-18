@@ -71,8 +71,7 @@ public class Server {
         String reqJson = ctx.body();
         LogoutRequest req = serializer.fromJson(reqJson, LogoutRequest.class);
         LoginResult res = userService.logout(req);
-        //req.put("{}"); //just trying to see if test pass
-        ctx.result(serializer.toJson("{}"));
+        ctx.result(serializer.toJson(res));
     }
 
     public int run(int desiredPort) {
