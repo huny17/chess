@@ -20,8 +20,20 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public GameData getGame(String gameName) {
-        return games.get(gameName);
+    public String getBlackUser(String gameId) {
+        GameData game = games.get(gameId);
+        return game.blackUser();
+    }
+
+    @Override
+    public String getWhiteUser(String gameId) {
+        GameData game = games.get(Integer.parseInt(gameId));
+        return game.whiteUser();
+    }
+
+    @Override
+    public GameData getGame(String gameId) {
+        return games.get(Integer.parseInt(gameId));
     }
 
     @Override
@@ -30,7 +42,7 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public void updateGame() {
-
+    public void updateGame(String gameId, GameData newGame) {
+        games.put(gameId, newGame);
     }
 }

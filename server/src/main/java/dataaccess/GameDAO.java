@@ -8,7 +8,9 @@ import java.util.HashMap;
 public interface GameDAO {
     void clear();
     void createGame(GameData game);
-    GameData getGame(String gameName);
+    GameData getGame(String gameId);
+    String getBlackUser(String gameId);
+    String getWhiteUser(String gameId);
     Collection<GameData> listGames();
-    void updateGame();
+    void updateGame(String gameId, GameData newGame);
 }

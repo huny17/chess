@@ -37,17 +37,17 @@ public class GameService {
         return res;
     }
 
-    public JoinGameResult join(JoinGameRequest req) throws GeneralException{
-        if(gameDataAccess.createGame(req.gameName()) != null){
-            throw new GeneralException("403","Username already taken");
-        }
+    public JoinGameResult join(JoinGameRequest req) throws GeneralException {
+        if (checkColorUser(req)) {
 
-        GameData game = new GameData(req.);
-        gameDataAccess.createGame(game);
+            GameData game = gameDataAccess.getGame(req.gameId());
 
-        JoinGameResult res = new JoinGameResult();
+
+
+            JoinGameResult res = new JoinGameResult();
 
         return res;
+        }
     }
 
     public ListGamesResult list(ListGamesRequest req){
@@ -60,5 +60,16 @@ public class GameService {
         ListGamesResult res = new ListGamesResult();
 
         return res;
+    }
+
+
+    public Boolean checkColorUser(JoinGameRequest req) throws GeneralException{
+        if(req.playerColor() == "WHITE" && gameDataAccess.getWhiteUser(req.gameId()) != null){
+            throw new GeneralException("403","Color already taken");
+        }
+        if(req.playerColor() == "BLACK" && gameDataAccess.getBlackUser(req.gameId()) != null){
+            throw new GeneralException("403","Color already taken");
+        }
+        return true;
     }
 }
