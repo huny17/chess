@@ -33,11 +33,11 @@ public class Server {
         /*log out*/
         server.delete("session", this::logoutHandler);
         /*list games*/
-        server.get("game", this::logout);
+        server.get("game", this::listGamesHandler);
         /*create game*/
-        server.post("game", this::logout);
+        server.post("game", this::createGameHandler);
         /*join game*/
-        server.put("game", this::logout);
+        server.put("game", this::joinGameHandler);
         /*clear*/
         server.delete("db", this::clearHandler);
         /*exception*/
@@ -86,8 +86,17 @@ public class Server {
         var serializer = new Gson(); //Gson = google json
         String reqJson = ctx.body(); //Json string format from request
 
-        CreateGameRequest req = serializer.fromJson(reqJson, JoinGameRequest.class); //serializer = Gson, makes json request from ctx body
-        CreateGameResult res = gameService.joinGame(req);
+        JoinGameRequest req = serializer.fromJson(reqJson, JoinGameRequest.class); //serializer = Gson, makes json request from ctx body
+        JoinGameResult res = gameService.joinGame(req);
+        ctx.result(serializer.toJson(res)); //json response
+    }
+
+    private void listGamesHandler(Context ctx) { //created func to be called
+        var serializer = new Gson(); //Gson = google json
+        String reqJson = ctx.body(); //Json string format from request
+
+        ListGamesRequest req = serializer.fromJson(reqJson, ListGamesRequest.class); //serializer = Gson, makes json request from ctx body
+        ListGamesResult res = gameService.listGames(req);
         ctx.result(serializer.toJson(res)); //json response
     }
 
@@ -95,7 +104,7 @@ public class Server {
 
     private void clearHandler(Context ctx){
         clearService.clear();
-        ctx.result("{}");
+        ctx.result("");
     }
 
 
