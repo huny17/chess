@@ -1,19 +1,19 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.AuthDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.UserDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.UserData;
+import model.request.CreateGameRequest;
 import model.request.LoginRequest;
 import model.request.LogoutRequest;
 import model.request.RegisterRequest;
+import model.result.CreateGameResult;
 import model.result.LoginResult;
 import model.result.RegisterResult;
 import services.ClearService;
+import services.GameService;
 import services.UserService;
 
 import java.util.Map;
@@ -22,6 +22,7 @@ public class Server {
 
     private final Javalin server;
     private UserService userService;
+    private GameService gameService;
     private UserDAO userDataAccess;
     private AuthDAO authDataAccess;
     private ClearService clearService;
@@ -47,7 +48,7 @@ public class Server {
         /*clear*/
         server.delete("db", this::clearHandler);
         /*exception*/
-        server.exception();
+        server.exception("GeneralException", this::exceptionHandler);
 
     }
 
@@ -79,6 +80,15 @@ public class Server {
 
     //Call Game Service
 
+    private void createGameHandler(Context ctx) { //created func to be called
+        var serializer = new Gson(); //Gson = google json
+        String reqJson = ctx.body(); //Json string format from request
+
+        CreateGameRequest req = serializer.fromJson(reqJson, CreateGameRequest.class); //serializer = Gson, makes json request from ctx body
+        CreateGameResult res = gameService.register(req);
+        ctx.result(serializer.toJson(res)); //json response
+    }
+
     //Call Clear Service
 
     private void clearHandler(Context ctx){
@@ -86,6 +96,10 @@ public class Server {
         ctx.result("{}");
     }
 
+
+    private void exceptionHandler(){
+
+    }
 
     public int run(int desiredPort) {
         server.start(desiredPort);
