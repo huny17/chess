@@ -4,12 +4,10 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
-import model.UserData;
 import model.request.*;
 import model.result.*;
 import services.*;
-
-import java.util.Map;
+import dataaccess.GeneralException;
 
 public class Server {
 
@@ -18,12 +16,16 @@ public class Server {
     private GameService gameService;
     private UserDAO userDataAccess;
     private AuthDAO authDataAccess;
+    private GameDAO gameDataAccess;
     private ClearService clearService;
 
     public Server() {
         userDataAccess = new MemoryUserDAO();
         authDataAccess = new MemoryAuthDAO();
+        gameDataAccess = new MemoryGameDAO();
         userService = new UserService(userDataAccess, authDataAccess);
+        gameService = new GameService(gameDataAccess);
+        clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
         /*register*/
@@ -41,13 +43,12 @@ public class Server {
         /*clear*/
         server.delete("db", this::clearHandler);
         /*exception*/
-        server.exception("GeneralException", this::exceptionHandler);
+        server.exception(GeneralException, this::exceptionHandler);
 
     }
 
     //Call User Service
-
-    private void registerHandler(Context ctx) { //created func to be called
+    private void registerHandler(Context ctx) throws GeneralException{ //created func to be called
         var serializer = new Gson(); //Gson = google json
         String reqJson = ctx.body(); //Json string format from request
 
@@ -63,35 +64,34 @@ public class Server {
         }
     }
 
-    private void logoutHandler(Context ctx) { //created func to be called
+    private void logoutHandler(Context ctx) throws GeneralException{
         var serializer = new Gson();
         String reqJson = ctx.body();
         LogoutRequest req = serializer.fromJson(reqJson, LogoutRequest.class);
-        LoginResult res = userService.logout(req);
+        LogoutResult res = userService.logout(req);
         ctx.result(serializer.toJson(res));
     }
 
     //Call Game Service
+    private void createGameHandler(Context ctx) throws GeneralException{
+        var serializer = new Gson();
+        String reqJson = ctx.body();
 
-    private void createGameHandler(Context ctx) { //created func to be called
-        var serializer = new Gson(); //Gson = google json
-        String reqJson = ctx.body(); //Json string format from request
-
-        CreateGameRequest req = serializer.fromJson(reqJson, CreateGameRequest.class); //serializer = Gson, makes json request from ctx body
+        CreateGameRequest req = serializer.fromJson(reqJson, CreateGameRequest.class);
         CreateGameResult res = gameService.createGame(req);
-        ctx.result(serializer.toJson(res)); //json response
+        ctx.result(serializer.toJson(res));
     }
 
-    private void joinGameHandler(Context ctx) { //created func to be called
-        var serializer = new Gson(); //Gson = google json
-        String reqJson = ctx.body(); //Json string format from request
+    private void joinGameHandler(Context ctx) throws GeneralException{ //created func to be called
+        var serializer = new Gson();
+        String reqJson = ctx.body();
 
         JoinGameRequest req = serializer.fromJson(reqJson, JoinGameRequest.class); //serializer = Gson, makes json request from ctx body
         JoinGameResult res = gameService.joinGame(req);
         ctx.result(serializer.toJson(res)); //json response
     }
 
-    private void listGamesHandler(Context ctx) { //created func to be called
+    private void listGamesHandler(Context ctx) throws GeneralException{ //created func to be called
         var serializer = new Gson(); //Gson = google json
         String reqJson = ctx.body(); //Json string format from request
 
@@ -101,14 +101,13 @@ public class Server {
     }
 
     //Call Clear Service
-
     private void clearHandler(Context ctx){
         clearService.clear();
         ctx.result("");
     }
 
 
-    private void exceptionHandler(){
+    private GeneralException exceptionHandler(Context ctx){
 
     }
 

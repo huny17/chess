@@ -67,7 +67,7 @@ public class UserService {
 
         authDataAccess.deleteAuth(req.authToken());
 
-        LogoutResult res = new LogoutResult();
+        LogoutResult res = new LogoutResult("");
         return res;
     }
 

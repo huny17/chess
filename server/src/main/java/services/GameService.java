@@ -4,13 +4,8 @@ import chess.ChessGame;
 import dataaccess.GameDAO;
 import dataaccess.GeneralException;
 import model.GameData;
-import model.request.CreateGameRequest;
-import model.request.JoinGameRequest;
-import model.request.ListGamesRequest;
-import model.result.CreateGameResult;
-import model.result.JoinGameResult;
-import model.result.ListGamesResult;
-import model.result.RegisterResult;
+import model.request.*;
+import model.result.*;
 
 public class GameService {
 
