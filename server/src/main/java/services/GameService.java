@@ -38,23 +38,17 @@ public class GameService {
     }
 
     public JoinGameResult join(JoinGameRequest req) throws GeneralException {
-        if (checkColorUser(req)) {
-
-            GameData game = gameDataAccess.getGame(req.gameId());
-
-
-
-            JoinGameResult res = new JoinGameResult();
-
-        return res;
+        if(req.playerColor() == "WHITE" && gameDataAccess.getWhiteUser(req.gameId()) != null){
+            throw new GeneralException("403","Color already taken");
         }
+        if(req.playerColor() == "BLACK" && gameDataAccess.getBlackUser(req.gameId()) != null){
+            throw new GeneralException("403","Color already taken");
+        }
+        JoinGameResult res = updateColor(req);
+        return res;
     }
 
     public ListGamesResult list(ListGamesRequest req){
-        if(gameDataAccess.createGame(req.gameName()) != null){
-            throw new GeneralException("403","Username already taken");
-        }
-
 
 
         ListGamesResult res = new ListGamesResult();
@@ -62,14 +56,17 @@ public class GameService {
         return res;
     }
 
-
-    public Boolean checkColorUser(JoinGameRequest req) throws GeneralException{
-        if(req.playerColor() == "WHITE" && gameDataAccess.getWhiteUser(req.gameId()) != null){
-            throw new GeneralException("403","Color already taken");
+    public JoinGameResult updateColor(JoinGameRequest req){
+        if(req.playerColor() == "WHITE"){
+            GameData oldGame = gameDataAccess.getGame(req.gameId());
+            GameData newGame = new GameData(oldGame.id(), req.playerColor(), oldGame.blackUser(), oldGame.gameName(), oldGame.chessGame());
+            gameDataAccess.updateGame(req.gameId(), newGame);
         }
-        if(req.playerColor() == "BLACK" && gameDataAccess.getBlackUser(req.gameId()) != null){
-            throw new GeneralException("403","Color already taken");
+        if(req.playerColor() == "BLACK"){
+            GameData oldGame = gameDataAccess.getGame(req.gameId());
+            GameData newGame = new GameData(oldGame.id(), oldGame.whiteUser(), req.playerColor(), oldGame.gameName(), oldGame.chessGame());
+            gameDataAccess.updateGame(req.gameId(), newGame);
         }
-        return true;
+        return new JoinGameResult();
     }
 }

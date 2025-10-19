@@ -43,6 +43,6 @@ public class MemoryGameDAO implements GameDAO{
 
     @Override
     public void updateGame(String gameId, GameData newGame) {
-        games.put(gameId, newGame);
+        games.put(Integer.parseInt(gameId), newGame);
     }
 }
