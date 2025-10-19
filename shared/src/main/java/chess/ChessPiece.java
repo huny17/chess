@@ -533,18 +533,18 @@ public class ChessPiece {
 
         ArrayList<ChessMove> leftList = left(myPosition, board);
         Iterator<ChessMove> left = leftList.iterator();
-        ArrayList<ChessMove> rList = right(myPosition, board);
-        Iterator<ChessMove> right = rList.iterator();
-        ArrayList<ChessMove> uList = up(myPosition, board);
-        Iterator<ChessMove> up = uList.iterator();
-        ArrayList<ChessMove> dList = down(myPosition, board);
-        Iterator<ChessMove> down = dList.iterator();
-        ArrayList<ChessMove> diList = diag(myPosition, board);
-        Iterator<ChessMove> diag = diList.iterator();
-        ArrayList<ChessMove> kList = knight(myPosition, board);
-        Iterator<ChessMove> king = kList.iterator();
-        ArrayList<ChessMove> pList = pawn(myPosition, board);
-        Iterator<ChessMove> pawn = pList.iterator();
+        ArrayList<ChessMove> rightList = right(myPosition, board);
+        Iterator<ChessMove> right = rightList.iterator();
+        ArrayList<ChessMove> upList = up(myPosition, board);
+        Iterator<ChessMove> up = upList.iterator();
+        ArrayList<ChessMove> downList = down(myPosition, board);
+        Iterator<ChessMove> down = downList.iterator();
+        ArrayList<ChessMove> diagList = diag(myPosition, board);
+        Iterator<ChessMove> diag = diagList.iterator();
+        ArrayList<ChessMove> kingList = knight(myPosition, board);
+        Iterator<ChessMove> king = kingList.iterator();
+        ArrayList<ChessMove> pawnList = pawn(myPosition, board);
+        Iterator<ChessMove> pawn = pawnList.iterator();
 
         switch(piece.getPieceType()){
             case KING:
