@@ -20,7 +20,7 @@ public class GameService {
         this.gameDataAccess = gameDataAccess;
     }
 
-    public CreateGameResult create(CreateGameRequest req) throws GeneralException{
+    public CreateGameResult createGame(CreateGameRequest req) throws GeneralException{
         int index = 0;
 
         if(gameDataAccess.getGame(req.gameName()) != null){
@@ -37,7 +37,7 @@ public class GameService {
         return res;
     }
 
-    public JoinGameResult join(JoinGameRequest req) throws GeneralException {
+    public JoinGameResult joinGame(JoinGameRequest req) throws GeneralException {
         if(req.playerColor() == "WHITE" && gameDataAccess.getWhiteUser(req.gameId()) != null){
             throw new GeneralException("403","Color already taken");
         }
@@ -48,10 +48,9 @@ public class GameService {
         return res;
     }
 
-    public ListGamesResult list(ListGamesRequest req){
+    public ListGamesResult listGames(ListGamesRequest req){
 
-
-        ListGamesResult res = new ListGamesResult();
+        ListGamesResult res = new ListGamesResult("games", gameDataAccess.listGames());
 
         return res;
     }

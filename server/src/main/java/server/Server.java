@@ -5,16 +5,9 @@ import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.UserData;
-import model.request.CreateGameRequest;
-import model.request.LoginRequest;
-import model.request.LogoutRequest;
-import model.request.RegisterRequest;
-import model.result.CreateGameResult;
-import model.result.LoginResult;
-import model.result.RegisterResult;
-import services.ClearService;
-import services.GameService;
-import services.UserService;
+import model.request.*;
+import model.result.*;
+import services.*;
 
 import java.util.Map;
 
@@ -85,7 +78,16 @@ public class Server {
         String reqJson = ctx.body(); //Json string format from request
 
         CreateGameRequest req = serializer.fromJson(reqJson, CreateGameRequest.class); //serializer = Gson, makes json request from ctx body
-        CreateGameResult res = gameService.register(req);
+        CreateGameResult res = gameService.createGame(req);
+        ctx.result(serializer.toJson(res)); //json response
+    }
+
+    private void joinGameHandler(Context ctx) { //created func to be called
+        var serializer = new Gson(); //Gson = google json
+        String reqJson = ctx.body(); //Json string format from request
+
+        CreateGameRequest req = serializer.fromJson(reqJson, JoinGameRequest.class); //serializer = Gson, makes json request from ctx body
+        CreateGameResult res = gameService.joinGame(req);
         ctx.result(serializer.toJson(res)); //json response
     }
 
