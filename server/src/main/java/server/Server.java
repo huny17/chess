@@ -43,7 +43,7 @@ public class Server {
         /*clear*/
         server.delete("db", this::clearHandler);
         /*exception*/
-        server.exception(GeneralException, this::exceptionHandler);
+        server.exception(GeneralException.class, this::exceptionHandler);
 
     }
 
@@ -107,8 +107,9 @@ public class Server {
     }
 
 
-    private GeneralException exceptionHandler(Context ctx){
+    private void exceptionHandler(Exception E, Context ctx){
 
+        ctx.result();
     }
 
     public int run(int desiredPort) {

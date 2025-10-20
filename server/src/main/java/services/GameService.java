@@ -16,18 +16,18 @@ public class GameService {
     }
 
     public CreateGameResult createGame(CreateGameRequest req) throws GeneralException{
-        int index = 0;
 
         if(gameDataAccess.getGame(req.gameName()) != null){
             throw new GeneralException("403","Username already taken");
         }
 
-        GameData game = new GameData(index,null,null,req.gameName(), new ChessGame());
+        //make create game just tak name then create new in memory
+
+        GameData game = new GameData(null,null,null,req.gameName(), new ChessGame());
         gameDataAccess.createGame(game);
 
         CreateGameResult res = new CreateGameResult("" + game.id());
 
-        index += 1;
 
         return res;
     }
