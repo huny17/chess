@@ -54,5 +54,4 @@ public class GameService {
         return new JoinGameResult();
     }
 
-
 }

@@ -8,32 +8,29 @@ import model.request.*;
 import model.result.*;
 import services.*;
 import dataaccess.GeneralException;
-
 import java.util.Map;
 
 public class Server {
 
     private final Javalin server;
-    private UserService userService;
-    private GameService gameService;
-    private UserDAO userDataAccess;
-    private AuthDAO authDataAccess;
-    private GameDAO gameDataAccess;
-    private ClearService clearService;
+    private final UserService userService;
+    private final GameService gameService;
+    private final ClearService clearService;
+    private final AuthDAO authDataAccess;
 
     public Server() {
-        userDataAccess = new MemoryUserDAO();
+        UserDAO userDataAccess = new MemoryUserDAO();
         authDataAccess = new MemoryAuthDAO();
-        gameDataAccess = new MemoryGameDAO();
+        GameDAO gameDataAccess = new MemoryGameDAO();
         userService = new UserService(userDataAccess, authDataAccess);
         gameService = new GameService(gameDataAccess);
         clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
         /*register*/
-        server.post("user", this::registerHandler); //trying to see if can pass given tests
+        server.post("user", this::registerHandler);
         /*login*/
-        server.post("session", this::registerHandler); //can combine Login with Register??
+        server.post("session", this::registerHandler);
         /*log out*/
         server.delete("session", this::logoutHandler);
         /*list games*/
@@ -67,39 +64,47 @@ public class Server {
     }
 
     private void logoutHandler(Context ctx) throws GeneralException{
-        var serializer = new Gson();
-        String reqJson = ctx.body();
-        LogoutRequest req = serializer.fromJson(reqJson, LogoutRequest.class);
-        LogoutResult res = userService.logout(req);
-        ctx.result(serializer.toJson(res));
+        if(authorized(ctx)){
+            var serializer = new Gson();
+            String reqJson = ctx.body();
+            LogoutRequest req = serializer.fromJson(reqJson, LogoutRequest.class);
+            LogoutResult res = userService.logout(req);
+            ctx.result(serializer.toJson(res));
+        }
     }
 
     //Call Game Service
     private void createGameHandler(Context ctx) throws GeneralException{
-        var serializer = new Gson();
-        String reqJson = ctx.body();
+        if(authorized(ctx)) {
+            var serializer = new Gson();
+            String reqJson = ctx.body();
 
-        CreateGameRequest req = serializer.fromJson(reqJson, CreateGameRequest.class);
-        CreateGameResult res = gameService.createGame(req);
-        ctx.result(serializer.toJson(res));
+            CreateGameRequest req = serializer.fromJson(reqJson, CreateGameRequest.class);
+            CreateGameResult res = gameService.createGame(req);
+            ctx.result(serializer.toJson(res));
+        }
     }
 
     private void joinGameHandler(Context ctx) throws GeneralException{ //created func to be called
-        var serializer = new Gson();
-        String reqJson = ctx.body();
+        if(authorized(ctx)) {
+            var serializer = new Gson();
+            String reqJson = ctx.body();
 
-        JoinGameRequest req = serializer.fromJson(reqJson, JoinGameRequest.class); //serializer = Gson, makes json request from ctx body
-        JoinGameResult res = gameService.joinGame(req);
-        ctx.result(serializer.toJson(res)); //json response
+            JoinGameRequest req = serializer.fromJson(reqJson, JoinGameRequest.class); //serializer = Gson, makes json request from ctx body
+            JoinGameResult res = gameService.joinGame(req);
+            ctx.result(serializer.toJson(res)); //json response
+        }
     }
 
-    private void listGamesHandler(Context ctx) throws GeneralException{ //created func to be called
-        var serializer = new Gson(); //Gson = google json
-        String reqJson = ctx.body(); //Json string format from request
+    private void listGamesHandler(Context ctx){ //created func to be called
+        if(authorized(ctx)) {
+            var serializer = new Gson(); //Gson = google json
+            String reqJson = ctx.body(); //Json string format from request
 
-        ListGamesRequest req = serializer.fromJson(reqJson, ListGamesRequest.class); //serializer = Gson, makes json request from ctx body
-        ListGamesResult res = gameService.listGames(req);
-        ctx.result(serializer.toJson(res)); //json response
+            ListGamesRequest req = serializer.fromJson(reqJson, ListGamesRequest.class); //serializer = Gson, makes json request from ctx body
+            ListGamesResult res = gameService.listGames(req);
+            ctx.result(serializer.toJson(res)); //json response
+        }
     }
 
     //Call Clear Service
@@ -114,6 +119,17 @@ public class Server {
         int exceptionStatus = Integer.parseInt(E.getType());
         ctx.status(exceptionStatus);
         ctx.json(message);
+    }
+
+    private boolean authorized(Context ctx) {
+        String authToken = ctx.header("authentication");
+        if (!authDataAccess.getAuthentications().containsKey(authToken)) {
+            ctx.contentType("application/json");
+            ctx.status(401);
+            ctx.result(new Gson().toJson(Map.of("message", "invalid authorization")));
+            return false;
+        }
+        return true;
     }
 
     public int run(int desiredPort) {

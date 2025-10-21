@@ -4,6 +4,7 @@ import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.AuthData;
 import model.UserData;
+import model.request.RegisterRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +17,7 @@ class UserServiceTest {
 
     @Test
     void register() {
-        var user = new UserData("joe","j@j","j");
+        var user = new RegisterRequest("joe","j@j","j");
         var at = "xyz";
         var userDA = new MemoryUserDAO();
         var authDA = new MemoryAuthDAO();
