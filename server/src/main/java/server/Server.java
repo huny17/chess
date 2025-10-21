@@ -4,10 +4,13 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
+import model.AuthData;
 import model.request.*;
 import model.result.*;
 import services.*;
 import dataaccess.GeneralException;
+
+import java.util.HashMap;
 import java.util.Map;
 
 public class Server {
@@ -122,8 +125,9 @@ public class Server {
     }
 
     private boolean authorized(Context ctx) {
-        String authToken = ctx.header("authentication");
-        if (!authDataAccess.getAuthentications().containsKey(authToken)) {
+        String authToken = ctx.header("authorization");
+        HashMap<String, AuthData> map =  authDataAccess.getAuthentications();
+        if (map.containsKey(authToken)) {
             ctx.contentType("application/json");
             ctx.status(401);
             ctx.result(new Gson().toJson(Map.of("message", "invalid authorization")));
