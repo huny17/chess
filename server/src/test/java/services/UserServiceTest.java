@@ -5,6 +5,7 @@ import dataaccess.MemoryUserDAO;
 import model.AuthData;
 import model.UserData;
 import model.request.RegisterRequest;
+import model.result.RegisterResult;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +24,7 @@ class UserServiceTest {
         var authDA = new MemoryAuthDAO();
         var service = new UserService(userDA, authDA);
         assertDoesNotThrow(()-> {
-            AuthData res = service.register(user);
+            RegisterResult res = service.register(user);
             assertNotNull(res);
             assertEquals(res.username(), user.username());
             assertNotNull(res.authToken());

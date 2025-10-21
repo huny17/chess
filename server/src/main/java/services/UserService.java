@@ -12,6 +12,7 @@ import model.result.LoginResult;
 import model.result.LogoutResult;
 import model.result.RegisterResult;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class UserService {
@@ -39,12 +40,12 @@ public class UserService {
     }
 
     public LoginResult login(LoginRequest req) throws GeneralException{
-        if(!userDataAccess.getUser(req.username()).password().equals(req.password())){
-            throw new GeneralException("401","Wrong password");
-        }
 
-        if(userDataAccess.getUser(req.username()) == null){ //no user obtained
-            throw new GeneralException("400","User does not exist");
+        if(!userDataAccess.getUserMap().containsKey(req.username())){ //no user obtained
+            throw new GeneralException("401","User does not exist");
+        }
+        if(!userDataAccess.getUser(req.username()).password().equals(req.password())) {
+            throw new GeneralException("401", "Wrong password");
         }
 
         AuthData auth = new AuthData(req.username(), generateAuthToken());
