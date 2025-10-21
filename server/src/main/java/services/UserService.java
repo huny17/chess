@@ -11,23 +11,18 @@ import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.LogoutResult;
 import model.result.RegisterResult;
-import org.eclipse.jetty.server.Authentication;
 
 import java.util.UUID;
 
 public class UserService {
 
-    private UserDAO userDataAccess;
-    private AuthDAO authDataAccess;
+    private final UserDAO userDataAccess;
+    private final AuthDAO authDataAccess;
 
     public UserService(UserDAO userDataAccess, AuthDAO authDataAccess){
         this.userDataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;
     }
-
-    //public void clear(){
-    //    userDataAccess.clear();
-    //}
 
     public RegisterResult register(RegisterRequest req) throws GeneralException{
         if(userDataAccess.getUser(req.username()) != null){
@@ -40,8 +35,7 @@ public class UserService {
         AuthData auth = new AuthData(user.username(), generateAuthToken());
         authDataAccess.createAuth(auth);
 
-        RegisterResult res = new RegisterResult(auth.username(), auth.authToken());
-        return res;
+        return new RegisterResult(auth.username(), auth.authToken());
     }
 
     public LoginResult login(LoginRequest req) throws GeneralException{
@@ -56,8 +50,7 @@ public class UserService {
         AuthData auth = new AuthData(req.username(), generateAuthToken());
         authDataAccess.createAuth(auth);
 
-        LoginResult res = new LoginResult(auth.username(), auth.authToken());
-        return res;
+        return new LoginResult(auth.username(), auth.authToken());
     }
 
     public LogoutResult logout(LogoutRequest req) throws GeneralException{
@@ -67,8 +60,7 @@ public class UserService {
 
         authDataAccess.deleteAuth(req.authToken());
 
-        LogoutResult res = new LogoutResult("");
-        return res;
+        return new LogoutResult("");
     }
 
     private String generateAuthToken() {

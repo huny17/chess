@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public interface GameDAO {
     void clear();
-    void createGame(GameData game);
+    String createGame(String gameName);
     GameData getGame(String gameId);
     String getBlackUser(String gameId);
     String getWhiteUser(String gameId);

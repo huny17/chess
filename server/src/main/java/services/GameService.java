@@ -21,15 +21,9 @@ public class GameService {
             throw new GeneralException("403","Username already taken");
         }
 
-        //make create game just tak name then create new in memory
+        String gameId = gameDataAccess.createGame(req.gameName());
 
-        GameData game = new GameData(null,null,null,req.gameName(), new ChessGame());
-        gameDataAccess.createGame(game);
-
-        CreateGameResult res = new CreateGameResult("" + game.id());
-
-
-        return res;
+        return new CreateGameResult(gameId);
     }
 
     public JoinGameResult joinGame(JoinGameRequest req) throws GeneralException {

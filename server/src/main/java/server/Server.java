@@ -9,6 +9,8 @@ import model.result.*;
 import services.*;
 import dataaccess.GeneralException;
 
+import java.util.Map;
+
 public class Server {
 
     private final Javalin server;
@@ -107,9 +109,11 @@ public class Server {
     }
 
 
-    private void exceptionHandler(Exception E, Context ctx){
-
-        ctx.result();
+    private void exceptionHandler(GeneralException E, Context ctx){
+        var message = new Gson().toJson(Map.of("message", String.format("Error: %s", E.getMessage()), "success", false));
+        int exceptionStatus = Integer.parseInt(E.getType());
+        ctx.status(exceptionStatus);
+        ctx.json(message);
     }
 
     public int run(int desiredPort) {

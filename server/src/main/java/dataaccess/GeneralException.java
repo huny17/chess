@@ -8,4 +8,8 @@ public class GeneralException extends Exception {
         super(message);
         this.type = type;
     }
+
+    public String getType(){
+        return type;
+    }
 }

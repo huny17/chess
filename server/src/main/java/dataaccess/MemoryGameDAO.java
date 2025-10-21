@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.GameData;
 
 import java.util.Collection;
@@ -7,7 +8,8 @@ import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
 
-    private HashMap<Integer, GameData> games = new HashMap<>();
+    private final HashMap<Integer, GameData> games = new HashMap<>();
+    private int index = 0;
 
     @Override
     public void clear(){
@@ -15,17 +17,18 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public void createGame(GameData game) {
+    public String createGame(String gameName) {
         //increment in here
-
         //create game here
-
+        GameData game = new GameData(index,null,null, gameName, new ChessGame());
+        index += 1;
         games.put(game.id(), game);
+        return String.format("%d", index);
     }
 
     @Override
     public String getBlackUser(String gameId) {
-        GameData game = games.get(gameId);
+        GameData game = games.get(Integer.parseInt(gameId));
         return game.blackUser();
     }
 
