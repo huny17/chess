@@ -17,13 +17,13 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public String createGame(String gameName) {
+    public int createGame(String gameName) {
         //increment in here
         //create game here
         GameData game = new GameData(index,null,null, gameName, new ChessGame());
         index += 1;
-        games.put(game.id(), game);
-        return Integer.toString(game.id());
+        games.put(game.ID(), game);
+        return game.ID();
     }
 
     @Override

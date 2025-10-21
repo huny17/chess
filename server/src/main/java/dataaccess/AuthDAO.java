@@ -8,6 +8,7 @@ public interface AuthDAO {
     void clear();
     void createAuth(AuthData auth);
     AuthData getAuth(String authToken);
+    public String getUser(String authToken);
     void deleteAuth(String authToken);
     public HashMap<String, AuthData> getAuthentications();
 }

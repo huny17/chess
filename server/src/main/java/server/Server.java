@@ -26,7 +26,7 @@ public class Server {
         authDataAccess = new MemoryAuthDAO();
         GameDAO gameDataAccess = new MemoryGameDAO();
         userService = new UserService(userDataAccess, authDataAccess);
-        gameService = new GameService(gameDataAccess);
+        gameService = new GameService(gameDataAccess, authDataAccess);
         clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
@@ -92,9 +92,11 @@ public class Server {
         if(authorized(ctx)) {
             var serializer = new Gson();
             String reqJson = ctx.body();
+            String authToken = ctx.header("authorization");
+
 
             JoinGameRequest req = serializer.fromJson(reqJson, JoinGameRequest.class); //serializer = Gson, makes json request from ctx body
-            JoinGameResult res = gameService.joinGame(req);
+            JoinGameResult res = gameService.joinGame(req, authToken);
             ctx.result(serializer.toJson(res)); //json response
         }
     }
@@ -102,10 +104,10 @@ public class Server {
     private void listGamesHandler(Context ctx){ //created func to be called
         if(authorized(ctx)) {
             var serializer = new Gson(); //Gson = google json
-            String reqJson = ctx.body(); //Json string format from request
-
-            ListGamesRequest req = serializer.fromJson(reqJson, ListGamesRequest.class); //serializer = Gson, makes json request from ctx body
-            ListGamesResult res = gameService.listGames(req);
+//            String reqJson = ctx.body(); //Json string format from request
+//
+//            ListGamesRequest req = serializer.fromJson(reqJson, ListGamesRequest.class); //serializer = Gson, makes json request from ctx body
+            ListGamesResult res = gameService.listGames();
             ctx.result(serializer.toJson(res)); //json response
         }
     }
