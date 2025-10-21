@@ -29,13 +29,13 @@ public class MemoryGameDAO implements GameDAO{
     @Override
     public String getBlackUser(String gameId) {
         GameData game = games.get(Integer.parseInt(gameId));
-        return game.blackUser();
+        return game.blackUsername();
     }
 
     @Override
     public String getWhiteUser(String gameId) {
         GameData game = games.get(Integer.parseInt(gameId));
-        return game.whiteUser();
+        return game.whiteUsername();
     }
 
     @Override
