@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface GameDAO {
     void clear();
-    int createGame(String gameName);
+    String createGame(String gameName);
     GameData getGame(String gameId);
     String getBlackUser(String gameId);
     String getWhiteUser(String gameId);

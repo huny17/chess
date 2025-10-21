@@ -16,11 +16,11 @@ public class GameService {
 
     public CreateGameResult createGame(CreateGameRequest req) throws GeneralException{
 
-        //if(gameDataAccess.getGame(req.gameName()) != null){
-         //   throw new GeneralException("400","Username already taken");
-        //}
+        if(req.gameName() == null){
+            throw new GeneralException("400","Please name your game");
+        }
 
-        int gameId = gameDataAccess.createGame(req.gameName());
+        String gameId = gameDataAccess.createGame(req.gameName());
 
         return new CreateGameResult(gameId);
     }
