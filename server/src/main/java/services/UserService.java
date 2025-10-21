@@ -41,6 +41,9 @@ public class UserService {
 
     public LoginResult login(LoginRequest req) throws GeneralException{
 
+        if(req.username() == null | req.password() == null){
+            throw new GeneralException("400","Username and password required");
+        }
         if(!userDataAccess.getUserMap().containsKey(req.username())){ //no user obtained
             throw new GeneralException("401","User does not exist");
         }
@@ -54,11 +57,7 @@ public class UserService {
         return new LoginResult(auth.username(), auth.authToken());
     }
 
-    public LogoutResult logout(LogoutRequest req) throws GeneralException{
-        if(authDataAccess.getAuth(req.authToken()) == null){
-            throw new GeneralException("401","Unauthorized");
-        }
-
+    public LogoutResult logout(LogoutRequest req){
         authDataAccess.deleteAuth(req.authToken());
 
         return new LogoutResult("");

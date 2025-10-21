@@ -63,7 +63,7 @@ public class Server {
         }
     }
 
-    private void logoutHandler(Context ctx) throws GeneralException{
+    private void logoutHandler(Context ctx){
         if(authorized(ctx)){
             var serializer = new Gson();
             String reqJson = ctx.body();
