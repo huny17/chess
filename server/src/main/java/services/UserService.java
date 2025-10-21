@@ -29,6 +29,9 @@ public class UserService {
         if(userDataAccess.getUser(req.username()) != null){
             throw new GeneralException("403","Username already taken");
         }
+        if(req.password() == null){
+            throw new GeneralException("400","Password is empty");
+        }
 
         UserData user = new UserData(req.username(), req.password(), req.email());
         userDataAccess.createUser(user);
@@ -57,10 +60,9 @@ public class UserService {
         return new LoginResult(auth.username(), auth.authToken());
     }
 
-    public LogoutResult logout(LogoutRequest req){
-        authDataAccess.deleteAuth(req.authToken());
-
-        return new LogoutResult("");
+    public LogoutResult logout(String authToken){
+        authDataAccess.deleteAuth(authToken);
+        return new LogoutResult(" ");
     }
 
     private String generateAuthToken() {

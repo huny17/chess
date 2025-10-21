@@ -69,9 +69,8 @@ public class Server {
     private void logoutHandler(Context ctx){
         if(authorized(ctx)){
             var serializer = new Gson();
-            String reqJson = ctx.body();
-            LogoutRequest req = serializer.fromJson(reqJson, LogoutRequest.class);
-            LogoutResult res = userService.logout(req);
+            String reqJson = ctx.header("authorization");
+            LogoutResult res = userService.logout(reqJson);
             ctx.result(serializer.toJson(res));
         }
     }
@@ -84,6 +83,7 @@ public class Server {
 
             CreateGameRequest req = serializer.fromJson(reqJson, CreateGameRequest.class);
             CreateGameResult res = gameService.createGame(req);
+
             ctx.result(serializer.toJson(res));
         }
     }
@@ -126,11 +126,10 @@ public class Server {
 
     private boolean authorized(Context ctx) {
         String authToken = ctx.header("authorization");
-        HashMap<String, AuthData> map =  authDataAccess.getAuthentications();
-        if (map.containsKey(authToken)) {
+        if (!authDataAccess.getAuthentications().containsKey(authToken)) {
             ctx.contentType("application/json");
             ctx.status(401);
-            ctx.result(new Gson().toJson(Map.of("message", "invalid authorization")));
+            ctx.result(new Gson().toJson(Map.of("message", "Error: invalid authorization")));
             return false;
         }
         return true;

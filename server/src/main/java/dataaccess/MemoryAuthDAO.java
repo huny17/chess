@@ -18,7 +18,6 @@ public class MemoryAuthDAO implements AuthDAO{
         authentications.put(auth.authToken(), auth);
     }
 
-
     //want return user or token?
     @Override
     public AuthData getAuth(String authToken) {

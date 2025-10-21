@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class MemoryGameDAO implements GameDAO{
 
     private final HashMap<Integer, GameData> games = new HashMap<>();
-    private int index = 0;
+    private int index = 1;
 
     @Override
     public void clear(){
@@ -17,13 +17,13 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public String createGame(String gameName) {
+    public int createGame(String gameName) {
         //increment in here
         //create game here
         GameData game = new GameData(index,null,null, gameName, new ChessGame());
         index += 1;
         games.put(game.id(), game);
-        return String.format("%d", index);
+        return index;
     }
 
     @Override
@@ -52,4 +52,5 @@ public class MemoryGameDAO implements GameDAO{
     public void updateGame(String gameId, GameData newGame) {
         games.put(Integer.parseInt(gameId), newGame);
     }
+
 }
