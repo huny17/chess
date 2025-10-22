@@ -29,8 +29,8 @@ public class UserService {
         if(userDataAccess.getUser(req.username()) != null){
             throw new GeneralException("403","Username already taken");
         }
-        if(req.password() == null){
-            throw new GeneralException("400","Password is empty");
+        if(req.password() == null | req.email() == null){
+            throw new GeneralException("400","Password or Email is empty");
         }
 
         UserData user = new UserData(req.username(), req.password(), req.email());
