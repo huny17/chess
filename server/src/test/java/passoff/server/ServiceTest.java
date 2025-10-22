@@ -24,4 +24,12 @@ public class ServiceTest {
         });
     }
 
+    @Test
+    public void registerWithoutPassword(){
+        var userDataAccess = new MemoryUserDAO();
+        var authDataAccess = new MemoryAuthDAO();
+        var userService = new UserService(userDataAccess, authDataAccess);
+
+        assertThrows( userService.register(new RegisterRequest("cow",null, "rat")));
+    }
 }

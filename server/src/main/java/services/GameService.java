@@ -28,12 +28,19 @@ public class GameService {
     }
 
     public JoinGameResult joinGame(JoinGameRequest req, String authToken) throws GeneralException {
+        if(req.gameID() == null | req.playerColor() ==  null){
+            throw new GeneralException("400","Please choose a Game ID or Team Color");
+        }
+        if(!req.playerColor().equals("WHITE") && !req.playerColor().equals("BLACK")){
+            throw new GeneralException("400","Team Color is invalid");
+        }
         if(req.playerColor().equals("WHITE") && gameDataAccess.getWhiteUser(req.gameID()) != null){
             throw new GeneralException("403","Color already taken");
         }
         if(req.playerColor().equals("BLACK") && gameDataAccess.getBlackUser(req.gameID()) != null){
             throw new GeneralException("403","Color already taken");
         }
+
 
         String user = authDataAccess.getUser(authToken);
 
