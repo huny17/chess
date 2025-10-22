@@ -1,4 +1,4 @@
-package passoff;
+package services;
 
 import dataaccess.GeneralException;
 import dataaccess.MemoryAuthDAO;
@@ -8,9 +8,6 @@ import model.request.*;
 import model.result.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import services.ClearService;
-import services.GameService;
-import services.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 

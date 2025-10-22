@@ -30,7 +30,7 @@ public class ChessKing extends ChessPiece {
         return null;
     }
 
-    public ChessPosition calcPos (int row, int col, ChessBoard b){
+    public ChessPosition makePos(int row, int col, ChessBoard b){
         if(canMove(row, col, b)){
             ChessPosition end = new ChessPosition(row, col);
             return end;
@@ -39,8 +39,8 @@ public class ChessKing extends ChessPiece {
     }
 
     public ChessMove calcMove(ChessPosition start, int row, int col, ChessBoard b){
-        if(calcPos(row, col, b) != null) {
-            ChessPosition end = calcPos(row, col, b);
+        if(makePos(row, col, b) != null) {
+            ChessPosition end = makePos(row, col, b);
             ChessMove m = new ChessMove(start, end, null);
             return m;
         }
