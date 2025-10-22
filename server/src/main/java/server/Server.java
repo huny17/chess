@@ -108,7 +108,8 @@ public class Server {
 //
 //            ListGamesRequest req = serializer.fromJson(reqJson, ListGamesRequest.class); //serializer = Gson, makes json request from ctx body
             ListGamesResult res = gameService.listGames();
-            ctx.result(serializer.toJson(res)); //json response
+            var res2 = serializer.toJson(res);
+            ctx.result(res2); //json response
         }
     }
 

@@ -1,5 +1,6 @@
 package passoff.server;
 
+import dataaccess.GeneralException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.UserData;
@@ -25,11 +26,11 @@ public class ServiceTest {
     }
 
     @Test
-    public void registerWithoutPassword(){
+    public void registerWithoutPassword() throws GeneralException{
         var userDataAccess = new MemoryUserDAO();
         var authDataAccess = new MemoryAuthDAO();
         var userService = new UserService(userDataAccess, authDataAccess);
 
-        assertThrows( userService.register(new RegisterRequest("cow",null, "rat")));
+        assertThrows(GeneralException.class, ()-> userService.register(new RegisterRequest("cow",null, "rat")));
     }
 }
