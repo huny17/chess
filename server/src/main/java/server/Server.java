@@ -117,9 +117,9 @@ public class Server {
     }
 
 
-    private void exceptionHandler(GeneralException E, Context ctx){
-        var message = new Gson().toJson(Map.of("message", String.format("Error: %s", E.getMessage()), "success", false));
-        int exceptionStatus = Integer.parseInt(E.getType());
+    private void exceptionHandler(GeneralException e, Context ctx){
+        var message = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage()), "success", false));
+        int exceptionStatus = Integer.parseInt(e.getType());
         ctx.status(exceptionStatus);
         ctx.json(message);
     }

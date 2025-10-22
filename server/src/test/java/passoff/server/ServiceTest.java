@@ -99,7 +99,7 @@ public class ServiceTest {
     }
 
     @Test
-    public void CreateGameCorrect(){
+    public void createGameCorrect(){
         var userDataAccess = new MemoryUserDAO();
         var authDataAccess = new MemoryAuthDAO();
         var gameDataAccess = new MemoryGameDAO();
@@ -118,7 +118,7 @@ public class ServiceTest {
     }
 
     @Test
-    public void CreateGameEmpty(){
+    public void createGameEmpty(){
         var userDataAccess = new MemoryUserDAO();
         var authDataAccess = new MemoryAuthDAO();
         var gameDataAccess = new MemoryGameDAO();
@@ -134,7 +134,7 @@ public class ServiceTest {
     }
 
     @Test
-    public void JoinGameCorrect(){
+    public void joinGameCorrect(){
         var userDataAccess = new MemoryUserDAO();
         var authDataAccess = new MemoryAuthDAO();
         var gameDataAccess = new MemoryGameDAO();
@@ -145,14 +145,14 @@ public class ServiceTest {
             model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
             userService.logout(register.authToken());
             LoginResult login = userService.login(new LoginRequest("user", "word"));
-            CreateGameResult ID = gameService.createGame(new CreateGameRequest("name"));
-            var res = gameService.joinGame(new JoinGameRequest("WHITE", Integer.toString(ID.gameID())), login.authToken());
+            CreateGameResult id = gameService.createGame(new CreateGameRequest("name"));
+            var res = gameService.joinGame(new JoinGameRequest("WHITE", Integer.toString(id.gameID())), login.authToken());
             Assertions.assertNotNull(res);
         });
     }
 
     @Test
-    public void JoinGameTeamColor(){
+    public void joinGameTeamColor(){
         var userDataAccess = new MemoryUserDAO();
         var authDataAccess = new MemoryAuthDAO();
         var gameDataAccess = new MemoryGameDAO();
@@ -163,14 +163,14 @@ public class ServiceTest {
             model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
             userService.logout(register.authToken());
             LoginResult login = userService.login(new LoginRequest("user", "word"));
-            CreateGameResult ID = gameService.createGame(new CreateGameRequest("name"));
-            gameService.joinGame(new JoinGameRequest("WHITE", Integer.toString(ID.gameID())), login.authToken());
-            gameService.joinGame(new JoinGameRequest("WHITE", Integer.toString(ID.gameID())), login.authToken());
+            CreateGameResult id = gameService.createGame(new CreateGameRequest("name"));
+            gameService.joinGame(new JoinGameRequest("WHITE", Integer.toString(id.gameID())), login.authToken());
+            gameService.joinGame(new JoinGameRequest("WHITE", Integer.toString(id.gameID())), login.authToken());
         });
     }
 
     @Test
-    public void JoinGameNullID(){
+    public void joinGameNullID(){
         var userDataAccess = new MemoryUserDAO();
         var authDataAccess = new MemoryAuthDAO();
         var gameDataAccess = new MemoryGameDAO();
@@ -187,7 +187,7 @@ public class ServiceTest {
     }
 
     @Test
-    public void JoinGameNonExistent(){
+    public void joinGameNonExistent(){
         var userDataAccess = new MemoryUserDAO();
         var authDataAccess = new MemoryAuthDAO();
         var gameDataAccess = new MemoryGameDAO();
@@ -203,7 +203,7 @@ public class ServiceTest {
     }
 
     @Test
-    public void ListGameCorrect(){
+    public void listGameCorrect(){
         var userDataAccess = new MemoryUserDAO();
         var authDataAccess = new MemoryAuthDAO();
         var gameDataAccess = new MemoryGameDAO();
@@ -214,10 +214,10 @@ public class ServiceTest {
             model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
             userService.logout(register.authToken());
             LoginResult login = userService.login(new LoginRequest("user", "word"));
-            CreateGameResult ID = gameService.createGame(new CreateGameRequest("name"));
+            CreateGameResult id = gameService.createGame(new CreateGameRequest("name"));
             gameService.createGame(new CreateGameRequest("LOL"));
             gameService.createGame(new CreateGameRequest("I shall win"));
-            gameService.joinGame(new JoinGameRequest("WHITE", Integer.toString(ID.gameID())), login.authToken());
+            gameService.joinGame(new JoinGameRequest("WHITE", Integer.toString(id.gameID())), login.authToken());
             ListGamesResult res = gameService.listGames();
             Assertions.assertNotNull(res);
         });
