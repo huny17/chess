@@ -14,7 +14,7 @@ import services.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ServiceTest {
+public class Service {
 
     @Test
     public void registerCorrect(){
