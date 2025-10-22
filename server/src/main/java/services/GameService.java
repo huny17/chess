@@ -17,7 +17,6 @@ public class GameService {
     }
 
     public CreateGameResult createGame(CreateGameRequest req) throws GeneralException{
-
         if(req.gameName() == null){
             throw new GeneralException("400","Please name your game");
         }
@@ -55,12 +54,12 @@ public class GameService {
     public JoinGameResult updateColor(JoinGameRequest req, String user){
         if(req.playerColor().equals("WHITE")){
             GameData oldGame = gameDataAccess.getGame(req.gameID());
-            GameData newGame = new GameData(oldGame.ID(), user, oldGame.blackUsername(), oldGame.gameName(), oldGame.chessGame());
+            GameData newGame = new GameData(oldGame.gameID(), user, oldGame.blackUsername(), oldGame.gameName(), oldGame.chessGame());
             gameDataAccess.updateGame(req.gameID(), newGame);
         }
         if(req.playerColor().equals("BLACK")){
             GameData oldGame = gameDataAccess.getGame(req.gameID());
-            GameData newGame = new GameData(oldGame.ID(), oldGame.whiteUsername(), req.playerColor(), oldGame.gameName(), oldGame.chessGame());
+            GameData newGame = new GameData(oldGame.gameID(), oldGame.whiteUsername(), user, oldGame.gameName(), oldGame.chessGame());
             gameDataAccess.updateGame(req.gameID(), newGame);
         }
         return new JoinGameResult("{}");

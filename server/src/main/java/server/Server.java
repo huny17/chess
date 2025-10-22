@@ -103,13 +103,10 @@ public class Server {
 
     private void listGamesHandler(Context ctx){ //created func to be called
         if(authorized(ctx)) {
-            var serializer = new Gson(); //Gson = google json
-//            String reqJson = ctx.body(); //Json string format from request
-//
-//            ListGamesRequest req = serializer.fromJson(reqJson, ListGamesRequest.class); //serializer = Gson, makes json request from ctx body
+            var serializer = new Gson();
             ListGamesResult res = gameService.listGames();
             var res2 = serializer.toJson(res);
-            ctx.result(res2); //json response
+            ctx.result(res2);
         }
     }
 

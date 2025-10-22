@@ -4,13 +4,14 @@ import chess.ChessGame;
 import model.GameData;
 import model.SimpleGameData;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
 
     private final HashMap<Integer, GameData> games = new HashMap<>();
-    private int index = 1;
+    private Integer index = 1;
 
     @Override
     public void clear(){
@@ -18,13 +19,11 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public int createGame(String gameName) {
-        //increment in here
-        //create game here
+    public Integer createGame(String gameName) {
         GameData game = new GameData(index,null,null, gameName, new ChessGame());
         index += 1;
-        games.put(game.ID(), game);
-        return game.ID();
+        games.put(game.gameID(), game);
+        return game.gameID();
     }
 
     @Override
@@ -45,7 +44,7 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public Collection<SimpleGameData> listGames() {
+    public Collection<GameData> listGames() {
         return games.values();
     }
 

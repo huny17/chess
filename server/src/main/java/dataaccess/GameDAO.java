@@ -1,12 +1,13 @@
 package dataaccess;
 
 import model.GameData;
+import model.SimpleGameData;
 
 import java.util.Collection;
 
 public interface GameDAO {
     void clear();
-    int createGame(String gameName);
+    Integer createGame(String gameName);
     GameData getGame(String gameId);
     String getBlackUser(String gameId);
     String getWhiteUser(String gameId);

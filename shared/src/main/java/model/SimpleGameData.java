@@ -2,7 +2,7 @@ package model;
 
 import chess.ChessGame;
 
-public record SimpleGameData(int ID, String whiteUsername, String blackUsername, String gameName) {
+public record SimpleGameData(Integer ID, String whiteUsername, String blackUsername, String gameName) {
 
     @Override
     public String toString() {
