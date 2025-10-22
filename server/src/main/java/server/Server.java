@@ -22,7 +22,7 @@ public class Server {
     private final AuthDAO authDataAccess;
 
     public Server() {
-        UserDAO userDataAccess = new MemoryUserDAO();
+        UserDAO userDataAccess = new MemoryUserDAO(); //mySQL
         authDataAccess = new MemoryAuthDAO();
         GameDAO gameDataAccess = new MemoryGameDAO();
         userService = new UserService(userDataAccess, authDataAccess);
