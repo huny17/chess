@@ -87,8 +87,7 @@ public class ChessPiece {
     public ChessMove calcMove(ChessPosition start, int row, int col, ChessBoard board){
         if(calcPos(row, col, board) != null) {
             ChessPosition end = calcPos(row, col, board);
-            ChessMove move = new ChessMove(start, end, null);
-            return move;
+            return new ChessMove(start, end, null);
         }
         return null;
     }
@@ -228,90 +227,6 @@ public class ChessPiece {
             }
             list.add(move);
             i+=1;
-        }
-        return list;
-    }
-
-    public ArrayList<ChessMove> king(ChessPosition start, ChessBoard board){
-        ArrayList<ChessMove> list = new ArrayList<>();
-        ChessMove move;
-
-        int i = 1;
-        if((start.getRow()+i <= 8) && (start.getColumn()+i <= 8)){
-            move = calcMove(start, start.getRow()+i, start.getColumn()+i, board);
-            if(isPiece(start.getRow()+i, start.getColumn()+i, board)!= null){
-                list.add(move);
-            }
-            else if(move != null){
-                list.add(move);
-            }
-        }
-        if((start.getRow()-i > 0) && (start.getColumn()-i > 0)){
-            move = calcMove(start, start.getRow()-i, start.getColumn()-i, board);
-            if(isPiece(start.getRow()-i, start.getColumn()-i, board)!= null){
-                list.add(move);
-            }
-            else if(move != null){
-                list.add(move);
-            }
-        }
-        if ((start.getRow()+i <= 8) && (start.getColumn()-i > 0)){
-            move = calcMove(start, start.getRow()+i, start.getColumn()-i, board);
-            if(isPiece(start.getRow()+i, start.getColumn()-i, board)!= null){
-                list.add(move);
-            }
-            else if(move != null){
-                list.add(move);
-            }
-        }
-        if ((start.getRow()-i > 0) && (start.getColumn()+i <= 8)){
-            move = calcMove(start, start.getRow()-i, start.getColumn()+i, board);
-            if(isPiece(start.getRow()-i, start.getColumn()+i, board)!= null){
-                list.add(move);
-            }
-            else if(move != null){
-                list.add(move);
-            }
-        }
-        if (start.getRow()+i <= 8){
-            move = calcMove(start, start.getRow()+i, start.getColumn(), board);
-            if(isPiece(start.getRow()+i, start.getColumn(), board)!= null){
-                list.add(move);
-            }
-            else if(move != null){
-                list.add(move);
-            }
-
-        }
-        if (start.getRow()-i > 0){
-            move = calcMove(start, start.getRow()-i, start.getColumn(), board);
-            if(isPiece(start.getRow()-i, start.getColumn(), board)!= null){
-                list.add(move);
-            }
-            else if(move != null){
-                list.add(move);
-            }
-
-        }
-        if (start.getColumn()-i > 0){
-            move = calcMove(start, start.getRow(), start.getColumn()-i, board);
-            if(isPiece(start.getRow(), start.getColumn()-i, board)!= null){
-                list.add(move);
-            }
-            else if(move != null){
-                list.add(move);
-            }
-
-        }
-        if (start.getColumn()+i <= 8){
-            move = calcMove(start, start.getRow(), start.getColumn()+i, board);
-            if(isPiece(start.getRow(), start.getColumn()+i, board)!= null){
-                list.add(move);
-            }
-            else if(move != null){
-                list.add(move);
-            }
-
         }
         return list;
     }
