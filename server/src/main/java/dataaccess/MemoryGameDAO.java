@@ -2,9 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import model.GameData;
-import model.SimpleGameData;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
