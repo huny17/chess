@@ -49,10 +49,7 @@ public class ChessPiece {
 
     public boolean canMove(int row, int col, ChessBoard board){
         ChessPosition pos= new ChessPosition(row, col);
-        if(board.getPiece(pos) == null){
-            return true;
-        }
-        if(board.getPiece(pos).getTeamColor() != pieceColor){
+        if(board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != pieceColor){
             return true;
         }
         return false;
