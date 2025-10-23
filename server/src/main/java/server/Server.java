@@ -4,13 +4,11 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
-import model.AuthData;
 import model.request.*;
 import model.result.*;
-import services.*;
+import service.*;
 import dataaccess.GeneralException;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Server {

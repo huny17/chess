@@ -1,4 +1,4 @@
-package services;
+package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.GeneralException;
@@ -6,13 +6,11 @@ import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
 import model.request.LoginRequest;
-import model.request.LogoutRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.LogoutResult;
 import model.result.RegisterResult;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 public class UserService {

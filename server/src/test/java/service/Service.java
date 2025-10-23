@@ -1,4 +1,4 @@
-package services;
+package service;
 
 import dataaccess.GeneralException;
 import dataaccess.MemoryAuthDAO;

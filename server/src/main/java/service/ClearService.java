@@ -1,9 +1,8 @@
-package services;
+package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
-import model.AuthData;
 
 public class ClearService {
 
