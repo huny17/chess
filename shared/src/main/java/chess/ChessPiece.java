@@ -46,13 +46,6 @@ public class ChessPiece {
 
     /** my code */
 
-    public boolean pawnCanMove(int row, int col, ChessBoard board){
-        ChessPosition pos = new ChessPosition(row, col);
-        if(board.getPiece(pos) == null){
-            return true;
-        }
-        return false;
-    }
 
     public boolean canMove(int row, int col, ChessBoard board){
         ChessPosition pos= new ChessPosition(row, col);
@@ -66,11 +59,19 @@ public class ChessPiece {
     }
 
     public ChessPosition isPiece(int row, int col, ChessBoard board){
-        ChessPosition pos= new ChessPosition(row, col);
+        ChessPosition pos = new ChessPosition(row, col);
         if(board.getPiece(pos) == null){
             return null;
         }
         if(board.getPiece(pos).getTeamColor() != pieceColor){
+            return pos;
+        }
+        return null;
+    }
+
+    public ChessPosition isPieceForPawn(int row, int col, ChessBoard board){
+        ChessPosition pos = new ChessPosition(row, col);
+        if(board.getPiece(pos) != null){
             return pos;
         }
         return null;
@@ -98,28 +99,67 @@ public class ChessPiece {
         if((row + rowNumber > 0) && (col + colNumber > 0) && (row + rowNumber <= 8) && (col + colNumber <= 8)) {
             ChessMove move = makeMove(start, row + rowNumber, col + colNumber, board);
             if (isPiece(row + rowNumber, col + colNumber, board) != null) {
-                list.add(move);
-                list = checkPromotion(move, list, color);
-                return list;
+                if(canPromote(row + rowNumber, color)){
+                    checkPromotion(move, list, color);
+                    return list;
+                }
+                if(move != null) {
+                    list.add(move);
+                    return list;
+                }
             }
 
         }
         return list;
     }
 
-    public ArrayList<ChessMove> pawnCalcMove(ChessPosition start, ChessBoard board, int rowNumber, int colNumber, ArrayList<ChessMove> list, ChessGame.TeamColor color){
+    public ArrayList<ChessMove> pawnCalcDoubleMove(ChessPosition start, ChessBoard board, int rowNumber, int colNumber, int path,  ArrayList<ChessMove> list, ChessGame.TeamColor color){
         int row = start.getRow();
         int col = start.getColumn();
         if((row + rowNumber > 0) && (col + colNumber > 0) && (row + rowNumber <= 8) && (col + colNumber <= 8)) {
-            ChessMove move = makeMove(start, row + rowNumber, col + colNumber, board);
-            if (isPiece(row + rowNumber, col + colNumber, board) == null) {
-                list.add(move);
-                list = checkPromotion(move, list, color);
-                return list;
+
+            boolean whaat = isPieceForPawn(row + path, col + colNumber, board) == null;
+            if (isPieceForPawn(row + rowNumber, col + colNumber, board) == null && isPieceForPawn(row + path, col + colNumber, board) == null) {
+                ChessMove move = makeMove(start, row + rowNumber, col + colNumber, board);
+                if(canPromote(row + rowNumber, color)){
+                    checkPromotion(move, list, color);
+                    return list;
+                }
+                if(move != null) {
+                    list.add(move);
+                    return list;
+                }
             }
         }
 
         return list;
+    }
+
+        public ArrayList<ChessMove> pawnCalcMove(ChessPosition start, ChessBoard board, int rowNumber, int colNumber,  ArrayList<ChessMove> list, ChessGame.TeamColor color){
+        int row = start.getRow();
+        int col = start.getColumn();
+        if((row + rowNumber > 0) && (col + colNumber > 0) && (row + rowNumber <= 8) && (col + colNumber <= 8)) {
+            if (isPiece(row + rowNumber, col + colNumber, board) == null) {
+                ChessMove move = makeMove(start, row + rowNumber, col + colNumber, board);
+                if(canPromote(row + rowNumber, color)){
+                    checkPromotion(move, list, color);
+                    return list;
+                }
+            if(move != null) {
+                list.add(move);
+                return list;
+            }
+            }
+        }
+
+        return list;
+    }
+
+    private boolean canPromote(int row, ChessGame.TeamColor color) {
+        if((color == ChessGame.TeamColor.WHITE && row == 8) | (color == ChessGame.TeamColor.BLACK && row == 1)){
+            return true;
+        }
+        return false;
     }
 
     private ArrayList<ChessMove> checkPromotion(ChessMove move,ArrayList<ChessMove> list, ChessGame.TeamColor color) {
@@ -229,26 +269,26 @@ public class ChessPiece {
         ArrayList<ChessMove> list = new ArrayList<>();
         if(board.getPiece(start).pieceColor == ChessGame.TeamColor.WHITE) {
         list = pawnCalcMove(start, board, 1, 0, list, board.getPiece(start).pieceColor);
-            if(isPiece(start.getRow()+1, start.getColumn()+1, board)!= null) {
+            if(start.getRow()+1 <= 8 && start.getColumn()+1 <= 8 && isPiece(start.getRow()+1, start.getColumn()+1, board)!= null) {
                 list = pawnCalcAttack(start, board, 1, 1, list, board.getPiece(start).pieceColor);
             }
-            if(isPiece(start.getRow()-1, start.getColumn()+1, board)!= null) {
-                list = pawnCalcAttack(start, board, -1, 1, list, board.getPiece(start).pieceColor);
+            if(start.getRow()+1 <= 8 && start.getColumn()-1 > 0 && isPiece(start.getRow()+1, start.getColumn()-1, board)!= null) {
+                list = pawnCalcAttack(start, board, 1, -1, list, board.getPiece(start).pieceColor);
             }
             if(start.getRow() == 2){
-                list = pawnCalcMove(start, board, 0, 2, list, board.getPiece(start).pieceColor);
+                list = pawnCalcDoubleMove(start, board, 2, 0, 1, list, board.getPiece(start).pieceColor);
             }
         }
         if(board.getPiece(start).pieceColor == ChessGame.TeamColor.BLACK) {
             list = pawnCalcMove(start, board, -1, 0, list, board.getPiece(start).pieceColor);
-            if(isPiece(start.getRow()+1, start.getColumn()-1, board)!= null) {
-                list = pawnCalcAttack(start, board, 1, -1, list, board.getPiece(start).pieceColor);
-            }
-            if(isPiece(start.getRow()-1, start.getColumn()-1, board)!= null) {
+            if(start.getRow()-1 > 0 && start.getColumn()-1 > 0 && isPiece(start.getRow()-1, start.getColumn()-1, board)!= null) {
                 list = pawnCalcAttack(start, board, -1, -1, list, board.getPiece(start).pieceColor);
             }
+            if(start.getRow()-1 > 0 && start.getColumn()+1 <= 8 &&  isPiece(start.getRow()-1, start.getColumn()+1, board)!= null) {
+                list = pawnCalcAttack(start, board, -1, 1, list, board.getPiece(start).pieceColor);
+            }
             if(start.getRow() == 7){
-                list = pawnCalcMove(start, board, 0, -2, list, board.getPiece(start).pieceColor);
+                list = pawnCalcDoubleMove(start, board, -2, 0, -1, list, board.getPiece(start).pieceColor);
             }
         }
         return list;
