@@ -29,6 +29,22 @@ public class DatabaseManager {
         }
     }
 
+    static public void createTables() throws DataAccessException {
+        var createAuthTable = """
+                CREATE TABLE IF NOT EXISTS auth ( +
+                authToken VARCHAR(128) NOT NULL,
+                username VARCHAR(128) NOT NULL,
+                PRIMARY KEY (authToken)
+                )""";
+        try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
+             var preparedStatement = conn.prepareStatement(statement)) {
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataAccessException("failed to create database", ex);
+        }
+    }
+
+
     /**
      * Create a connection to the database and sets the catalog based upon the
      * properties specified in db.properties. Connections to the database should
