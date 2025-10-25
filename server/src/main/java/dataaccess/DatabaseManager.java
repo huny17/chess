@@ -31,10 +31,17 @@ public class DatabaseManager {
 
     static public void createTables() throws DataAccessException {
         var createAuthTable = """
-                CREATE TABLE IF NOT EXISTS auth ( +
-                authToken VARCHAR(128) NOT NULL,
-                username VARCHAR(128) NOT NULL,
-                PRIMARY KEY (authToken)
+                CREATE TABLE IF NOT EXISTS auth (
+                    authToken VARCHAR(128) NOT NULL,
+                    username VARCHAR(128) NOT NULL,
+                    PRIMARY KEY (authToken)
+                )""";
+        var createUserTable = """
+                CREATE TABLE IF NOT EXISTS auth (
+                    username VARCHAR(128) NOT NULL,
+                    password VARCHAR(128) NOT NULL,
+                    email VARCHAR(128) NOT NULL,
+                    PRIMARY KEY (username)
                 )""";
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
              var preparedStatement = conn.prepareStatement(statement)) {
