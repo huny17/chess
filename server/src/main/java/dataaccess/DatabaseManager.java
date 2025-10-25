@@ -37,11 +37,22 @@ public class DatabaseManager {
                     PRIMARY KEY (authToken)
                 )""";
         var createUserTable = """
-                CREATE TABLE IF NOT EXISTS auth (
+                CREATE TABLE IF NOT EXISTS user (
                     username VARCHAR(128) NOT NULL,
                     password VARCHAR(128) NOT NULL,
                     email VARCHAR(128) NOT NULL,
                     PRIMARY KEY (username)
+                )""";
+        var createGameTable = """
+                CREATE TABLE IF NOT EXISTS game (
+                    gameID INT NOT NULL AUTO_INCREMENT,
+                    whiteUsername VARCHAR(128) NULL,
+                    blackUsername VARCHAR(128) NULL,
+                    gameName VARCHAR(45) NULL,
+                    chessGame LONGTEXT NOT NULL,
+                    state VARCHAR(45) NULL,
+                    description VARCHAR(256) NULL,
+                    PRIMARY KEY (gameID)
                 )""";
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
              var preparedStatement = conn.prepareStatement(statement)) {
