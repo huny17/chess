@@ -29,8 +29,8 @@ public class DatabaseManager {
         }
     }
 
-    static public void updateDatabase() throws DataAccessException {
-
+    static public void createDatabaseAndTables() throws DataAccessException {
+        var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
              var preparedStatement = conn.prepareStatement(statement)) {
             preparedStatement.executeUpdate();
