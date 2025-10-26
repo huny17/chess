@@ -1,5 +1,6 @@
 package dataaccess;
 
+import memoryDAO.MemoryUserDAO;
 import model.UserData;
 import org.junit.jupiter.api.Test;
 

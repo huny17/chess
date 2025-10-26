@@ -1,10 +1,11 @@
-package dataaccess;
+/*package memoryDAO;
 
+import dataaccess.AuthDAO;
 import model.AuthData;
 
 import java.util.HashMap;
 
-public class MemoryAuthDAO implements AuthDAO{
+public class MemoryAuthDAO implements AuthDAO {
 
     private final HashMap<String, AuthData> authentications = new HashMap<>();
 
@@ -39,3 +40,4 @@ public class MemoryAuthDAO implements AuthDAO{
         return authentications;
     }
 }
+ */
