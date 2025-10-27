@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public interface UserDAO {
     void clear() throws DataAccessException;
-    UserData createUser(UserData user);
+    void createUser(UserData user) throws DataAccessException;
     UserData getUser(String username) throws DataAccessException;
     public HashMap<String, UserData> getUserMap() throws DataAccessException;
 }

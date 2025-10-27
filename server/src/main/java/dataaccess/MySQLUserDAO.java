@@ -2,15 +2,14 @@ package dataaccess;
 
 import model.UserData;
 import com.google.gson.Gson;
-import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.sql.*;
 import java.util.HashMap;
 
-import static java.sql.Types.NULL;
-
 public class MySQLUserDAO implements UserDAO {
 
-    private ExecuteUpdate update = new ExecuteUpdate();
+    private final ExecuteUpdate update = new ExecuteUpdate();
     private HashMap<String, UserData> users = new HashMap<>();
 
     @Override
@@ -20,10 +19,39 @@ public class MySQLUserDAO implements UserDAO {
     }
 
     @Override
-    public UserData createUser(UserData user) {
+    public void createUser(UserData user) throws DataAccessException{
         var statement = "INSERT INTO user (name, password, email, json) VALUES (?, ?, ?)"; //How is json being used?
-        String json = new Gson().toJson(user);
-        return new UserData(user.username(), user.password(), user.email());
+        String password = hashUserPassword(user.username(), user.password());
+        update.executeUpdate(statement, user.username(), user.password(), user.email());
+    }
+
+    String hashUserPassword(String username, String clearTextPassword) {
+        return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
+    }
+
+    boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException{
+        // read the previously hashed password from the database
+        String hashedPassword = readHashedPasswordFromDatabase(username);
+
+        return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
+    }
+
+    private Object readHashedPasswordFromDatabase(String username) throws DataAccessException{
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT password FROM user WHERE username=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, username); //getting value
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        String password = rs.getString("password");
+                        return password;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return null;
     }
 
     @Override
