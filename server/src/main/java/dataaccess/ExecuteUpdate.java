@@ -1,14 +1,12 @@
 package dataaccess;
 
 import model.UserData;
-
 import java.sql.*;
-
 import static java.sql.Types.NULL;
 
-public class ExecuteDBUpdates {
+public class ExecuteUpdate {
 
-    public int executeSQLUpdate(String statement, Object... params) throws DataAccessException{ //obj .. param ~ array
+    public int executeUpdate(String statement, Object... params) throws DataAccessException{ //obj .. param ~ array
         try(Connection con = DatabaseManager.getConnection()){
             try(PreparedStatement ps = con.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS)){ // sending to databse using sql to update
                 for(int i = 0; i < params.length; i++){  //reading through to update

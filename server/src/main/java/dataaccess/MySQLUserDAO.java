@@ -3,7 +3,7 @@ package dataaccess;
 import model.UserData;
 import com.google.gson.Gson;
 import model.UserData;
-import ExecuteDBUpdates.java;
+import ExecuteUpdate;
 import java.sql.*;
 import java.util.HashMap;
 
@@ -14,8 +14,9 @@ public class MySQLUserDAO implements UserDAO {
     private HashMap<String, UserData> users = new HashMap<>();
 
     @Override
-    public void clear(){
-        users.clear();
+    public void clear() throws DataAccessException{
+        String statement = "TRUNCATE user";
+        executeUpdate(statement);
     }
 
     @Override
@@ -26,7 +27,7 @@ public class MySQLUserDAO implements UserDAO {
     }
 
     @Override
-    public UserData getUser(String username) {
+    public UserData getUser(String username) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, password, email FROM pet WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -38,7 +39,7 @@ public class MySQLUserDAO implements UserDAO {
                 }
             }
         } catch (Exception e) {
-            throw new ResponseException(ResponseException.Code.ServerError, String.format("Unable to read data: %s", e.getMessage()));
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
@@ -50,20 +51,20 @@ public class MySQLUserDAO implements UserDAO {
         return new UserData(username, password, email);
     }
 
-    public void deleteUser(String username) throws ResponseException{
-        var statement = "DELETE FROM user WHERE username=?";
-        executeUpdate(statement, username);
-    }
-
-    public void deleteAllUsers() throws Exception{
-        String statement = "TRUNCATE user";
-        executeUpdate(statement);
-    }
-
-    //make into class to call method from
+//    public void deleteUser(String username) throws DataAccessException{
+//        var statement = "DELETE FROM user WHERE username=?";
+//        executeUpdate(statement, username);
+//    }
 
 
-    /// recommended creating tables here?
+    private final String[] createUserTable = {"""
+                CREATE TABLE IF NOT EXISTS user (
+                    username VARCHAR(128) NOT NULL,
+                    password VARCHAR(128) NOT NULL,
+                    email VARCHAR(128) NOT NULL,
+                    PRIMARY KEY (username)
+                )"""
+    };
 
 
     @Override
