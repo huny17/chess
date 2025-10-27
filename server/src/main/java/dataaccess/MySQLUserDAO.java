@@ -67,6 +67,10 @@ public class MySQLUserDAO implements UserDAO {
                 )"""
     };
 
+    private void configureDatabase() throws DataAccessException {
+        update.configureDatabase(createUserTable);
+    }
+
 
     @Override
     public HashMap<String, UserData> getUserMap() throws DataAccessException{
