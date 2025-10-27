@@ -20,17 +20,16 @@ public class MySQLUserDAO implements UserDAO {
 
     @Override
     public void createUser(UserData user) throws DataAccessException{
-        var statement = "INSERT INTO user (name, password, email, json) VALUES (?, ?, ?)"; //How is json being used?
-        String password = hashUserPassword(user.username(), user.password());
-        update.executeUpdate(statement, user.username(), user.password(), user.email());
+        var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)"; //How is json being used?
+        String hashPassword = hashUserPassword(user.password());
+        update.executeUpdate(statement, user.username(), hashPassword, user.email());
     }
 
-    String hashUserPassword(String username, String clearTextPassword) {
+    String hashUserPassword(String clearTextPassword) {
         return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
     }
 
     boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException{
-        // read the previously hashed password from the database
         String hashedPassword = readHashedPasswordFromDatabase(username);
 
         return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
@@ -56,7 +55,7 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public UserData getUser(String username) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, password, email FROM pet WHERE username=?";
+            var statement = "SELECT username, password, email FROM user WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, username); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
@@ -77,13 +76,6 @@ public class MySQLUserDAO implements UserDAO {
         var email = rs.getString("email");
         return new UserData(username, password, email);
     }
-
-
-//    public void deleteUser(String username) throws DataAccessException{
-//        var statement = "DELETE FROM user WHERE username=?";
-//        executeUpdate(statement, username);
-//    }
-
 
     private final String[] createUserTable = {"""
                 CREATE TABLE IF NOT EXISTS user (
