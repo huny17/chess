@@ -46,13 +46,27 @@ public class MySQLAuthDAO implements AuthDAO{
     }
 
     @Override
-    public String getUser(String authToken) {
-        return authentications.get(authToken).username();
+    public String getUser(String authToken) throws DataAccessException{
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, authToken FROM auth WHERE authToken=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken); //getting value
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readAuth(rs).username();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return null;
     }
 
     @Override
-    public void deleteAuth(String authToken) {
-        authentications.remove(authToken);
+    public void deleteAuth(String authToken) throws DataAccessException{
+        var statement = "DELETE FROM auth WHERE authToken=?";
+        update.executeUpdate(statement, authToken);
     }
 
     private AuthData readAuth(ResultSet rs) throws SQLException {

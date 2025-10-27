@@ -4,13 +4,10 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
-import memoryDAO.MemoryAuthDAO;
-import memoryDAO.MemoryGameDAO;
-import memoryDAO.MemoryUserDAO;
+import dataaccess.*;
 import model.request.*;
 import model.result.*;
 import service.*;
-import dataaccess.GeneralException;
 
 import java.util.Map;
 
@@ -23,9 +20,9 @@ public class Server {
     private final AuthDAO authDataAccess;
 
     public Server() {
-        UserDAO userDataAccess = new MemoryUserDAO(); //mySQL
-        authDataAccess = new MemoryAuthDAO();
-        GameDAO gameDataAccess = new MemoryGameDAO();
+        UserDAO userDataAccess = new MySQLUserDAO(); //mySQL
+        authDataAccess = new MySQLAuthDAO();
+        GameDAO gameDataAccess = new MySQLGameDAO();
         userService = new UserService(userDataAccess, authDataAccess);
         gameService = new GameService(gameDataAccess, authDataAccess);
         clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);

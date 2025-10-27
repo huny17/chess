@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GeneralException;
 import dataaccess.UserDAO;
 import model.AuthData;
@@ -10,6 +11,7 @@ import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.LogoutResult;
 import model.result.RegisterResult;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.UUID;
 
@@ -48,7 +50,7 @@ public class UserService {
         if(!userDataAccess.getUserMap().containsKey(req.username())){ //no user obtained
             throw new GeneralException("401","User does not exist");
         }
-        if(!userDataAccess.getUser(req.username()).password().equals(req.password())) {
+        if(!userDataAccess.verifyUser(req.username(), req.password())) {
             throw new GeneralException("401", "Wrong password");
         }
 
@@ -66,4 +68,5 @@ public class UserService {
     private String generateAuthToken() {
         return UUID.randomUUID().toString();
     }
+
 }
