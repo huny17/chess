@@ -3,7 +3,6 @@ package dataaccess;
 import model.UserData;
 import com.google.gson.Gson;
 import model.UserData;
-import ExecuteUpdate;
 import java.sql.*;
 import java.util.HashMap;
 
@@ -11,12 +10,13 @@ import static java.sql.Types.NULL;
 
 public class MySQLUserDAO implements UserDAO {
 
+    private ExecuteUpdate update = new ExecuteUpdate();
     private HashMap<String, UserData> users = new HashMap<>();
 
     @Override
     public void clear() throws DataAccessException{
         String statement = "TRUNCATE user";
-        executeUpdate(statement);
+        update.executeUpdate(statement);
     }
 
     @Override
@@ -51,6 +51,7 @@ public class MySQLUserDAO implements UserDAO {
         return new UserData(username, password, email);
     }
 
+
 //    public void deleteUser(String username) throws DataAccessException{
 //        var statement = "DELETE FROM user WHERE username=?";
 //        executeUpdate(statement, username);
@@ -68,8 +69,22 @@ public class MySQLUserDAO implements UserDAO {
 
 
     @Override
-    public HashMap<String, UserData> getUserMap(){
-        return users;
+    public HashMap<String, UserData> getUserMap() throws DataAccessException{
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT * FROM user";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        //for(var user : rs.next()){
+                        users.put(readUser(rs).username(),readUser(rs));
+                    }
+                }
+                return users;
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
     }
 
 }
