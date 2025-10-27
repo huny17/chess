@@ -36,15 +36,14 @@ public class MySQLUserDAO implements UserDAO {
         return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
     }
 
-    private Object readHashedPasswordFromDatabase(String username) throws DataAccessException{
+    private String readHashedPasswordFromDatabase(String username) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT password FROM user WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, username); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        String password = rs.getString("password");
-                        return password;
+                        return rs.getString("password");
                     }
                 }
             }
