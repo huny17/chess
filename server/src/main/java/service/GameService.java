@@ -26,7 +26,7 @@ public class GameService {
         return new CreateGameResult(gameId);
     }
 
-    public JoinGameResult joinGame(JoinGameRequest req, String authToken) throws GeneralException {
+    public JoinGameResult joinGame(JoinGameRequest req, String authToken) throws GeneralException, DataAccessException {
         if(req.gameID() == null | req.playerColor() ==  null){
             throw new GeneralException("400","Please choose a Game ID or Team Color");
         }
@@ -53,7 +53,7 @@ public class GameService {
         return new ListGamesResult(gameDataAccess.listGames());
     }
 
-    public JoinGameResult updateColor(JoinGameRequest req, String user) throws GeneralException{
+    public JoinGameResult updateColor(JoinGameRequest req, String user) throws GeneralException, DataAccessException{
         if(req.playerColor().equals("WHITE")){
             GameData oldGame = gameDataAccess.getGame(req.gameID());
             GameData newGame = new GameData(oldGame.gameID(), user, oldGame.blackUsername(), oldGame.gameName(), oldGame.chessGame());

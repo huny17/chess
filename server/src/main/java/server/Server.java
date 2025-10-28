@@ -48,7 +48,7 @@ public class Server {
     }
 
     //Call User Service
-    private void registerHandler(Context ctx) throws GeneralException{ //created func to be called
+    private void registerHandler(Context ctx) throws GeneralException, DataAccessException{ //created func to be called
         var serializer = new Gson(); //Gson = google json
         String reqJson = ctx.body(); //Json string format from request
 
@@ -64,7 +64,7 @@ public class Server {
         }
     }
 
-    private void logoutHandler(Context ctx){
+    private void logoutHandler(Context ctx) throws DataAccessException{
         if(authorized(ctx)){
             var serializer = new Gson();
             String reqJson = ctx.header("authorization");
@@ -74,7 +74,7 @@ public class Server {
     }
 
     //Call Game Service
-    private void createGameHandler(Context ctx) throws GeneralException{
+    private void createGameHandler(Context ctx) throws GeneralException, DataAccessException{
         if(authorized(ctx)) {
             var serializer = new Gson();
             String reqJson = ctx.body();
@@ -86,7 +86,7 @@ public class Server {
         }
     }
 
-    private void joinGameHandler(Context ctx) throws GeneralException{ //created func to be called
+    private void joinGameHandler(Context ctx) throws GeneralException, DataAccessException{ //created func to be called
         if(authorized(ctx)) {
             var serializer = new Gson();
             String reqJson = ctx.body();
@@ -99,7 +99,7 @@ public class Server {
         }
     }
 
-    private void listGamesHandler(Context ctx){ //created func to be called
+    private void listGamesHandler(Context ctx) throws DataAccessException{ //created func to be called
         if(authorized(ctx)) {
             var serializer = new Gson();
             ListGamesResult res = gameService.listGames();
@@ -122,7 +122,7 @@ public class Server {
         ctx.json(message);
     }
 
-    private boolean authorized(Context ctx) {
+    private boolean authorized(Context ctx) throws DataAccessException{
         String authToken = ctx.header("authorization");
         if (!authDataAccess.getAuthentications().containsKey(authToken)) {
             ctx.contentType("application/json");

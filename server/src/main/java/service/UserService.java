@@ -25,7 +25,7 @@ public class UserService {
         this.authDataAccess = authDataAccess;
     }
 
-    public RegisterResult register(RegisterRequest req) throws GeneralException{
+    public RegisterResult register(RegisterRequest req) throws GeneralException, DataAccessException{
         if(userDataAccess.getUser(req.username()) != null){
             throw new GeneralException("403","Username already taken");
         }
@@ -42,7 +42,7 @@ public class UserService {
         return new RegisterResult(auth.username(), auth.authToken());
     }
 
-    public LoginResult login(LoginRequest req) throws GeneralException{
+    public LoginResult login(LoginRequest req) throws GeneralException, DataAccessException{
 
         if(req.username() == null | req.password() == null){
             throw new GeneralException("400","Username and password required");
@@ -60,7 +60,7 @@ public class UserService {
         return new LoginResult(auth.username(), auth.authToken());
     }
 
-    public LogoutResult logout(String authToken){
+    public LogoutResult logout(String authToken) throws DataAccessException{
         authDataAccess.deleteAuth(authToken);
         return new LogoutResult(" ");
     }
