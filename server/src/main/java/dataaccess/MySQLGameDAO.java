@@ -2,9 +2,15 @@ package dataaccess;
 
 import chess.ChessGame;
 import model.GameData;
+import model.UserData;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
+import static java.sql.Types.NULL;
 
 public class MySQLGameDAO implements GameDAO {
 
@@ -27,8 +33,20 @@ public class MySQLGameDAO implements GameDAO {
 
     @Override
     public String getBlackUser(String gameId) {
-        GameData game = games.get(Integer.parseInt(gameId));
-        return game.blackUsername();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, password, email FROM user WHERE username=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, username); //getting value
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readGame(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return null;
     }
 
     @Override
@@ -50,6 +68,15 @@ public class MySQLGameDAO implements GameDAO {
     @Override
     public void updateGame(String gameId, GameData newGame) {
         games.put(Integer.parseInt(gameId), newGame);
+    }
+
+    private UserData readGame(ResultSet rs) throws SQLException {
+        var id = rs.getInt("id");
+        var whiteUsername = rs.getString("whiteUsername");
+        var blackUsername = rs.getString("blackUsername");
+        var gameName = rs.getString("gameName");
+        var chessGame = rs.getLong("chessGame");// need to serialize and deserialize
+        return new GameData(id, whiteUsername, blackUsername, gameName, chessGame);
     }
 
 }
