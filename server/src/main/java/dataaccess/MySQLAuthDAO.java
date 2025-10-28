@@ -22,7 +22,7 @@ public class MySQLAuthDAO implements AuthDAO{
 
     @Override
     public void createAuth(AuthData auth) throws DataAccessException{
-        var statement = "INSERT INTO auth (username, authToken) VALUES (?, ?)"; //How is json being used?
+        var statement = "INSERT INTO auth (username, authToken) VALUES (?, ?)";
         update.executeUpdate(statement, auth.username(), auth.authToken());
     }
 

@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.Collection;
 
 public interface GameDAO {
-    void clear();
+    void clear() throws DataAccessException;
     Integer createGame(String gameName);
     GameData getGame(String gameId);
     String getBlackUser(String gameId);

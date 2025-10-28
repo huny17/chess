@@ -1,7 +1,6 @@
 package dataaccess;
 
 import model.UserData;
-import com.google.gson.Gson;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
@@ -29,7 +28,7 @@ public class MySQLUserDAO implements UserDAO {
         return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
     }
 
-    boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException{
+    public boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException{
         String hashedPassword = readHashedPasswordFromDatabase(username);
 
         return BCrypt.checkpw(providedClearTextPassword, hashedPassword);

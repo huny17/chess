@@ -9,5 +9,5 @@ public interface UserDAO {
     void createUser(UserData user) throws DataAccessException;
     UserData getUser(String username) throws DataAccessException;
     public HashMap<String, UserData> getUserMap() throws DataAccessException;
-    boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException;
+    public boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException;
 }
