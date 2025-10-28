@@ -36,7 +36,43 @@ public class MySQLGameDAO implements GameDAO {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, password, email FROM user WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                ps.setString(1, username); //getting value
+                ps.setString(1, gameId); //getting value
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readGame(rs).blackUsername();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return null;
+    }
+
+    @Override
+    public String getWhiteUser(String gameId) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, password, email FROM user WHERE username=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, gameId); //getting value
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readGame(rs).whiteUsername();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return null;
+    }
+
+    @Override
+    public GameData getGame(String gameId) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, password, email FROM user WHERE username=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, gameId); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return readGame(rs);
@@ -50,17 +86,6 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public String getWhiteUser(String gameId) {
-        GameData game = games.get(Integer.parseInt(gameId));
-        return game.whiteUsername();
-    }
-
-    @Override
-    public GameData getGame(String gameId) {
-        return games.get(Integer.parseInt(gameId));
-    }
-
-    @Override
     public Collection<GameData> listGames() {
         return games.values();
     }
@@ -70,7 +95,7 @@ public class MySQLGameDAO implements GameDAO {
         games.put(Integer.parseInt(gameId), newGame);
     }
 
-    private UserData readGame(ResultSet rs) throws SQLException {
+    private GameData readGame(ResultSet rs) throws SQLException {
         var id = rs.getInt("id");
         var whiteUsername = rs.getString("whiteUsername");
         var blackUsername = rs.getString("blackUsername");
