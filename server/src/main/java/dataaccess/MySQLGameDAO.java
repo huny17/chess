@@ -16,7 +16,6 @@ public class MySQLGameDAO implements GameDAO {
 
     private final ExecuteUpdate update = new ExecuteUpdate();
     private final HashMap<Integer, GameData> games = new HashMap<>();
-    private Integer index = 1;
 
     @Override
     public void clear() throws DataAccessException{
@@ -27,16 +26,16 @@ public class MySQLGameDAO implements GameDAO {
     @Override
     public Integer createGame(String gameName) throws DataAccessException{
         var statement = "INSERT INTO user (whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?)";
-        int id = update.executeUpdate(statement, NULL, NULL, gameName, new ChessGame());
-        return id;
+        int gameId = update.executeUpdate(statement, NULL, NULL, gameName, new ChessGame());
+        return gameId;
     }
 
     @Override
-    public String getBlackUser(String gameId) {
+    public String getBlackUser(String gameID) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, password, email FROM user WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                ps.setString(1, gameId); //getting value
+                ps.setString(1, gameID); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return readGame(rs).blackUsername();
@@ -50,11 +49,11 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public String getWhiteUser(String gameId) {
+    public String getWhiteUser(String gameID) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, password, email FROM user WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                ps.setString(1, gameId); //getting value
+                ps.setString(1, gameID); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return readGame(rs).whiteUsername();
@@ -68,7 +67,7 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData getGame(String gameId) {
+    public GameData getGame(String gameId) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, password, email FROM user WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -86,22 +85,37 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public Collection<GameData> listGames() {
+    public Collection<GameData> listGames() throws DataAccessException{
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT * FROM user";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        //for(var user : rs.next()){
+                        games.put(readGame(rs).gameID(), readGame(rs));
+                    }
+                }
+                return games;
+            }
+    } catch (Exception e) {
+        throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+    }
         return games.values();
     }
 
     @Override
     public void updateGame(String gameId, GameData newGame) {
+
         games.put(Integer.parseInt(gameId), newGame);
     }
 
     private GameData readGame(ResultSet rs) throws SQLException {
-        var id = rs.getInt("id");
+        Integer gameId = rs.getInt("gameId");
         var whiteUsername = rs.getString("whiteUsername");
         var blackUsername = rs.getString("blackUsername");
         var gameName = rs.getString("gameName");
         var chessGame = rs.getLong("chessGame");// need to serialize and deserialize
-        return new GameData(id, whiteUsername, blackUsername, gameName, chessGame);
+        return new GameData(gameId, whiteUsername, blackUsername, gameName, chessGame);
     }
 
 }
