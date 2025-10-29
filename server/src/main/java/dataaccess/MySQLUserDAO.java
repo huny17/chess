@@ -77,12 +77,12 @@ public class MySQLUserDAO implements UserDAO {
     }
 
     private final String[] createUserTable = {"""
-                CREATE TABLE IF NOT EXISTS user (
-                    username VARCHAR(128) NOT NULL,
-                    password VARCHAR(128) NOT NULL,
-                    email VARCHAR(128) NOT NULL,
-                    PRIMARY KEY (username)
-                )"""
+        CREATE TABLE IF NOT EXISTS user (
+            username VARCHAR(128) NOT NULL,
+            password VARCHAR(128) NOT NULL,
+            email VARCHAR(128) NOT NULL,
+            PRIMARY KEY (username)
+        )"""
     };
 
     private void configureDatabase() throws DataAccessException {

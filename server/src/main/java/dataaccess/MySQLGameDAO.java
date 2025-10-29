@@ -118,4 +118,17 @@ public class MySQLGameDAO implements GameDAO {
         return new GameData(gameId, whiteUsername, blackUsername, gameName, chessGame);
     }
 
+    private final String[] createGameTable = {"""
+        CREATE TABLE IF NOT EXISTS game (
+            gameID INT NOT NULL AUTO_INCREMENT,
+            whiteUsername VARCHAR(128) NULL,
+            blackUsername VARCHAR(128) NULL,
+            gameName VARCHAR(45) NULL,
+            chessGame LONGTEXT NOT NULL,
+            state VARCHAR(45) NULL,
+            description VARCHAR(256) NULL,
+            PRIMARY KEY (gameID)
+        )"""
+    };
+
 }
