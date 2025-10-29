@@ -22,6 +22,7 @@ public class MySQLAuthDAO implements AuthDAO{
 
     @Override
     public void createAuth(AuthData auth) throws DataAccessException{
+        configureAuthTable();
         var statement = "INSERT INTO auth (username, authToken) VALUES (?, ?)";
         update.executeUpdate(statement, auth.username(), auth.authToken());
     }
@@ -83,7 +84,7 @@ public class MySQLAuthDAO implements AuthDAO{
                 )"""
     };
 
-    private void configureDatabase() throws DataAccessException {
+    public void configureAuthTable() throws DataAccessException {
         update.configureDatabase(createAuthTable);
     }
 

@@ -24,6 +24,7 @@ public class MySQLGameDAO implements GameDAO {
 
     @Override
     public Integer createGame(String gameName) throws DataAccessException{
+        configureGameTable();
         var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?)";
         return update.executeUpdate(statement, NULL, NULL, gameName, serializeChessGame(new ChessGame()));
     }
@@ -138,7 +139,7 @@ public class MySQLGameDAO implements GameDAO {
         )"""
     };
 
-    private void configureDatabase() throws DataAccessException {
+    public void configureGameTable() throws DataAccessException {
         update.configureDatabase(createGameTable);
     }
 

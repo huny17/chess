@@ -16,7 +16,7 @@ public class GameService {
         this.authDataAccess = authDataAccess;
     }
 
-    public CreateGameResult createGame(CreateGameRequest req) throws GeneralException{
+    public CreateGameResult createGame(CreateGameRequest req) throws GeneralException, DataAccessException{
         if(req.gameName() == null){
             throw new GeneralException("400","Please name your game");
         }
@@ -48,7 +48,7 @@ public class GameService {
         return updateColor(req, user);
     }
 
-    public ListGamesResult listGames(){
+    public ListGamesResult listGames() throws DataAccessException{
 
         return new ListGamesResult(gameDataAccess.listGames());
     }

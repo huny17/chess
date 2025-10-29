@@ -19,6 +19,7 @@ public class MySQLUserDAO implements UserDAO {
 
     @Override
     public void createUser(UserData user) throws DataAccessException{
+        configureUserTable();
         var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)"; //How is json being used?
         String hashPassword = hashUserPassword(user.password());
         update.executeUpdate(statement, user.username(), hashPassword, user.email());
@@ -85,7 +86,7 @@ public class MySQLUserDAO implements UserDAO {
         )"""
     };
 
-    private void configureDatabase() throws DataAccessException {
+    public void configureUserTable() throws DataAccessException {
         update.configureDatabase(createUserTable);
     }
 

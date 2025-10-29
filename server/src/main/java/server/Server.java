@@ -11,6 +11,8 @@ import service.*;
 
 import java.util.Map;
 
+import static dataaccess.DatabaseManager.createDatabase;
+
 public class Server {
 
     private final Javalin server;
@@ -23,6 +25,7 @@ public class Server {
         UserDAO userDataAccess = new MySQLUserDAO(); //mySQL
         authDataAccess = new MySQLAuthDAO();
         GameDAO gameDataAccess = new MySQLGameDAO();
+        AuthDAO authDataAccess = new MySQLAuthDAO();
         userService = new UserService(userDataAccess, authDataAccess);
         gameService = new GameService(gameDataAccess, authDataAccess);
         clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
@@ -47,8 +50,13 @@ public class Server {
 
     }
 
+    private void createDatabase() throws DataAccessException{
+        DatabaseManager.createDatabase();
+    }
+
     //Call User Service
     private void registerHandler(Context ctx) throws GeneralException, DataAccessException{ //created func to be called
+        createDatabase();
         var serializer = new Gson(); //Gson = google json
         String reqJson = ctx.body(); //Json string format from request
 
