@@ -117,7 +117,7 @@ public class Server {
     }
 
     //Call Clear Service
-    private void clearHandler(Context ctx){
+    private void clearHandler(Context ctx) throws DataAccessException{
         clearService.clear();
         ctx.result("");
     }
