@@ -1,6 +1,5 @@
 package dataaccess;
 
-import memoryDAO.MemoryUserDAO;
 import model.UserData;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +10,8 @@ class DataAccessTest {
     @Test
     void clear() {
         var user = new UserData("joe", "j@j", "j");
-        UserDAO da = new MemoryUserDAO();
+        UserDAO da = new MySQLUserDAO();
+
         da.createUser(user);
         assertNotNull(da.getUser(user.username()));
         da.clear();
@@ -21,7 +21,7 @@ class DataAccessTest {
     @Test
     void createUser() {
         var user = new UserData("joe", "j@j", "j");
-        UserDAO da = new MemoryUserDAO();
+        UserDAO da = new MySQLUserDAO();
         da.createUser(user);
         assertNotNull(da);
     }
@@ -29,7 +29,7 @@ class DataAccessTest {
     @Test
     void getUser() {
         var user = new UserData("joe", "j@j", "j");
-        UserDAO da = new MemoryUserDAO();
+        UserDAO da = new MySQLUserDAO();
         da.createUser(user);
         assertNotNull(da.getUser(user.username()));
     }
