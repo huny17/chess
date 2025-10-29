@@ -11,26 +11,31 @@ class DataAccessTest {
     void clear() {
         var user = new UserData("joe", "j@j", "j");
         UserDAO da = new MySQLUserDAO();
-
-        da.createUser(user);
-        assertNotNull(da.getUser(user.username()));
-        da.clear();
-        assertNull(da.getUser(user.username()));
+        assertDoesNotThrow(()-> {
+            da.createUser(user);
+            assertNotNull(da.getUser(user.username()));
+            da.clear();
+            assertNull(da.getUser(user.username()));
+        });
     }
 
     @Test
     void createUser() {
         var user = new UserData("joe", "j@j", "j");
         UserDAO da = new MySQLUserDAO();
-        da.createUser(user);
-        assertNotNull(da);
+        assertDoesNotThrow(()-> {
+            da.createUser(user);
+            assertNotNull(da);
+        });
     }
 
     @Test
     void getUser() {
         var user = new UserData("joe", "j@j", "j");
         UserDAO da = new MySQLUserDAO();
-        da.createUser(user);
-        assertNotNull(da.getUser(user.username()));
+        assertDoesNotThrow(()-> {
+            da.createUser(user);
+            assertNotNull(da.getUser(user.username()));
+        });
     }
 }
