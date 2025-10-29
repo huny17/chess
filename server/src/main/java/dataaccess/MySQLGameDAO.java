@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 import model.UserData;
 
@@ -26,7 +27,8 @@ public class MySQLGameDAO implements GameDAO {
     @Override
     public Integer createGame(String gameName) throws DataAccessException{
         var statement = "INSERT INTO user (whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?)";
-        int gameId = update.executeUpdate(statement, NULL, NULL, gameName, new ChessGame());
+        String chessGame = new Gson().toJson(new ChessGame());
+        int gameId = update.executeUpdate(statement, NULL, NULL, gameName, chessGame);
         return gameId;
     }
 
@@ -95,12 +97,11 @@ public class MySQLGameDAO implements GameDAO {
                         games.put(readGame(rs).gameID(), readGame(rs));
                     }
                 }
-                return games;
+                return games.values();
             }
     } catch (Exception e) {
         throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
     }
-        return games.values();
     }
 
     @Override
