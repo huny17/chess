@@ -29,6 +29,7 @@ public class DatabaseManager {
         }
     }
 
+    /*
     static public void createDatabaseAndTables() throws DataAccessException {
         var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
@@ -76,6 +77,7 @@ public class DatabaseManager {
             throw new DataAccessException("failed to create database", ex);
         }
     }
+     */
 
 
     /**

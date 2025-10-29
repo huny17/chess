@@ -3,8 +3,6 @@ package dataaccess;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
-import model.UserData;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,16 +24,14 @@ public class MySQLGameDAO implements GameDAO {
 
     @Override
     public Integer createGame(String gameName) throws DataAccessException{
-        var statement = "INSERT INTO user (whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?)";
-        String chessGame = new Gson().toJson(new ChessGame());
-        int gameId = update.executeUpdate(statement, NULL, NULL, gameName, chessGame);
-        return gameId;
+        var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?)";
+        return update.executeUpdate(statement, NULL, NULL, gameName, serializeChessGame(new ChessGame()));
     }
 
     @Override
     public String getBlackUser(String gameID) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, password, email FROM user WHERE username=?";
+            var statement = "SELECT blackUsername FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, gameID); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
@@ -53,7 +49,7 @@ public class MySQLGameDAO implements GameDAO {
     @Override
     public String getWhiteUser(String gameID) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, password, email FROM user WHERE username=?";
+            var statement = "SELECT whiteUsername FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, gameID); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
@@ -69,11 +65,11 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData getGame(String gameId) throws DataAccessException{
+    public GameData getGame(String gameID) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, password, email FROM user WHERE username=?";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, chessGame FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                ps.setString(1, gameId); //getting value
+                ps.setString(1, gameID); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return readGame(rs);
@@ -89,7 +85,7 @@ public class MySQLGameDAO implements GameDAO {
     @Override
     public Collection<GameData> listGames() throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT * FROM user";
+            var statement = "SELECT * FROM game";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
@@ -105,9 +101,11 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public void updateGame(String gameId, GameData newGame) {
+    public void updateGame(String gameId, GameData newGame) throws DataAccessException{
+        ChessGame theGame = newGame.chessGame();
 
-        games.put(Integer.parseInt(gameId), newGame);
+        var statement = "UPDATE game SET chessGame=? WHERE gameID=?";
+        update.executeUpdate(statement, Integer.parseInt(gameId), serializeChessGame(theGame));
     }
 
     private GameData readGame(ResultSet rs) throws SQLException {
@@ -115,8 +113,16 @@ public class MySQLGameDAO implements GameDAO {
         var whiteUsername = rs.getString("whiteUsername");
         var blackUsername = rs.getString("blackUsername");
         var gameName = rs.getString("gameName");
-        var chessGame = rs.getLong("chessGame");// need to serialize and deserialize
-        return new GameData(gameId, whiteUsername, blackUsername, gameName, chessGame);
+        var chessGame = rs.getString("chessGame");// need to serialize and deserialize
+        return new GameData(gameId, whiteUsername, blackUsername, gameName, deserializeChessGame(chessGame));
+    }
+
+    private ChessGame deserializeChessGame(String game){
+        return new Gson().fromJson(game, ChessGame.class);
+    }
+
+    private String serializeChessGame(ChessGame game){
+        return new Gson().toJson(game);
     }
 
     private final String[] createGameTable = {"""
@@ -131,5 +137,9 @@ public class MySQLGameDAO implements GameDAO {
             PRIMARY KEY (gameID)
         )"""
     };
+
+    private void configureDatabase() throws DataAccessException {
+        update.configureDatabase(createGameTable);
+    }
 
 }
