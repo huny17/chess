@@ -30,13 +30,13 @@ public class MySQLGameDAO implements GameDAO {
     public Integer createGame(String gameName) throws DataAccessException{
         configureGameTable();
         var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?)";
-        return update.executeUpdate(statement, NULL, NULL, gameName, serializeChessGame(new ChessGame()));
+        return update.executeUpdate(statement, null, null, gameName, serializeChessGame(new ChessGame()));
     }
 
     @Override
     public String getBlackUser(String gameID) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT blackUsername FROM game WHERE gameID=?";
+            var statement = "SELECT * FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, gameID); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
@@ -54,7 +54,7 @@ public class MySQLGameDAO implements GameDAO {
     @Override
     public String getWhiteUser(String gameID) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT whiteUsername FROM game WHERE gameID=?";
+            var statement = "SELECT * FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, Integer.parseInt(gameID)); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
@@ -70,11 +70,11 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData getGame(String gameID) throws DataAccessException{
+    public GameData getGame(int gameID) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                ps.setInt(1, Integer.parseInt(gameID)); //getting value
+                ps.setInt(1, gameID);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
 

@@ -30,7 +30,7 @@ public class GameService {
         if(req.gameID() == null | req.playerColor() ==  null){
             throw new GeneralException("400","Please choose a Game ID or Team Color");
         }
-        if(gameDataAccess.getGame(req.gameID()) == null){
+        if(gameDataAccess.getGame(Integer.parseInt(req.gameID())) == null){
             throw new GeneralException("400","Game ID does not exist");
         }
         if(!req.playerColor().equals("WHITE") && !req.playerColor().equals("BLACK")){
@@ -55,12 +55,12 @@ public class GameService {
 
     public JoinGameResult updateColor(JoinGameRequest req, String user) throws GeneralException, DataAccessException{
         if(req.playerColor().equals("WHITE")){
-            GameData oldGame = gameDataAccess.getGame(req.gameID());
+            GameData oldGame = gameDataAccess.getGame(Integer.parseInt(req.gameID()));
             GameData newGame = new GameData(oldGame.gameID(), user, oldGame.blackUsername(), oldGame.gameName(), oldGame.chessGame());
             gameDataAccess.updateGame(req.gameID(), newGame);
         }
         if(req.playerColor().equals("BLACK")){
-            GameData oldGame = gameDataAccess.getGame(req.gameID());
+            GameData oldGame = gameDataAccess.getGame(Integer.parseInt(req.gameID()));
             GameData newGame = new GameData(oldGame.gameID(), oldGame.whiteUsername(), user, oldGame.gameName(), oldGame.chessGame());
             gameDataAccess.updateGame(req.gameID(), newGame);
         }

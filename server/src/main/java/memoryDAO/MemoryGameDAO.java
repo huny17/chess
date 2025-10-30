@@ -38,8 +38,8 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData getGame(String gameId) {
-        return games.get(Integer.parseInt(gameId));
+    public GameData getGame(int gameId) {
+        return games.get(gameId);
     }
 
     @Override
