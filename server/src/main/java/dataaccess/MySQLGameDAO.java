@@ -16,6 +16,10 @@ public class MySQLGameDAO implements GameDAO {
     private final ExecuteUpdate update = new ExecuteUpdate();
     private final HashMap<Integer, GameData> games = new HashMap<>();
 
+    public MySQLGameDAO() throws DataAccessException{
+        configureGameTable();
+    }
+
     @Override
     public void clear() throws DataAccessException{
         String statement = "TRUNCATE game";

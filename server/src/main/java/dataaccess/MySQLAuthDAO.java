@@ -14,6 +14,10 @@ public class MySQLAuthDAO implements AuthDAO{
     private final ExecuteUpdate update = new ExecuteUpdate();
     private final HashMap<String, AuthData> authentications = new HashMap<>();
 
+    public MySQLAuthDAO() throws DataAccessException{
+        configureAuthTable();
+    }
+
     @Override
     public void clear() throws DataAccessException{
         String statement = "TRUNCATE auth";

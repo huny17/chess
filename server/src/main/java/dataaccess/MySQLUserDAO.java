@@ -8,6 +8,10 @@ import java.util.HashMap;
 
 public class MySQLUserDAO implements UserDAO {
 
+    public MySQLUserDAO() throws DataAccessException{
+        configureUserTable();
+    }
+
     private final ExecuteUpdate update = new ExecuteUpdate();
     private HashMap<String, UserData> users = new HashMap<>();
 
