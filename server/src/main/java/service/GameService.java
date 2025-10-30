@@ -57,12 +57,12 @@ public class GameService {
         if(req.playerColor().equals("WHITE")){
             GameData oldGame = gameDataAccess.getGame(Integer.parseInt(req.gameID()));
             GameData newGame = new GameData(oldGame.gameID(), user, oldGame.blackUsername(), oldGame.gameName(), oldGame.chessGame());
-            gameDataAccess.updateGame(req.gameID(), newGame);
+            gameDataAccess.updateWhiteTeam(req.gameID(), newGame);
         }
         if(req.playerColor().equals("BLACK")){
             GameData oldGame = gameDataAccess.getGame(Integer.parseInt(req.gameID()));
             GameData newGame = new GameData(oldGame.gameID(), oldGame.whiteUsername(), user, oldGame.gameName(), oldGame.chessGame());
-            gameDataAccess.updateGame(req.gameID(), newGame);
+            gameDataAccess.updateBlackTeam(req.gameID(), newGame);
         }
         return new JoinGameResult("{}");
     }

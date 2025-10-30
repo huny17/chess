@@ -112,8 +112,22 @@ public class MySQLGameDAO implements GameDAO {
         ChessGame theGame = newGame.chessGame();
 
         var statement = "UPDATE game SET chessGame=? WHERE gameID=?";
-        update.executeUpdate(statement, Integer.parseInt(gameID), serializeChessGame(theGame));
+        update.executeUpdate(statement, serializeChessGame(theGame), Integer.parseInt(gameID));
     }
+
+    @Override
+    public void updateWhiteTeam(String gameID, GameData game) throws DataAccessException{
+            var statement = "UPDATE game SET whiteUsername=? WHERE gameID=?";
+            update.executeUpdate(statement, game.whiteUsername(), Integer.parseInt(gameID));
+
+    }
+
+    @Override
+    public void updateBlackTeam(String gameID, GameData game) throws DataAccessException{
+        var statement = "UPDATE game SET blackUsername=? WHERE gameID=?";
+        update.executeUpdate(statement, game.blackUsername(), Integer.parseInt(gameID));
+    }
+
 
     private GameData readGame(ResultSet rs) throws SQLException {
         Integer gameID = rs.getInt("gameID");

@@ -52,4 +52,13 @@ public class MemoryGameDAO implements GameDAO {
         games.put(Integer.parseInt(gameId), newGame);
     }
 
+    @Override
+    public void updateWhiteTeam(String gameId, GameData newGame) {
+        games.put(Integer.parseInt(gameId), newGame);
+    }
+
+    @Override
+    public void updateBlackTeam(String gameId, GameData newGame) {
+        games.put(Integer.parseInt(gameId), newGame);
+    }
 }
