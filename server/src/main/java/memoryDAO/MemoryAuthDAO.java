@@ -1,4 +1,4 @@
-/*package memoryDAO;
+package memoryDAO;
 
 import dataaccess.AuthDAO;
 import model.AuthData;
@@ -40,4 +40,4 @@ public class MemoryAuthDAO implements AuthDAO {
         return authentications;
     }
 }
- */
+

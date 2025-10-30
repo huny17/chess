@@ -21,9 +21,9 @@ public class GameService {
             throw new GeneralException("400","Please name your game");
         }
 
-        int gameId = gameDataAccess.createGame(req.gameName());
+        int gameID = gameDataAccess.createGame(req.gameName());
 
-        return new CreateGameResult(gameId);
+        return new CreateGameResult(gameID);
     }
 
     public JoinGameResult joinGame(JoinGameRequest req, String authToken) throws GeneralException, DataAccessException {

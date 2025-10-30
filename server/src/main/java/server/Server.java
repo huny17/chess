@@ -5,6 +5,9 @@ import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 import dataaccess.*;
+import memoryDAO.MemoryAuthDAO;
+import memoryDAO.MemoryGameDAO;
+import memoryDAO.MemoryUserDAO;
 import model.request.*;
 import model.result.*;
 import service.*;
@@ -19,11 +22,23 @@ public class Server {
     private final UserService userService;
     private final GameService gameService;
     private final ClearService clearService;
+    AuthDAO authDataAccess;
 
-    public Server(){
-        UserDAO userDataAccess = new MySQLUserDAO(); //mySQL
-        GameDAO gameDataAccess = new MySQLGameDAO();
-        AuthDAO authDataAccess = new MySQLAuthDAO();
+    public Server() {
+        UserDAO userDataAccess; //mySQL
+        GameDAO gameDataAccess;
+
+        try {
+            DatabaseManager.createDatabase();
+            userDataAccess = new MySQLUserDAO(); //mySQL
+            gameDataAccess = new MySQLGameDAO();
+            authDataAccess = new MySQLAuthDAO();
+        }catch(DataAccessException e){
+            userDataAccess = new MemoryUserDAO(); //mySQL
+            gameDataAccess = new MemoryGameDAO();
+            authDataAccess = new MemoryAuthDAO();
+        }
+
         userService = new UserService(userDataAccess, authDataAccess);
         gameService = new GameService(gameDataAccess, authDataAccess);
         clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
@@ -46,10 +61,6 @@ public class Server {
         /*exception*/
         server.exception(GeneralException.class, this::exceptionHandler);
 
-    }
-
-    private void createDatabase() throws DataAccessException{
-        DatabaseManager.createDatabase();
     }
 
     //Call User Service

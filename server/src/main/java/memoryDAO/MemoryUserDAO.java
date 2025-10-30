@@ -1,5 +1,6 @@
-/* package memoryDAO;
+package memoryDAO;
 
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.UserData;
 import java.util.HashMap;
@@ -28,5 +29,9 @@ public class MemoryUserDAO implements UserDAO {
         return users;
     }
 
+    @Override
+    public boolean verifyUser(String username, String providedClearTextPassword){
+        return true;
+    }
+
 }
-*/

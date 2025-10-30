@@ -56,7 +56,7 @@ public class MySQLGameDAO implements GameDAO {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT whiteUsername FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                ps.setString(1, gameID); //getting value
+                ps.setInt(1, Integer.parseInt(gameID)); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return readGame(rs).whiteUsername();
@@ -72,12 +72,14 @@ public class MySQLGameDAO implements GameDAO {
     @Override
     public GameData getGame(String gameID) throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, chessGame FROM game WHERE gameID=?";
+            var statement = "SELECT * FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                ps.setString(1, gameID); //getting value
+                ps.setInt(1, Integer.parseInt(gameID)); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return readGame(rs);
+
+                        GameData g = readGame(rs);
+                        return g;
                     }
                 }
             }
@@ -106,20 +108,20 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public void updateGame(String gameId, GameData newGame) throws DataAccessException{
+    public void updateGame(String gameID, GameData newGame) throws DataAccessException{
         ChessGame theGame = newGame.chessGame();
 
         var statement = "UPDATE game SET chessGame=? WHERE gameID=?";
-        update.executeUpdate(statement, Integer.parseInt(gameId), serializeChessGame(theGame));
+        update.executeUpdate(statement, Integer.parseInt(gameID), serializeChessGame(theGame));
     }
 
     private GameData readGame(ResultSet rs) throws SQLException {
-        Integer gameId = rs.getInt("gameId");
+        Integer gameID = rs.getInt("gameID");
         var whiteUsername = rs.getString("whiteUsername");
         var blackUsername = rs.getString("blackUsername");
         var gameName = rs.getString("gameName");
         var chessGame = rs.getString("chessGame");// need to serialize and deserialize
-        return new GameData(gameId, whiteUsername, blackUsername, gameName, deserializeChessGame(chessGame));
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, deserializeChessGame(chessGame));
     }
 
     private ChessGame deserializeChessGame(String game){

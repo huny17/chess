@@ -30,7 +30,7 @@ public class ExecuteUpdate {
     }
 
     public void configureDatabase(String[] createStatements) throws DataAccessException{
-        DatabaseManager.createDatabase();
+        //DatabaseManager.createDatabase();
         try (Connection conn = DatabaseManager.getConnection()){
             for (String statement : createStatements){
                 try (var preparedStatement = conn.prepareStatement(statement)){

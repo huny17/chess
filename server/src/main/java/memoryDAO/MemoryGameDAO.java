@@ -1,4 +1,4 @@
-/*package memoryDAO;
+package memoryDAO;
 
 import chess.ChessGame;
 import dataaccess.GameDAO;
@@ -52,4 +52,4 @@ public class MemoryGameDAO implements GameDAO {
         games.put(Integer.parseInt(gameId), newGame);
     }
 
-}*/
+}

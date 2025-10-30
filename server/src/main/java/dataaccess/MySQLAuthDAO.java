@@ -26,9 +26,8 @@ public class MySQLAuthDAO implements AuthDAO{
 
     @Override
     public void createAuth(AuthData auth) throws DataAccessException{
-        configureAuthTable();
-        var statement = "INSERT INTO auth (username, authToken) VALUES (?, ?)";
-        update.executeUpdate(statement, auth.username(), auth.authToken());
+        var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+        update.executeUpdate(statement, auth.authToken(), auth.username());
     }
 
     //want return user or token?
@@ -75,8 +74,8 @@ public class MySQLAuthDAO implements AuthDAO{
     }
 
     private AuthData readAuth(ResultSet rs) throws SQLException {
-        var username = rs.getString("username");
         var authToken = rs.getString("authToken");
+        var username = rs.getString("username");
         return new AuthData(username, authToken);
     }
 
@@ -95,12 +94,14 @@ public class MySQLAuthDAO implements AuthDAO{
     @Override
     public HashMap<String, AuthData> getAuthentications() throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT * FROM user";
+            var statement = "SELECT username, authToken FROM auth";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         //for(var user : rs.next()){
-                        authentications.put(readAuth(rs).username(),readAuth(rs));
+
+                        AuthData a = readAuth(rs);
+                        authentications.put(readAuth(rs).authToken(), a);
                     }
                 }
                 return authentications;
