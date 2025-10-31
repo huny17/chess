@@ -316,7 +316,7 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()){ return false;}
         ChessPiece piece = (ChessPiece) o;
         return (pieceColor.equals(piece.pieceColor) && type.equals(piece.type));
     }

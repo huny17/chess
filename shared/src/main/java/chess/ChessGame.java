@@ -226,7 +226,7 @@ public class ChessGame {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()){ return false;}
         ChessGame chessGame = (ChessGame) o;
         return movesAreValid == chessGame.movesAreValid && Objects.equals(currentBoard, chessGame.currentBoard) && Objects.equals(oldBoard, chessGame.oldBoard) && turn == chessGame.turn && Objects.equals(pos, chessGame.pos);
     }

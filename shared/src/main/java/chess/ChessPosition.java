@@ -26,7 +26,6 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
-        //throw new RuntimeException("Not implemented");
         return row;
     }
 
@@ -35,14 +34,13 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
-        //throw new RuntimeException("Not implemented");
         return col;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o){ return true;}
+        if (o == null || getClass() != o.getClass()){ return false;}
         ChessPosition position = (ChessPosition) o;
         return row == position.row && col == position.col;
     }
