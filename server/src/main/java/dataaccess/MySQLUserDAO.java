@@ -13,7 +13,7 @@ public class MySQLUserDAO implements UserDAO {
     }
 
     private final ExecuteUpdate update = new ExecuteUpdate();
-    private HashMap<String, UserData> users = new HashMap<>();
+    private final HashMap<String, UserData> users = new HashMap<>();
 
     @Override
     public void clear() throws DataAccessException{

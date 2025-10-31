@@ -59,7 +59,8 @@ public class Server {
         /*clear*/
         server.delete("db", this::clearHandler);
         /*exception*/
-        server.exception(GeneralException.class, this::exceptionHandler);
+        server.exception(GeneralException.class, this::generalExceptionHandler);
+        server.exception(DataAccessException.class, this::dataExceptionHandler);
 
     }
 
@@ -132,9 +133,16 @@ public class Server {
     }
 
 
-    private void exceptionHandler(GeneralException e, Context ctx){
+    private void generalExceptionHandler(GeneralException e, Context ctx){
         var message = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage()), "success", false));
         int exceptionStatus = Integer.parseInt(e.getType());
+        ctx.status(exceptionStatus);
+        ctx.json(message);
+    }
+
+    private void dataExceptionHandler(DataAccessException e, Context ctx){
+        var message = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage()), "success", false));
+        int exceptionStatus = 500;
         ctx.status(exceptionStatus);
         ctx.json(message);
     }
