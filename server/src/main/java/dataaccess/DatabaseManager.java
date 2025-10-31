@@ -29,56 +29,6 @@ public class DatabaseManager {
         }
     }
 
-    /*
-    static public void createDatabaseAndTables() throws DataAccessException {
-        var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
-        try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
-             var preparedStatement = conn.prepareStatement(statement)) {
-            preparedStatement.executeUpdate();
-
-            conn.setCatalog("chess");
-
-            var createAuthTable = """
-                CREATE TABLE IF NOT EXISTS auth (
-                    authToken VARCHAR(128) NOT NULL,
-                    username VARCHAR(128) NOT NULL,
-                    PRIMARY KEY (authToken)
-                )""";
-            var createUserTable = """
-                CREATE TABLE IF NOT EXISTS user (
-                    username VARCHAR(128) NOT NULL,
-                    password VARCHAR(128) NOT NULL,
-                    email VARCHAR(128) NOT NULL,
-                    PRIMARY KEY (username)
-                )""";
-            var createGameTable = """
-                CREATE TABLE IF NOT EXISTS game (
-                    gameID INT NOT NULL AUTO_INCREMENT,
-                    whiteUsername VARCHAR(128) NULL,
-                    blackUsername VARCHAR(128) NULL,
-                    gameName VARCHAR(45) NULL,
-                    chessGame LONGTEXT NOT NULL,
-                    state VARCHAR(45) NULL,
-                    description VARCHAR(256) NULL,
-                    PRIMARY KEY (gameID)
-                )""";
-
-            try (var createAuthTableStatement = conn.prepareStatement(createAuthTable)) {
-                createAuthTableStatement.executeUpdate();
-            }
-            try (var createUserTableStatement = conn.prepareStatement(createUserTable)) {
-                createUserTableStatement.executeUpdate();
-            }
-            try (var createGameTableStatement = conn.prepareStatement(createGameTable)) {
-                createGameTableStatement.executeUpdate();
-            }
-
-        } catch (SQLException ex) {
-            throw new DataAccessException("failed to create database", ex);
-        }
-    }
-     */
-
 
     /**
      * Create a connection to the database and sets the catalog based upon the
