@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
-import static java.sql.Types.NULL;
 
 public class MySQLGameDAO implements GameDAO {
 
@@ -42,8 +41,7 @@ public class MySQLGameDAO implements GameDAO {
                 ps.setString(1, gameID); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        String b = readGame(rs).blackUsername();
-                        return b;
+                        return readGame(rs).blackUsername();
                     }
                 }
             }
@@ -96,9 +94,6 @@ public class MySQLGameDAO implements GameDAO {
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        var g = readGame(rs);
-                        var r = readGame(rs).gameID();
-
                         games.put(readGame(rs).gameID(), readGame(rs));
                     }
                 }
