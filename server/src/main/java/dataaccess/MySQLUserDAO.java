@@ -18,6 +18,7 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public void clear() throws DataAccessException{
         String statement = "TRUNCATE user";
+        users.clear();
         update.executeUpdate(statement);
     }
 

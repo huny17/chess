@@ -21,6 +21,7 @@ public class MySQLAuthDAO implements AuthDAO{
     @Override
     public void clear() throws DataAccessException{
         String statement = "TRUNCATE auth";
+        authentications.clear();
         update.executeUpdate(statement);
     }
 
@@ -70,6 +71,7 @@ public class MySQLAuthDAO implements AuthDAO{
     @Override
     public void deleteAuth(String authToken) throws DataAccessException{
         var statement = "DELETE FROM auth WHERE authToken=?";
+        authentications.remove(authToken);
         update.executeUpdate(statement, authToken);
     }
 

@@ -23,6 +23,7 @@ public class MySQLGameDAO implements GameDAO {
     @Override
     public void clear() throws DataAccessException{
         String statement = "TRUNCATE game";
+        games.clear();
         update.executeUpdate(statement);
     }
 
