@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import passoff.server.TestServerFacade;
 import server.Server;
 
+import java.util.Collection;
+
 import static org.eclipse.jetty.util.LazyList.isEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,6 +71,12 @@ static void stop(){server.stop();}
          assertNotNull(userAccess);
      });
  }
+
+    @Test
+    void longUser() {
+        UserData user = new UserData("joe", "123", "some really long thing, not sure how long I officially need to make it but like it needs to be unreasonably long almost like it needs to cause a length issue as was set when the table was made.");
+        assertThrows(DataAccessException.class, ()-> userAccess.createUser(user));
+    }
 
     @Test
     void userInjectionDefense() {
@@ -180,7 +188,7 @@ static void stop(){server.stop();}
     }
 
     @Test
-    void joinGame() {
+    void joinGameBlack() {
         assertDoesNotThrow(()-> {
             userAccess.createUser(user);
             gameAccess.createGame("test");
@@ -189,6 +197,30 @@ static void stop(){server.stop();}
             gameAccess.updateBlackTeam("1", updateGame);
             GameData theGame = gameAccess.getGame(1);
             assertEquals(theGame.blackUsername(), user.username());
+        });
+    }
+
+    @Test
+    void longJoin() {
+        assertDoesNotThrow(()-> {
+            userAccess.createUser(user);
+            gameAccess.createGame("test");
+            assertNotNull(gameAccess.getGame(1));
+            GameData updateGame = new GameData(1, null, "joeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "test", new ChessGame());
+            assertThrows(DataAccessException.class, ()-> gameAccess.updateBlackTeam("1", updateGame));
+        });
+    }
+
+    @Test
+    void joinGameWhite() {
+        assertDoesNotThrow(()-> {
+            userAccess.createUser(user);
+            gameAccess.createGame("test");
+            assertNotNull(gameAccess.getGame(1));
+            GameData updateGame = new GameData(1, "joe", "jill", "test", new ChessGame());
+            gameAccess.updateWhiteTeam("1", updateGame);
+            GameData theGame = gameAccess.getGame(1);
+            assertEquals(theGame.whiteUsername(), user.username());
         });
     }
 
