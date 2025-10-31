@@ -42,7 +42,8 @@ public class MySQLGameDAO implements GameDAO {
                 ps.setString(1, gameID); //getting value
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return readGame(rs).blackUsername();
+                        String b = readGame(rs).blackUsername();
+                        return b;
                     }
                 }
             }
@@ -78,9 +79,7 @@ public class MySQLGameDAO implements GameDAO {
                 ps.setInt(1, gameID);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-
-                        GameData g = readGame(rs);
-                        return g;
+                        return readGame(rs);
                     }
                 }
             }
@@ -96,8 +95,10 @@ public class MySQLGameDAO implements GameDAO {
             var statement = "SELECT * FROM game";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        //for(var user : rs.next()){
+                    while (rs.next()) {
+                        var g = readGame(rs);
+                        var r = readGame(rs).gameID();
+
                         games.put(readGame(rs).gameID(), readGame(rs));
                     }
                 }

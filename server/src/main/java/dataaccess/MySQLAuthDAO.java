@@ -29,6 +29,7 @@ public class MySQLAuthDAO implements AuthDAO{
     public void createAuth(AuthData auth) throws DataAccessException{
         var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
         update.executeUpdate(statement, auth.authToken(), auth.username());
+        authentications.put(auth.authToken(), auth);
     }
 
     //want return user or token?
