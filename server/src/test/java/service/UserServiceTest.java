@@ -2,9 +2,9 @@ package service;
 
 import dataaccess.GeneralException;
 import dataaccess.*;
-import memoryDAO.MemoryAuthDAO;
-import memoryDAO.MemoryGameDAO;
-import memoryDAO.MemoryUserDAO;
+import memory.MemoryAuthDAO;
+import memory.MemoryGameDAO;
+import memory.MemoryUserDAO;
 import model.request.*;
 import model.result.*;
 import org.junit.jupiter.api.Assertions;

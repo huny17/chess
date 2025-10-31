@@ -1,4 +1,4 @@
-package memoryDAO;
+package memory;
 
 import chess.ChessGame;
 import dataaccess.GameDAO;
