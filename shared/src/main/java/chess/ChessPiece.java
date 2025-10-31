@@ -44,9 +44,6 @@ public class ChessPiece {
         return type;
     }
 
-    /** my code */
-
-
     public boolean canMove(int row, int col, ChessBoard board){
         ChessPosition pos= new ChessPosition(row, col);
         if(board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != pieceColor){
@@ -76,8 +73,7 @@ public class ChessPiece {
 
     public ChessPosition makePos(int row, int col, ChessBoard board){
         if(canMove(row, col, board)){
-            ChessPosition end = new ChessPosition(row, col);
-            return end;
+            return new ChessPosition(row, col);
         }
         return null;
     }
@@ -97,15 +93,13 @@ public class ChessPiece {
             ChessMove move = makeMove(start, row + rowNumber, col + colNumber, board);
             if (isPiece(row + rowNumber, col + colNumber, board) != null) {
                 if(canPromote(row + rowNumber, color)){
-                    checkPromotion(move, list, color);
-                    return list;
+                    return checkPromotion(move, list, color);
                 }
                 if(move != null) {
                     list.add(move);
                     return list;
                 }
             }
-
         }
         return list;
     }
@@ -114,13 +108,10 @@ public class ChessPiece {
         int row = start.getRow();
         int col = start.getColumn();
         if((row + rowNumber > 0) && (col + colNumber > 0) && (row + rowNumber <= 8) && (col + colNumber <= 8)) {
-
-            boolean whaat = isPieceForPawn(row + path, col + colNumber, board) == null;
             if (isPieceForPawn(row + rowNumber, col + colNumber, board) == null && isPieceForPawn(row + path, col + colNumber, board) == null) {
                 ChessMove move = makeMove(start, row + rowNumber, col + colNumber, board);
                 if(canPromote(row + rowNumber, color)){
-                    checkPromotion(move, list, color);
-                    return list;
+                    return checkPromotion(move, list, color);
                 }
                 if(move != null) {
                     list.add(move);
@@ -128,7 +119,6 @@ public class ChessPiece {
                 }
             }
         }
-
         return list;
     }
 
@@ -142,13 +132,12 @@ public class ChessPiece {
                     checkPromotion(move, list, color);
                     return list;
                 }
-            if(move != null) {
-                list.add(move);
-                return list;
-            }
+                if(move != null) {
+                    list.add(move);
+                    return list;
+                }
             }
         }
-
         return list;
     }
 
