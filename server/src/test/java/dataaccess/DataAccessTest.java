@@ -2,22 +2,15 @@ package dataaccess;
 
 import chess.*;
 import model.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import passoff.server.TestServerFacade;
 import server.Server;
-
-import java.util.Collection;
-
-import static org.eclipse.jetty.util.LazyList.isEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DataAccessTest {
-    private static final UserData user = new UserData("joe", "j@j", "j");
-    private static final GameData joinedWhiteGame = new GameData(1, "joe", null, "test", new ChessGame());
-    private static final GameData joinedBlackGame = new GameData(1, null, "joe", "test", new ChessGame());
+    private static final UserData TEST_USER = new UserData("joe", "j@j", "j");
+    private static final GameData JOINED_WHITE_GAME = new GameData(1, "joe", null, "test", new ChessGame());
+    private static final GameData JOINED_BLACK_GAME = new GameData(1, null, "joe", "test", new ChessGame());
     private static Server server;
     private static TestServerFacade fakeServer;
     private static UserDAO userAccess;
@@ -49,8 +42,8 @@ static void stop(){server.stop();}
 @Test
  void clear() {
     assertDoesNotThrow(()-> {
-         userAccess.createUser(user);
-         assertNotNull(userAccess.getUser(user.username()));
+         userAccess.createUser(TEST_USER);
+         assertNotNull(userAccess.getUser(TEST_USER.username()));
          assertNotNull(authAccess);
          authAccess.createAuth(new AuthData("c", "123"));
          gameAccess.createGame("test");
@@ -58,7 +51,7 @@ static void stop(){server.stop();}
          userAccess.clear();
          gameAccess.clear();
          authAccess.clear();
-         assertNull(userAccess.getUser(user.username()));
+         assertNull(userAccess.getUser(TEST_USER.username()));
          assertNull(authAccess.getUser("123"));
          assertNull(gameAccess.getGame(1));
      });
@@ -67,7 +60,7 @@ static void stop(){server.stop();}
  @Test
  void createUser() {
      assertDoesNotThrow(()-> {
-         userAccess.createUser(user);
+         userAccess.createUser(TEST_USER);
          assertNotNull(userAccess);
      });
  }
@@ -90,7 +83,7 @@ static void stop(){server.stop();}
     @Test
     void createAuth() {
         assertDoesNotThrow(()-> {
-            userAccess.createUser(user);
+            userAccess.createUser(TEST_USER);
             assertNotNull(authAccess);
         });
     }
@@ -124,7 +117,7 @@ static void stop(){server.stop();}
  @Test
  void createGame() {
      assertDoesNotThrow(()-> {
-        userAccess.createUser(user);
+        userAccess.createUser(TEST_USER);
         gameAccess.createGame("test");
         assertNotNull(gameAccess);
      });
@@ -132,14 +125,14 @@ static void stop(){server.stop();}
 
     @Test
     void longGameName(){
-        assertDoesNotThrow(()->userAccess.createUser(user));
+        assertDoesNotThrow(()->userAccess.createUser(TEST_USER));
         assertThrows(DataAccessException.class, ()-> gameAccess.createGame("some really long thing, not sure how long I officially need to make it but like it needs to be unreasonably long almost like it needs to cause a length issue as was set when the table was made."));
     }
 
     @Test
     void getGame() {
         assertDoesNotThrow(()-> {
-            userAccess.createUser(user);
+            userAccess.createUser(TEST_USER);
             gameAccess.createGame("test");
             assertNotNull(gameAccess.getGame(1));
         });
@@ -148,9 +141,9 @@ static void stop(){server.stop();}
     @Test
     void getWhiteUsername() {
         assertDoesNotThrow(()-> {
-            userAccess.createUser(user);
+            userAccess.createUser(TEST_USER);
             gameAccess.createGame("test");
-            gameAccess.updateWhiteTeam("1", joinedWhiteGame);
+            gameAccess.updateWhiteTeam("1", JOINED_WHITE_GAME);
             assertNotNull(gameAccess.getWhiteUser("1"));
             gameAccess.createGame("number2");
             assertNull(gameAccess.getWhiteUser("2"));
@@ -160,9 +153,9 @@ static void stop(){server.stop();}
     @Test
     void getBlackUsername() {
         assertDoesNotThrow(()-> {
-            userAccess.createUser(user);
+            userAccess.createUser(TEST_USER);
             gameAccess.createGame("test");
-            gameAccess.updateBlackTeam("1", joinedBlackGame);
+            gameAccess.updateBlackTeam("1", JOINED_BLACK_GAME);
             assertNotNull(gameAccess.getBlackUser("1"));
             assertEquals("joe", gameAccess.getBlackUser("1"));
             gameAccess.createGame("number2");
@@ -173,7 +166,7 @@ static void stop(){server.stop();}
     @Test
     void updateGame() {
         assertDoesNotThrow(()-> {
-            userAccess.createUser(user);
+            userAccess.createUser(TEST_USER);
             gameAccess.createGame("test");
             assertNotNull(gameAccess.getGame(1));
             ChessBoard board = new ChessGame().getBoard();
@@ -190,20 +183,20 @@ static void stop(){server.stop();}
     @Test
     void joinGameBlack() {
         assertDoesNotThrow(()-> {
-            userAccess.createUser(user);
+            userAccess.createUser(TEST_USER);
             gameAccess.createGame("test");
             assertNotNull(gameAccess.getGame(1));
             GameData updateGame = new GameData(1, null, "joe", "test", new ChessGame());
             gameAccess.updateBlackTeam("1", updateGame);
             GameData theGame = gameAccess.getGame(1);
-            assertEquals(theGame.blackUsername(), user.username());
+            assertEquals(theGame.blackUsername(), TEST_USER.username());
         });
     }
 
     @Test
     void longJoin() {
         assertDoesNotThrow(()-> {
-            userAccess.createUser(user);
+            userAccess.createUser(TEST_USER);
             gameAccess.createGame("test");
             assertNotNull(gameAccess.getGame(1));
             GameData updateGame = new GameData(1, null, "joeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "test", new ChessGame());
@@ -214,20 +207,20 @@ static void stop(){server.stop();}
     @Test
     void joinGameWhite() {
         assertDoesNotThrow(()-> {
-            userAccess.createUser(user);
+            userAccess.createUser(TEST_USER);
             gameAccess.createGame("test");
             assertNotNull(gameAccess.getGame(1));
             GameData updateGame = new GameData(1, "joe", "jill", "test", new ChessGame());
             gameAccess.updateWhiteTeam("1", updateGame);
             GameData theGame = gameAccess.getGame(1);
-            assertEquals(theGame.whiteUsername(), user.username());
+            assertEquals(theGame.whiteUsername(), TEST_USER.username());
         });
     }
 
     @Test
     void listGames() {
         assertDoesNotThrow(()-> {
-            userAccess.createUser(user);
+            userAccess.createUser(TEST_USER);
             gameAccess.createGame("test");
             gameAccess.createGame("Aye");
             gameAccess.createGame("yo");
@@ -240,7 +233,7 @@ static void stop(){server.stop();}
     @Test
     void listEmptyGames() {
         assertDoesNotThrow(()-> {
-            userAccess.createUser(user);
+            userAccess.createUser(TEST_USER);
             assertEquals(0, gameAccess.listGames().toArray().length);
         });
     }

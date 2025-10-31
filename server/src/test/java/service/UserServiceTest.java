@@ -8,11 +8,39 @@ import memory.MemoryUserDAO;
 import model.request.*;
 import model.result.*;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import passoff.server.TestServerFacade;
+import server.Server;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
+    private static UserDAO userDataAccess; //mySQL
+    private static AuthDAO authDataAccess;
+    private static GameDAO gameDataAccess;
+
+    @BeforeAll
+    public static void configureDatabase() throws DataAccessException{
+        try {
+            DatabaseManager.createDatabase();
+            userDataAccess = new MySQLUserDAO(); //mySQL
+            gameDataAccess = new MySQLGameDAO();
+            authDataAccess = new MySQLAuthDAO();
+        }catch(DataAccessException e){
+            userDataAccess = new MemoryUserDAO(); //mySQL
+            gameDataAccess = new MemoryGameDAO();
+            authDataAccess = new MemoryAuthDAO();
+        }
+    }
+
+    @BeforeEach
+    public void preClear() throws DataAccessException{
+        userDataAccess.clear();
+        authDataAccess.clear();
+        gameDataAccess.clear();
+    }
 
     @Test
     public void registerCorrect(){
@@ -29,16 +57,6 @@ public class UserServiceTest {
 
     @Test
     public void registerWithoutEmail() throws GeneralException{
-        UserDAO userDataAccess; //mySQL
-        AuthDAO authDataAccess;
-
-        try {
-            userDataAccess = new MySQLUserDAO(); //mySQL
-            authDataAccess = new MySQLAuthDAO();
-        }catch(DataAccessException e){
-            userDataAccess = new MemoryUserDAO(); //mySQL
-            authDataAccess = new MemoryAuthDAO();
-        }
 
         var userService = new UserService(userDataAccess, authDataAccess);
 
@@ -48,11 +66,7 @@ public class UserServiceTest {
     @Test
     public void logoutCorrect(){
         assertDoesNotThrow(()-> {
-        var userDataAccess = new MySQLUserDAO();
-        var authDataAccess = new MySQLAuthDAO();
-        var userService = new UserService(userDataAccess, authDataAccess);
-
-
+            var userService = new UserService(userDataAccess, authDataAccess);
             model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
             userService.logout(register.authToken());
         });
@@ -60,16 +74,6 @@ public class UserServiceTest {
 
     @Test
     public void logoutWrong() throws GeneralException, DataAccessException{
-        UserDAO userDataAccess; //mySQL
-        AuthDAO authDataAccess;
-
-        try {
-            userDataAccess = new MySQLUserDAO(); //mySQL
-            authDataAccess = new MySQLAuthDAO();
-        }catch(DataAccessException e){
-            userDataAccess = new MemoryUserDAO(); //mySQL
-            authDataAccess = new MemoryAuthDAO();
-        }
         var userService = new UserService(userDataAccess, authDataAccess);
 
         model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
@@ -79,9 +83,7 @@ public class UserServiceTest {
     @Test
     public void loginCorrect(){
         assertDoesNotThrow(()-> {
-        var userDataAccess = new MySQLUserDAO();
-        var authDataAccess = new MySQLAuthDAO();
-        var userService = new UserService(userDataAccess, authDataAccess);
+            var userService = new UserService(userDataAccess, authDataAccess);
 
 
             model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
@@ -93,16 +95,6 @@ public class UserServiceTest {
 
     @Test
     public void loginWithoutPassword() throws GeneralException, DataAccessException{
-        UserDAO userDataAccess; //mySQL
-        AuthDAO authDataAccess;
-
-        try {
-            userDataAccess = new MySQLUserDAO(); //mySQL
-            authDataAccess = new MySQLAuthDAO();
-        }catch(DataAccessException e){
-            userDataAccess = new MemoryUserDAO(); //mySQL
-            authDataAccess = new MemoryAuthDAO();
-        }
         var userService = new UserService(userDataAccess, authDataAccess);
 
         model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
@@ -113,12 +105,8 @@ public class UserServiceTest {
     @Test
     public void clearData(){
         assertDoesNotThrow(()-> {
-        var userDataAccess = new MySQLUserDAO();
-        var authDataAccess = new MySQLAuthDAO();
-        var gameDataAccess = new MySQLGameDAO();
-        var userService = new UserService(userDataAccess, authDataAccess);
-        var clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
-
+            var userService = new UserService(userDataAccess, authDataAccess);
+            var clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
 
             model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
             clearService.clear();
@@ -128,12 +116,8 @@ public class UserServiceTest {
     @Test
     public void createGameCorrect(){
         assertDoesNotThrow(()-> {
-        var userDataAccess = new MySQLUserDAO();
-        var authDataAccess = new MySQLAuthDAO();
-        var gameDataAccess = new MySQLGameDAO();
-        var userService = new UserService(userDataAccess, authDataAccess);
-        var gameService = new GameService(gameDataAccess, authDataAccess);
-
+            var userService = new UserService(userDataAccess, authDataAccess);
+            var gameService = new GameService(gameDataAccess, authDataAccess);
 
             model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
             userService.logout(register.authToken());
@@ -147,21 +131,6 @@ public class UserServiceTest {
 
     @Test
     public void createGameEmpty(){
-
-        UserDAO userDataAccess; //mySQL
-        GameDAO gameDataAccess;
-        AuthDAO authDataAccess;
-
-        try {
-            DatabaseManager.createDatabase();
-            userDataAccess = new MySQLUserDAO(); //mySQL
-            gameDataAccess = new MySQLGameDAO();
-            authDataAccess = new MySQLAuthDAO();
-        }catch(DataAccessException e){
-            userDataAccess = new MemoryUserDAO(); //mySQL
-            gameDataAccess = new MemoryGameDAO();
-            authDataAccess = new MemoryAuthDAO();
-        }
         var userService = new UserService(userDataAccess, authDataAccess);
         var gameService = new GameService(gameDataAccess, authDataAccess);
 
@@ -176,11 +145,8 @@ public class UserServiceTest {
     @Test
     public void joinGameCorrect(){
         assertDoesNotThrow(()-> {
-        var userDataAccess = new MySQLUserDAO();
-        var authDataAccess = new MySQLAuthDAO();
-        var gameDataAccess = new MySQLGameDAO();
-        var userService = new UserService(userDataAccess, authDataAccess);
-        var gameService = new GameService(gameDataAccess, authDataAccess);
+            var userService = new UserService(userDataAccess, authDataAccess);
+            var gameService = new GameService(gameDataAccess, authDataAccess);
 
 
             model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
@@ -194,20 +160,6 @@ public class UserServiceTest {
 
     @Test
     public void joinGameTeamColor(){
-        UserDAO userDataAccess; //mySQL
-        GameDAO gameDataAccess;
-        AuthDAO authDataAccess;
-
-        try {
-            DatabaseManager.createDatabase();
-            userDataAccess = new MySQLUserDAO(); //mySQL
-            gameDataAccess = new MySQLGameDAO();
-            authDataAccess = new MySQLAuthDAO();
-        }catch(DataAccessException e){
-            userDataAccess = new MemoryUserDAO(); //mySQL
-            gameDataAccess = new MemoryGameDAO();
-            authDataAccess = new MemoryAuthDAO();
-        }
         var userService = new UserService(userDataAccess, authDataAccess);
         var gameService = new GameService(gameDataAccess, authDataAccess);
 
@@ -223,20 +175,6 @@ public class UserServiceTest {
 
     @Test
     public void joinGameNullID(){
-        UserDAO userDataAccess; //mySQL
-        GameDAO gameDataAccess;
-        AuthDAO authDataAccess;
-
-        try {
-            DatabaseManager.createDatabase();
-            userDataAccess = new MySQLUserDAO(); //mySQL
-            gameDataAccess = new MySQLGameDAO();
-            authDataAccess = new MySQLAuthDAO();
-        }catch(DataAccessException e){
-            userDataAccess = new MemoryUserDAO(); //mySQL
-            gameDataAccess = new MemoryGameDAO();
-            authDataAccess = new MemoryAuthDAO();
-        }
         var userService = new UserService(userDataAccess, authDataAccess);
         var gameService = new GameService(gameDataAccess, authDataAccess);
 
@@ -251,20 +189,6 @@ public class UserServiceTest {
 
     @Test
     public void joinGameNonExistent(){
-        UserDAO userDataAccess; //mySQL
-        GameDAO gameDataAccess;
-        AuthDAO authDataAccess;
-
-        try {
-            DatabaseManager.createDatabase();
-            userDataAccess = new MySQLUserDAO(); //mySQL
-            gameDataAccess = new MySQLGameDAO();
-            authDataAccess = new MySQLAuthDAO();
-        }catch(DataAccessException e){
-            userDataAccess = new MemoryUserDAO(); //mySQL
-            gameDataAccess = new MemoryGameDAO();
-            authDataAccess = new MemoryAuthDAO();
-        }
         var userService = new UserService(userDataAccess, authDataAccess);
         var gameService = new GameService(gameDataAccess, authDataAccess);
 
@@ -278,20 +202,6 @@ public class UserServiceTest {
 
     @Test
     public void listGameCorrect(){
-        UserDAO userDataAccess; //mySQL
-        GameDAO gameDataAccess;
-        AuthDAO authDataAccess;
-
-        try {
-            DatabaseManager.createDatabase();
-            userDataAccess = new MySQLUserDAO(); //mySQL
-            gameDataAccess = new MySQLGameDAO();
-            authDataAccess = new MySQLAuthDAO();
-        }catch(DataAccessException e){
-            userDataAccess = new MemoryUserDAO(); //mySQL
-            gameDataAccess = new MemoryGameDAO();
-            authDataAccess = new MemoryAuthDAO();
-        }
         var userService = new UserService(userDataAccess, authDataAccess);
         var gameService = new GameService(gameDataAccess, authDataAccess);
 
