@@ -58,11 +58,15 @@ public class ServerFacade {
         if(!isSuccessful(status)){
             var body = response.body();
             if(body != null){
-                throw Exception.fromJson(body);
+                throw Exception(); //.fromJson(body);
             }
             throw new Exception();
         }
+        return null;
+    }
 
+    private boolean isSuccessful(int status){
+        return status / 100 == 2; //checking if 200 status code?
     }
 
 }
