@@ -172,7 +172,9 @@ Server --> Client: 200\n{}
 end
 
 
+# Phase 5 notes
 
+anything client and server uses should be in shared
 
 
 
