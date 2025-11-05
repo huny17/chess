@@ -72,14 +72,41 @@ public class ChessClient {
     }
 
     public String login(String... params) throws Exception{
-        if(params.length >= 1){
+        if(params.length == 2){
             state = State.SIGNEDIN;
-            visitorName = String.join("-", params);
+            visitorName = String.join("-", params[0]);
             return String.format("LOGGED_IN %s", visitorName);
         }
         throw new Exception();
     }
 
-    public String help()
+    public String register(String... params) throws Exception{
+        if(params.length == 3){
+            state = State.SIGNEDIN;
+            visitorName = String.join("-", params[0]);
+            return String.format("LOGGED_IN %s", visitorName);
+        }
+        throw new Exception();
+    }
+
+    public String help(){
+        if(state == State.SIGNEDOUT){
+            return """
+                    register <username> <password> <email> - to create an account
+                    login <username> <password> - to play chess
+                    quit - playing chess
+                    help - with possible commands
+                    """;
+        }
+        return """
+                create <name> - a game
+                list - games
+                join <ID> [WHITE|BLACK] - a game
+                observe <ID> - a game
+                logout - when you are done
+                quit - playing chess
+                help - with possible commands
+                """;
+    }
 
 }
