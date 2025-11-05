@@ -22,9 +22,9 @@ public class ServerFacade {
     }
 
     public Collection<GameData> listGames() throws Exception{
-        var request = buildRequest("GET", "", ):
+        var request = buildRequest("GET", "", null):
         var response = sendRequest(request);
-        return handleResponse(response, )
+        return handleResponse(response, Collection<GameData>.class);
     }
 
     private HttpRequest buildRequest(String method, String path, Object body){
