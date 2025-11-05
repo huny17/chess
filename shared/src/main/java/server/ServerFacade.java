@@ -44,4 +44,25 @@ public class ServerFacade {
             return BodyPublishers.noBody();
         }
     }
+
+    private HttpResponse<String> sendRequest(HttpRequest request) throws Exception{
+        try{
+            return client.send(request, BodyHandlers.ofString());
+        }catch (Exception e){
+            throw new Exception();
+        }
+    }
+
+    private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws Exception{
+        var status = response.statusCode();
+        if(!isSuccessful(status)){
+            var body = response.body();
+            if(body != null){
+                throw Exception.fromJson(body);
+            }
+            throw new Exception();
+        }
+
+    }
+
 }
