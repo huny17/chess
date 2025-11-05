@@ -54,9 +54,32 @@ public class ChessClient {
         try{
             String[] tokens = input.toLowerCase.split(" ");
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
+            String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd){
+                case "login" -> login();
+                case "register" -> register();
+                case "logout" -> logout();
+                case "create game" -> createGame();
+                case "list games" -> listGames();
+                case "play game" -> playGame();
+                case "observe games" -> observeGame();
+                case "quit" -> "quit";
+                default -> help();
+            };
         }catch(Exception e){
             return e.getMessage();
         }
     }
+
+    public String login(String... params) throws Exception{
+        if(params.length >= 1){
+            state = State.SIGNEDIN;
+            visitorName = String.join("-", params);
+            return String.format("LOGGED_IN %s", visitorName);
+        }
+        throw new Exception();
+    }
+
+    public String help()
 
 }
