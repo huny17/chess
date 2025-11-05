@@ -89,6 +89,24 @@ public class ChessClient {
         throw new Exception();
     }
 
+    public String logout(String... params) throws Exception{
+        assertSignedIn();
+        return "LOGGED_OUT";
+    }
+
+    public String createGame(String name) throws Exception{
+        assertSignedIn();
+        //create game
+        return String.format("Game %s created", name);
+    }
+
+    public String listGame() throws Exception{
+        assertSignedIn();
+        //list game
+        return //listed games
+    }
+
+
     public String help(){
         if(state == State.SIGNEDOUT){
             return """
@@ -107,6 +125,12 @@ public class ChessClient {
                 quit - playing chess
                 help - with possible commands
                 """;
+    }
+
+    private void assertSignedIn() throws Exception{
+        if(state == State.SIGNEDOUT){
+            throw new Exception();
+        }
     }
 
 }
