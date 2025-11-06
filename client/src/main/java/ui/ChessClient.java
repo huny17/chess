@@ -17,7 +17,7 @@ public class ChessClient {
     private State state = State.SIGNEDOUT;
 
     public ChessClient(String serverUrl) throws Exception {
-        server = new ServerFacade();
+        server = new ServerFacade(serverUrl);
 
     }
 
@@ -53,14 +53,14 @@ public class ChessClient {
 
     public String eval(String input){
         try{
-            String[] tokens = input.toLowerCase.split(" ");
+            String[] tokens = input.toLowerCase().split(" ");
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
             String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd){
-                case "login" -> login();
-                case "register" -> register();
+                case "login" -> login(params);
+                case "register" -> register(params);
                 case "logout" -> logout();
-                case "create game" -> createGame();
+                case "create game" -> createGame(params);
                 case "list games" -> listGames();
                 case "play game" -> playGame();
                 case "observe games" -> observeGame();
@@ -92,21 +92,26 @@ public class ChessClient {
 
     public String logout(String... params) throws Exception{
         assertSignedIn();
+        state = State.SIGNEDOUT;
         return "LOGGED_OUT";
     }
 
-    public String createGame(String name) throws Exception{
+    public String createGame(String... params) throws Exception{
         assertSignedIn();
-        //create game
-        return String.format("Game %s created", name);
+        if(params.length == 1) {
+            //create game
+            return String.format("Game %s created", params[0]);
+        }
+        throw new Exception();
     }
 
-    public String listGame() throws Exception{
+    public String listGames() throws Exception{
         assertSignedIn();
         //list game
         return //listed games
     }
 
+    public
 
     public String help(){
         if(state == State.SIGNEDOUT){
