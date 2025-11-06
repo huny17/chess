@@ -21,10 +21,17 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+    public UserData addUser(UserData user) throws Exception{
+        var request = buildRequest("POST", "", user);
+        var response = sendRequest(request);
+        return handleResponse(response, UserData.class);
+    }
+
+
     public Collection<GameData> listGames() throws Exception{
         var request = buildRequest("GET", "", null);
         var response = sendRequest(request);
-        return handleResponse(response, Collection<GameData>.class);
+        return handleResponse(response, Collection.class);
     }
 
     private HttpRequest buildRequest(String method, String path, Object body){
@@ -58,7 +65,7 @@ public class ServerFacade {
         if(!isSuccessful(status)){
             var body = response.body();
             if(body != null){
-                throw Exception(); //.fromJson(body);
+                throw Exception.fromJson(body);
             }
             throw new Exception();
         }
