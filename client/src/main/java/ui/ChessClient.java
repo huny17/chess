@@ -1,15 +1,13 @@
 package ui;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Scanner;
-
 import com.google.gson.Gson;
 import model.*;
 import server.ServerFacade;
-
 import javax.management.Notification;
 import static ui.EscapeSequences.*;
-
 
 public class ChessClient {
     private String visitorName = null;
@@ -18,7 +16,6 @@ public class ChessClient {
 
     public ChessClient(String serverUrl) throws Exception {
         server = new ServerFacade(serverUrl);
-
     }
 
     public void run() {
@@ -30,7 +27,6 @@ public class ChessClient {
         while (!result.equals("quit")){
             printPrompt();
             String line = scanner.nextLine();
-
             try{
                 result = eval(line);
                 System.out.print(result);
@@ -62,8 +58,8 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "create game" -> createGame(params);
                 case "list games" -> listGames();
-                case "play game" -> playGame();
-                case "observe games" -> observeGame();
+                case "play game" -> joinGame();
+                case "observe games" -> joinGame();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -107,11 +103,46 @@ public class ChessClient {
 
     public String listGames() throws Exception{
         assertSignedIn();
-        //list game
-        return //listed games
+        Collection<GameData> games = server.listGames();
+        var result = new StringBuilder();
+        var gson = new Gson();
+        for (GameData game : games) {
+            result.append(gson.toJson(game)).append('\n');
+        }
+        return result.toString();
     }
 
-    public
+    public String joinGame(String... params) throws Exception{
+        assertSignedIn();
+        if(params.length == 2) {
+            joiningGame(params);
+        }
+        if(params.length == 1) {
+            joiningGame(params);
+        }
+        throw new Exception();
+    }
+
+    public String joiningGame(String... params) throws Exception {
+        try{
+            int id = Integer.parseInt(params[0]);
+            GameData game = getGame(id);
+            if(game != null){
+                return String.format(); //give board?
+            }
+        }catch(NumberFormatException ignored){
+        }
+        throw new Exception();
+    }
+
+    private GameData getGame(int id) throws Exception{
+        for(GameData game : server.listGames()){
+            if(game.gameID() == id){
+                return game;
+            }
+        }
+        return null;
+    }
 
     public String help(){
         if(state == State.SIGNEDOUT){
@@ -138,5 +169,4 @@ public class ChessClient {
             throw new Exception();
         }
     }
-
 }
