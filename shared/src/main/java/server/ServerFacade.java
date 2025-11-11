@@ -22,14 +22,21 @@ public class ServerFacade {
     }
 
     public UserData addUser(UserData user) throws Exception{
-        var request = buildRequest("POST", "", user);
+        var request = buildRequest("POST", "/user", user);
+        var response = sendRequest(request);
+        return handleResponse(response, UserData.class);
+    }
+
+    public UserData loginUser(String username, String password) throws Exception{
+
+        var request = buildRequest("POST", "/session", );
         var response = sendRequest(request);
         return handleResponse(response, UserData.class);
     }
 
 
     public Collection<GameData> listGames() throws Exception{
-        var request = buildRequest("GET", "", null);
+        var request = buildRequest("GET", "/game", null);
         var response = sendRequest(request);
         return handleResponse(response, Collection.class);
     }
@@ -65,7 +72,7 @@ public class ServerFacade {
         if(!isSuccessful(status)){
             var body = response.body();
             if(body != null){
-                throw Exception.fromJson(body);
+                throw new Exception();
             }
             throw new Exception();
         }

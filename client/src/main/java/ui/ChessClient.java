@@ -59,7 +59,7 @@ public class ChessClient {
                 case "create game" -> createGame(params);
                 case "list games" -> listGames();
                 case "play game" -> joinGame();
-                case "observe games" -> joinGame();
+                case "observe games" -> joinGame(); //observe function?
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -71,6 +71,7 @@ public class ChessClient {
     public String login(String... params) throws Exception{
         if(params.length == 2){
             state = State.SIGNEDIN;
+            AuthData loggedIn = server.addUser(new AuthData(params[0], params[1]));
             visitorName = String.join("-", params[0]);
             return String.format("LOGGED_IN %s", visitorName);
         }
@@ -79,14 +80,15 @@ public class ChessClient {
 
     public String register(String... params) throws Exception{
         if(params.length == 3){
+            UserData registered = server.addUser(new UserData(params[0], params[1], params[2]));
             state = State.SIGNEDIN;
-            visitorName = String.join("-", params[0]);
+            visitorName = String.join("-", registered.username());
             return String.format("LOGGED_IN %s", visitorName);
         }
         throw new Exception();
     }
 
-    public String logout(String... params) throws Exception{
+    public String logout() throws Exception{
         assertSignedIn();
         state = State.SIGNEDOUT;
         return "LOGGED_OUT";
@@ -117,9 +119,6 @@ public class ChessClient {
         if(params.length == 2) {
             joiningGame(params);
         }
-        if(params.length == 1) {
-            joiningGame(params);
-        }
         throw new Exception();
     }
 
@@ -128,7 +127,7 @@ public class ChessClient {
             int id = Integer.parseInt(params[0]);
             GameData game = getGame(id);
             if(game != null){
-                return String.format(); //give board?
+                return; //give board?
             }
         }catch(NumberFormatException ignored){
         }
