@@ -58,8 +58,8 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "create game" -> createGame(params);
                 case "list games" -> listGames();
-                case "play game" -> joinGame();
-                case "observe games" -> joinGame(); //observe function?
+                case "play game" -> join();
+                case "observe games" -> join(); //observe function?
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -71,7 +71,7 @@ public class ChessClient {
     public String login(String... params) throws Exception{
         if(params.length == 2){
             state = State.SIGNEDIN;
-            AuthData loggedIn = server.addUser(new AuthData(params[0], params[1]));
+            AuthData loggedIn = server.loginUser(params[0], params[1]));
             visitorName = String.join("-", params[0]);
             return String.format("LOGGED_IN %s", visitorName);
         }
@@ -97,8 +97,8 @@ public class ChessClient {
     public String createGame(String... params) throws Exception{
         assertSignedIn();
         if(params.length == 1) {
-            //create game
-            return String.format("Game %s created", params[0]);
+            GameData game = server.createGame(params);
+            return String.format("Game %s created", game.gameName());
         }
         throw new Exception();
     }
@@ -114,25 +114,23 @@ public class ChessClient {
         return result.toString();
     }
 
-    public String joinGame(String... params) throws Exception{
+    public String join(String... params) throws Exception{
         assertSignedIn();
         if(params.length == 2) {
-            joiningGame(params);
+            try{
+                int id = Integer.parseInt(params[0]);
+                GameData game = getGame(id);
+                if(game != null){
+                    GameData game = server.joinGame(params);
+                    return; //give board?
+                }
+            }catch(NumberFormatException ignored){
+            }
+            throw new Exception();
         }
         throw new Exception();
     }
 
-    public String joiningGame(String... params) throws Exception {
-        try{
-            int id = Integer.parseInt(params[0]);
-            GameData game = getGame(id);
-            if(game != null){
-                return; //give board?
-            }
-        }catch(NumberFormatException ignored){
-        }
-        throw new Exception();
-    }
 
     private GameData getGame(int id) throws Exception{
         for(GameData game : server.listGames()){

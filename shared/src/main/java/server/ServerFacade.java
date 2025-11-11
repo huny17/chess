@@ -27,11 +27,22 @@ public class ServerFacade {
         return handleResponse(response, UserData.class);
     }
 
-    public UserData loginUser(String username, String password) throws Exception{
-
-        var request = buildRequest("POST", "/session", );
+    public UserData loginUser(String... params) throws Exception{
+        var request = buildRequest("POST", "/session", params);
         var response = sendRequest(request);
         return handleResponse(response, UserData.class);
+    }
+
+    public GameData createGame(String... params) throws Exception{
+        var request = buildRequest("POST", "/game", params);
+        var response = sendRequest(request);
+        return handleResponse(response, GameData.class);
+    }
+
+    public GameData joinGame(String... params) throws Exception{
+        var request = buildRequest("PUT", "/game", params);
+        var response = sendRequest(request);
+        return handleResponse(response, GameData.class);
     }
 
 
@@ -69,7 +80,7 @@ public class ServerFacade {
 
     private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws Exception{
         var status = response.statusCode();
-        if(!isSuccessful(status)){
+        if(!(status == 200)){
             var body = response.body();
             if(body != null){
                 throw new Exception();
@@ -77,10 +88,6 @@ public class ServerFacade {
             throw new Exception();
         }
         return null;
-    }
-
-    private boolean isSuccessful(int status){
-        return status / 100 == 2; //checking if 200 status code?
     }
 
 }
