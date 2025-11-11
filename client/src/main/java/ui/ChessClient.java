@@ -71,8 +71,8 @@ public class ChessClient {
     public String login(String... params) throws Exception{
         if(params.length == 2){
             state = State.SIGNEDIN;
-            AuthData loggedIn = server.loginUser(params[0], params[1]));
-            visitorName = String.join("-", params[0]);
+            UserData loggedIn = server.loginUser(params[0], params[1]);
+            visitorName = String.join("-", loggedIn.username());
             return String.format("LOGGED_IN %s", visitorName);
         }
         throw new Exception();
@@ -119,9 +119,9 @@ public class ChessClient {
         if(params.length == 2) {
             try{
                 int id = Integer.parseInt(params[0]);
-                GameData game = getGame(id);
-                if(game != null){
-                    GameData game = server.joinGame(params);
+                GameData findGame = getGame(id);
+                if(findGame != null){
+                    GameData connectGame = server.joinGame(params);
                     return; //give board?
                 }
             }catch(NumberFormatException ignored){
