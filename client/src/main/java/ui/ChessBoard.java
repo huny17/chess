@@ -11,7 +11,7 @@ public class ChessBoard {
     private static final int LINE_WIDTH_IN_PADDED_CHARS = 1;
 
     private static final String EMPTY = " ";
-    private static final String piece
+    //private static final String piece;
 
     private static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -55,19 +55,46 @@ public class ChessBoard {
         setBlack(out);
     }
 
-    private static void drawRowOfSquares(PrintStream out){
-        for(){
-            for(){
-                if(){
+    private static void drawChessBoard(PrintStream out){
+        for(int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow){
+            drawRowOfSquares(out);
+            if(boardRow < BOARD_SIZE_IN_SQUARES-1){
+                drawHorizontalLine(out);
+                setBlack(out);
+            }
+        }
+    }
 
+    private static void drawRowOfSquares(PrintStream out){
+        for(int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow){
+            for(int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
+                if(squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2){
+                    int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS/2;
+                    int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
+                    out.print(EMPTY.repeat(prefixLength));
+                    //printPlayer(out, );
+                    out.print(EMPTY.repeat(suffixLength));
                 }
                 else{
-
+                    out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
                 }
-                if{
-
+                if(boardCol < BOARD_SIZE_IN_SQUARES - 1){
+                    setRed(out);
+                    out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
                 }
+                setBlack(out);
             }
+            out.println();
+        }
+    }
+
+    private static void drawHorizontalLine(PrintStream out){
+        int boardSizeInSpaces = BOARD_SIZE_IN_SQUARES*SQUARE_SIZE_IN_PADDED_CHARS+(BOARD_SIZE_IN_SQUARES-1)*LINE_WIDTH_IN_PADDED_CHARS;
+        for(int lineRow = 0; lineRow < LINE_WIDTH_IN_PADDED_CHARS; ++ lineRow){
+            setRed(out);
+            out.print(EMPTY.repeat(boardSizeInSpaces));
+            setBlack(out);
+            out.println();
         }
     }
 
