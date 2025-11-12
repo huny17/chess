@@ -58,8 +58,8 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "create game" -> createGame(params);
                 case "list games" -> listGames();
-                case "play game" -> join();
-                case "observe games" -> join(); //observe function?
+                case "play game" -> play();
+                case "observe games" -> observe();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -114,7 +114,7 @@ public class ChessClient {
         return result.toString();
     }
 
-    public String join(String... params) throws Exception{
+    public String play(String... params) throws Exception{
         assertSignedIn();
         if(params.length == 2) {
             try{
@@ -122,7 +122,9 @@ public class ChessClient {
                 GameData findGame = getGame(id);
                 if(findGame != null){
                     GameData connectGame = server.joinGame(params);
-                    return; //give board?
+                    //string = notification "/n"
+                    //append board string
+                    return null; //return full string
                 }
             }catch(NumberFormatException ignored){
             }
@@ -131,6 +133,23 @@ public class ChessClient {
         throw new Exception();
     }
 
+    public String observe(String... params) throws Exception{
+        assertSignedIn();
+        if(params.length == 2) {
+            try{
+                int id = Integer.parseInt(params[0]);
+                GameData findGame = getGame(id);
+                if(findGame != null){
+                    //string = notification "/n"
+                    //append board string
+                    return null; //return full string
+                }
+            }catch(NumberFormatException ignored){
+            }
+            throw new Exception();
+        }
+        throw new Exception();
+    }
 
     private GameData getGame(int id) throws Exception{
         for(GameData game : server.listGames()){
