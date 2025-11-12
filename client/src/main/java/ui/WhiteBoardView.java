@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import static ui.EscapeSequences.*;
 
-public class ChessBoardUI {
+public class WhiteBoardView {
 
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_PADDED_CHARS = 1;
@@ -29,11 +29,10 @@ public class ChessBoardUI {
 
     private static void drawBorders(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        String[] headers = {"   a", "  b", "   c", "   d", "   e", "  f", "   g", "   h"};
+        String[] headers = {"   A", "  B", "   C", "   D", "   E", "  F", "   G", "   H"};
         out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             printBorderText(out, headers[boardCol]);
-            //out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
         }
         out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
         out.print("  ");

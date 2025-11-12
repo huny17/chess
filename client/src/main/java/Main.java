@@ -1,5 +1,5 @@
 import chess.*;
-import ui.ChessBoardUI;
+import ui.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,7 +8,8 @@ public class Main {
 
         ChessGame g = new ChessGame();
 
-       ChessBoardUI.run(g.getBoard());
+       //WhiteBoardView.run(g.getBoard());
+       BlackBoardView.run(g.getBoard());
 
        //chessboard.main();
 
