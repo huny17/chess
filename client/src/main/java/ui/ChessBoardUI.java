@@ -96,8 +96,9 @@ public class ChessBoardUI {
     private static void drawCheckers(PrintStream out, ChessBoard board){
 //        for(int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow){
 //            for(int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
-        for(int i = 1; i < 8; ++i){
-            for(int j = 1; j < 8; ++j){
+        for(int i = 8; i >= 1; --i){
+            for(int j = 8; j >= 1; --j){
+                out.print(RESET_TEXT_COLOR);
                 ChessPosition pos =  board.getPos(i,j);
                 if(board.getPiece(pos) == null && isWhite){
                     setRed(out);
@@ -115,7 +116,7 @@ public class ChessBoardUI {
                     isWhite = false;
                 }
                 if(board.getPiece(pos) != null && !isWhite){
-                    out.print(SET_BG_COLOR_LIGHT_GREY);
+                    out.print(SET_BG_COLOR_DARK_GREY);
                     printPlayer(out, board.getPiece(pos));
                     isWhite = true;
                 }
@@ -141,23 +142,25 @@ public class ChessBoardUI {
 
     private static void setRed(PrintStream out){
         out.print(SET_BG_COLOR_RED);
-        out.print(SET_TEXT_COLOR_RED);
+       // out.print(SET_TEXT_COLOR_RED);
     }
 
     private static void setBlack(PrintStream out){
         out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_BLACK);
+        //out.print(SET_TEXT_COLOR_BLACK);
     }
 
     private static void setGrey(PrintStream out){
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(SET_TEXT_COLOR_LIGHT_GREY);
+        out.print(SET_BG_COLOR_DARK_GREY);
+        //out.print(SET_TEXT_COLOR_LIGHT_GREY);
     }
 
     private static void printPlayer(PrintStream out, ChessPiece piece){
         if(piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+            out.print(SET_TEXT_COLOR_WHITE);
             switch (piece.getPieceType()) {
                 case KING:
+                    out.print(SET_TEXT_COLOR_WHITE);
                     out.print(WHITE_KING);
                     break;
                 case QUEEN:
@@ -178,6 +181,8 @@ public class ChessBoardUI {
             }
         }
         else{
+            out.print(SET_TEXT_BOLD);
+            out.print(SET_TEXT_COLOR_DARK_GREY);
             switch (piece.getPieceType()) {
                 case KING:
                     out.print(BLACK_KING);
