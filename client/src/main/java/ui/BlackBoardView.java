@@ -13,7 +13,6 @@ import static ui.EscapeSequences.*;
 public class BlackBoardView {
 
     private static final int BOARD_SIZE_IN_SQUARES = 8;
-    private static final int SQUARE_SIZE_IN_PADDED_CHARS = 1;
     private static final int LINE_WIDTH_IN_PADDED_CHARS = 1;
     private static boolean isWhite = false;
     String theBoard;

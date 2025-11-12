@@ -122,9 +122,9 @@ public class ChessClient {
                 GameData findGame = getGame(id);
                 if(findGame != null){
                     GameData connectGame = server.joinGame(params);
-                    //string = notification "/n"
+                    String notification = String.format("YOU ARE NOW PLAYING %s", findGame.gameName());
                     //append board string
-                    return null; //return full string
+                    return notification; //return full string
                 }
             }catch(NumberFormatException ignored){
             }
