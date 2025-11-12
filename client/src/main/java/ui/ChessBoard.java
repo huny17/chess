@@ -26,8 +26,23 @@ public class ChessBoard {
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
-    private static void drawHeaders(PrintStream out){
+    private static void drawHeaders(PrintStream out) {
+        setBlack(out);
+    }
 
+    private static void drawHeader(PrintStream out, String headerText) {
+        int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
+        int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
+
+        out.print(EMPTY.repeat(prefixLength));
+        printHeaderText(out, headerText);
+    }
+
+    private static void printHeaderText(PrintStream out, String player){
+        out.print();
+        out.print();
+        out.print(player);
+        setBlack(out)
     }
 
 }
