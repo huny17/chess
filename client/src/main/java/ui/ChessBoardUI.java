@@ -1,6 +1,9 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +14,8 @@ public class ChessBoardUI {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_PADDED_CHARS = 2;
     private static final int LINE_WIDTH_IN_PADDED_CHARS = 1;
+
+    private static boolean isWhite = true;
 
     String theBoard;
 
@@ -29,25 +34,25 @@ public class ChessBoardUI {
     }
 
     private static void drawBorders(PrintStream out) {
-        setGrey(out);
+        setBlack(out);
 
         String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
         String[] cols = {"1", "2", "3", "4", "5", "6", "7", "8"};
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             drawHeader(out, headers[boardCol]);
             if (boardCol < BOARD_SIZE_IN_SQUARES - 1) {
-                out.print(SET_BG_COLOR_DARK_GREY);
+                out.print(SET_BG_COLOR_BLACK);
                 out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
             }
         }
-        setGrey(out);
-        for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
-            drawSideCol(out, cols[boardCol]);
+//        setBlack(out);
+//        for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
+//            drawSideCol(out, cols[boardCol]);
 //            if(boardCol < BOARD_SIZE_IN_SQUARES-1){
 //                out.print(SET_BG_COLOR_DARK_GREY);
 //                out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
 //            }
-        }
+//        }
         out.println();
     }
 
@@ -72,7 +77,7 @@ public class ChessBoardUI {
     }
 
     private static void printBorderText(PrintStream out, String player){
-        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_RED);
         out.print(player);
         setBlack(out);
@@ -80,7 +85,7 @@ public class ChessBoardUI {
 
     private static void drawChessBoard(PrintStream out, ChessBoard board){
         for(int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow){
-            drawRowOfSquares(out, board);
+            drawCheckers(out, board);
             if(boardRow < BOARD_SIZE_IN_SQUARES-1){
                 drawHorizontalLine(out);
                 setBlack(out);
@@ -88,28 +93,40 @@ public class ChessBoardUI {
         }
     }
 
-    private static void drawRowOfSquares(PrintStream out, ChessBoard board){
-        boolean isWhite = true;
-        for(int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow){
-            for(int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
-                if(squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2){
-                    int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS/2;
-                    int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
-                    out.print(EMPTY.repeat(prefixLength));
-                    //printPlayer(out, );
-                    out.print(EMPTY.repeat(suffixLength));
-                }
-                else{
-                    out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-                }
-                if(boardCol < BOARD_SIZE_IN_SQUARES - 1){
-                    //setRed(out);
+    private static void drawCheckers(PrintStream out, ChessBoard board){
+//        for(int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow){
+//            for(int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
+        for(int i = 1; i < 8; ++i){
+            for(int j = 1; j < 8; ++j){
+                ChessPosition pos =  board.getPos(i,j);
+                if(board.getPiece(pos) == null && isWhite){
+                    setRed(out);
                     out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+                    isWhite = false;
                 }
-                setBlack(out);
+                if(board.getPiece(pos) == null && !isWhite){
+                    setGrey(out);
+                    out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+                    isWhite = true;
+                }
+                if(board.getPiece(pos) != null && isWhite){
+                    out.print(SET_BG_COLOR_RED);
+                    printPlayer(out, board.getPiece(pos));
+                    isWhite = false;
+                }
+                if(board.getPiece(pos) != null && !isWhite){
+                    out.print(SET_BG_COLOR_LIGHT_GREY);
+                    printPlayer(out, board.getPiece(pos));
+                    isWhite = true;
+                }
+                //setGrey(out);
             }
             out.println();
         }
+    }
+
+    private static void drawCheckersFromBoard(PrintStream out, ChessBoard board) {
+
     }
 
     private static void drawHorizontalLine(PrintStream out){
@@ -133,15 +150,55 @@ public class ChessBoardUI {
     }
 
     private static void setGrey(PrintStream out){
-        out.print(SET_BG_COLOR_DARK_GREY);
-        out.print(SET_TEXT_COLOR_DARK_GREY);
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(SET_TEXT_COLOR_LIGHT_GREY);
     }
 
-    private static void printPlayer(PrintStream out, String player){
-        out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_BLACK);
-        out.print(player);
-        setRed(out);
+    private static void printPlayer(PrintStream out, ChessPiece piece){
+        if(piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+            switch (piece.getPieceType()) {
+                case KING:
+                    out.print(WHITE_KING);
+                    break;
+                case QUEEN:
+                    out.print(WHITE_QUEEN);
+                    break;
+                case BISHOP:
+                    out.print(WHITE_BISHOP);
+                    break;
+                case KNIGHT:
+                    out.print(WHITE_KNIGHT);
+                    break;
+                case ROOK:
+                    out.print(WHITE_ROOK);
+                    break;
+                case PAWN:
+                    out.print(WHITE_PAWN);
+                    break;
+            }
+        }
+        else{
+            switch (piece.getPieceType()) {
+                case KING:
+                    out.print(BLACK_KING);
+                    break;
+                case QUEEN:
+                    out.print(BLACK_QUEEN);
+                    break;
+                case BISHOP:
+                    out.print(BLACK_BISHOP);
+                    break;
+                case KNIGHT:
+                    out.print(BLACK_KNIGHT);
+                    break;
+                case ROOK:
+                    out.print(BLACK_ROOK);
+                    break;
+                case PAWN:
+                    out.print(BLACK_PAWN);
+                    break;
+            }
+        }
     }
 
     public String getBoard(){
