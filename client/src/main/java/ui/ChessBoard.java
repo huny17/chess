@@ -49,10 +49,13 @@ public class ChessBoard {
     }
 
     private static void printHeaderText(PrintStream out, String player){
-        out.print();
-        out.print();
+        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_TEXT_COLOR_RED);
         out.print(player);
-        setBlack(out)
+        setBlack(out);
     }
+
+
+
 
 }
