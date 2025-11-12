@@ -21,7 +21,7 @@ public class ChessBoardUI {
 
         drawBorders(out);
 
-        drawChessBoard(out);
+        drawChessBoard(out, board);
 
         drawBorders(out);
         //out.print(SET_BG_COLOR_BLACK);
@@ -29,15 +29,24 @@ public class ChessBoardUI {
     }
 
     private static void drawBorders(PrintStream out) {
-        setBlack(out);
+        setGrey(out);
 
         String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
-        for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
+        String[] cols = {"1", "2", "3", "4", "5", "6", "7", "8"};
+        for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             drawHeader(out, headers[boardCol]);
-            if(boardCol < BOARD_SIZE_IN_SQUARES-1){
+            if (boardCol < BOARD_SIZE_IN_SQUARES - 1) {
                 out.print(SET_BG_COLOR_DARK_GREY);
                 out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
             }
+        }
+        setGrey(out);
+        for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
+            drawSideCol(out, cols[boardCol]);
+//            if(boardCol < BOARD_SIZE_IN_SQUARES-1){
+//                out.print(SET_BG_COLOR_DARK_GREY);
+//                out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+//            }
         }
         out.println();
     }
@@ -46,7 +55,6 @@ public class ChessBoardUI {
         int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
         int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
 
-        out.print(SET_BG_COLOR_DARK_GREY);
         out.print(EMPTY.repeat(prefixLength));
         printBorderText(out, headerText);
         out.print(EMPTY.repeat(suffixLength));
@@ -54,10 +62,9 @@ public class ChessBoardUI {
     }
 
     private static void drawSideCol(PrintStream out, String headerText) {
-        int prefixLength = 8;
+        int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
         int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
 
-        out.print(SET_BG_COLOR_DARK_GREY);
         out.print(EMPTY.repeat(prefixLength));
         printBorderText(out, headerText);
         out.print(EMPTY.repeat(suffixLength));
@@ -71,9 +78,9 @@ public class ChessBoardUI {
         setBlack(out);
     }
 
-    private static void drawChessBoard(PrintStream out){
+    private static void drawChessBoard(PrintStream out, ChessBoard board){
         for(int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow){
-            drawRowOfSquares(out);
+            drawRowOfSquares(out, board);
             if(boardRow < BOARD_SIZE_IN_SQUARES-1){
                 drawHorizontalLine(out);
                 setBlack(out);
@@ -81,7 +88,8 @@ public class ChessBoardUI {
         }
     }
 
-    private static void drawRowOfSquares(PrintStream out){
+    private static void drawRowOfSquares(PrintStream out, ChessBoard board){
+        boolean isWhite = true;
         for(int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow){
             for(int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
                 if(squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2){
@@ -122,6 +130,11 @@ public class ChessBoardUI {
     private static void setBlack(PrintStream out){
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_BLACK);
+    }
+
+    private static void setGrey(PrintStream out){
+        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(SET_TEXT_COLOR_DARK_GREY);
     }
 
     private static void printPlayer(PrintStream out, String player){
