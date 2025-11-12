@@ -19,6 +19,7 @@ public class ChessBoardUI {
     public static void run(ChessBoard board) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
+        out.print(SET_TEXT_BOLD);
         drawBorders(out);
         drawCheckers(out, board);
         drawBorders(out);
@@ -28,26 +29,24 @@ public class ChessBoardUI {
 
     private static void drawBorders(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
-        out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS * 2));
+        String[] headers = {"   a", "  b", "   c", "   d", "   e", "  f", "   g", "   h"};
+        out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             printBorderText(out, headers[boardCol]);
-            if (boardCol < BOARD_SIZE_IN_SQUARES - 1) {
-                out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
-            }
+            //out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
         }
         out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+        out.print("  ");
         out.print(SET_BG_COLOR_DARK_GREY);
         out.println();
     }
 
     private static void drawSideCol(PrintStream out, int index) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
-        String[] cols = {"8", "7", "6", "5", "4", "3", "2", "1"};
+        String[] cols = {"  1", "  2", "  3", "  4", "  5", "  6", "  7", "  8"};
         printBorderText(out, cols[index]);
         if (index < BOARD_SIZE_IN_SQUARES) {
-            out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+            out.print("  ");
         }
     }
 
