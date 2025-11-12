@@ -19,22 +19,23 @@ public class ChessBoardUI {
 
         out.print(ERASE_SCREEN);
 
-        drawHeaders(out);
+        drawBorders(out);
 
         drawChessBoard(out);
 
-        drawHeaders(out);
+        drawBorders(out);
         //out.print(SET_BG_COLOR_BLACK);
         //out.print(SET_TEXT_COLOR_WHITE);
     }
 
-    private static void drawHeaders(PrintStream out) {
+    private static void drawBorders(PrintStream out) {
         setBlack(out);
 
         String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
             drawHeader(out, headers[boardCol]);
             if(boardCol < BOARD_SIZE_IN_SQUARES-1){
+                out.print(SET_BG_COLOR_DARK_GREY);
                 out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
             }
         }
@@ -45,13 +46,26 @@ public class ChessBoardUI {
         int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
         int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
 
+        out.print(SET_BG_COLOR_DARK_GREY);
         out.print(EMPTY.repeat(prefixLength));
-        printHeaderText(out, headerText);
+        printBorderText(out, headerText);
         out.print(EMPTY.repeat(suffixLength));
+
     }
 
-    private static void printHeaderText(PrintStream out, String player){
-        out.print(SET_BG_COLOR_BLACK);
+    private static void drawSideCol(PrintStream out, String headerText) {
+        int prefixLength = 8;
+        int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
+
+        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(EMPTY.repeat(prefixLength));
+        printBorderText(out, headerText);
+        out.print(EMPTY.repeat(suffixLength));
+
+    }
+
+    private static void printBorderText(PrintStream out, String player){
+        out.print(SET_BG_COLOR_DARK_GREY);
         out.print(SET_TEXT_COLOR_RED);
         out.print(player);
         setBlack(out);
