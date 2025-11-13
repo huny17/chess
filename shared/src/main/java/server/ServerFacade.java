@@ -28,9 +28,15 @@ public class ServerFacade {
         return handleResponse(response, UserData.class);
     }
 
-    public String login
-            (String... params) throws Exception{
+    public String login(String... params) throws Exception{
         var request = buildRequest("POST", "/session", params);
+        var response = sendRequest(request);
+        token = handleResponse(response, AuthData.class);
+        return token.username();
+    }
+
+    public String logout() throws Exception{
+        var request = buildRequest("DELETE", "/session", null);
         var response = sendRequest(request);
         token = handleResponse(response, AuthData.class);
         return token.username();
@@ -69,7 +75,7 @@ public class ServerFacade {
             request.setHeader("Content-Type", "application/json");
         }
         if(token != null){
-            request.header("Authorization",token.authToken());
+            request.header("Authorization", token.authToken());
         }
         return request.build();
     }
@@ -98,6 +104,9 @@ public class ServerFacade {
                 throw new Exception();
             }
             throw new Exception();
+        }
+        if(responseClass != null){
+            return new Gson().fromJson(response.body(), responseClass);
         }
         return null;
     }

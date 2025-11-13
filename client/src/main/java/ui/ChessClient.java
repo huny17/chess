@@ -44,7 +44,7 @@ public class ChessClient {
     }
 
     private void printPrompt() {
-        System.out.println("\n" + SET_TEXT_COLOR_BLUE + ">>> ");
+        System.out.print("\n" + SET_TEXT_COLOR_BLUE + ">>> ");
     }
 
     public String eval(String input){

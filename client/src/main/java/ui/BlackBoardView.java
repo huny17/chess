@@ -21,13 +21,14 @@ public class BlackBoardView {
         drawBorders(out);
         drawCheckers(out, board);
         drawBorders(out);
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_WHITE);
+        out.print(RESET_BG_COLOR);
+        //out.print(SET_TEXT_COLOR_WHITE);
+        out.println();
     }
 
     private static void drawBorders(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        String[] headers = {CHESS_PIECE+"H ", CHESS_PIECE+"G ", CHESS_PIECE+"F ", CHESS_PIECE+"E ", CHESS_PIECE+"D ", CHESS_PIECE+"C ", CHESS_PIECE+"B ", CHESS_PIECE+"A "};
+        String[] headers = {CHESS_PIECE+"H ", CHESS_PIECE+"G ", CHESS_PIECE+"F ", CHESS_PIECE+"E ", CHESS_PIECE+"D ", CHESS_PIECE+"C ", CHESS_PIECE+"B ", CHESS_PIECE+"A"};
         out.print(EMPTY);
         for (int boardCol = 0; boardCol < 8; ++boardCol) {
             printBorderText(out, headers[boardCol]);
@@ -70,16 +71,16 @@ public class BlackBoardView {
                 if(board.getPiece(pos) == null && isWhite){
                     out.print(SET_BG_COLOR_RED);
                     out.print(SET_TEXT_COLOR_RED);
-                    //out.print(EMPTY);
-                    out.print(WHITE_PAWN);
+                    out.print(EMPTY);
+                    //out.print(WHITE_PAWN);
                     resetColor();
                     continue;
                 }
                 if(board.getPiece(pos) == null && !isWhite){
                     out.print(SET_BG_COLOR_BLACK);
                     out.print(SET_TEXT_COLOR_BLACK);
-                    //out.print(EMPTY);
-                    out.print(BLACK_PAWN);
+                    out.print(EMPTY);
+                    //out.print(BLACK_PAWN);
                     resetColor();
                     continue;
                 }
@@ -106,26 +107,25 @@ public class BlackBoardView {
             out.print(SET_TEXT_BOLD);
             out.print(SET_TEXT_COLOR_WHITE);
             switch (piece.getPieceType()) {
-                case KING:
-                    out.print(SET_TEXT_COLOR_WHITE);
-                    out.print(WHITE_KING);
-                    break;
-                case QUEEN:
-                    out.print(WHITE_QUEEN);
-                    break;
-                case BISHOP:
-                    out.print(WHITE_BISHOP);
-                    break;
-                case KNIGHT:
-                    out.print(WHITE_KNIGHT);
-                    break;
-                case ROOK:
-                    out.print(WHITE_ROOK);
-                    break;
-                case PAWN:
-                    out.print(WHITE_PAWN);
-                    break;
-            }
+                    case KING:
+                        out.print(BLACK_KING);
+                        break;
+                    case QUEEN:
+                        out.print(BLACK_QUEEN);
+                        break;
+                    case BISHOP:
+                        out.print(BLACK_BISHOP);
+                        break;
+                    case KNIGHT:
+                        out.print(BLACK_KNIGHT);
+                        break;
+                    case ROOK:
+                        out.print(BLACK_ROOK);
+                        break;
+                    case PAWN:
+                        out.print(BLACK_PAWN);
+                        break;
+                }
         }
         else{
             out.print(SET_TEXT_BOLD);

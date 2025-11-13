@@ -8,13 +8,14 @@ public class ServerFacadeTests {
 
     private static ServerFacade facade;
     private static Server server;
+    UserData user = new UserData("d", "123", "d@d");
 
     @BeforeAll
     public static void init() {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        String url = "\"http://localhost:" + port;
+        String url = "http://localhost:" + port;
         facade = new ServerFacade(url);
     }
 
@@ -23,21 +24,19 @@ public class ServerFacadeTests {
         server.stop();
     }
 
-    @BeforeEach
+    @AfterEach
     void clear() {
         Assertions.assertDoesNotThrow(()->facade.clear());
     }
 
+    @BeforeEach
     @Test
     public void normalRegister() {
-        UserData user = new UserData("a", "123", "aa");
         Assertions.assertDoesNotThrow(()->facade.register(user));
     }
 
     @Test
     public void reRegister(){
-        UserData user = new UserData("a", "123", "a@a");
-        Assertions.assertDoesNotThrow(()->facade.register(user));
         Assertions.assertThrows(Exception.class, ()->facade.register(user));
     }
 }
