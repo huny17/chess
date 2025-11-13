@@ -91,6 +91,7 @@ public class ChessClient {
     public String logout() throws Exception{
         assertSignedIn();
         state = State.SIGNEDOUT;
+        String loggedOut = server.logout();
         return "LOGGED_OUT";
     }
 
