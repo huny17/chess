@@ -44,7 +44,7 @@ public class ChessClient {
     }
 
     private void printPrompt() {
-        System.out.println("\n" + SET_TEXT_COLOR_BLACK + ">>> " + SET_TEXT_COLOR_GREEN);
+        System.out.println("\n" + SET_TEXT_COLOR_BLUE + ">>> ");
     }
 
     public String eval(String input){
@@ -71,7 +71,7 @@ public class ChessClient {
     public String login(String... params) throws Exception{
         if(params.length == 2){
             state = State.SIGNEDIN;
-            String loggedIn = server.loginUser(params[0], params[1]);
+            String loggedIn = server.login(params[0], params[1]);
             visitorName = String.join("-", loggedIn);
             return String.format("LOGGED_IN %s", visitorName);
         }
@@ -80,7 +80,7 @@ public class ChessClient {
 
     public String register(String... params) throws Exception{
         if(params.length == 3){
-            UserData registered = server.addUser(new UserData(params[0], params[1], params[2]));
+            UserData registered = server.register(new UserData(params[0], params[1], params[2]));
             state = State.SIGNEDIN;
             visitorName = String.join("-", registered.username());
             return String.format("LOGGED_IN %s", visitorName);
@@ -169,14 +169,22 @@ public class ChessClient {
 
     public String help(){
         if(state == State.SIGNEDOUT){
-            return """
+            return
+                    SET_TEXT_COLOR_WHITE+
+                    """
+                    WELCOME TO CHESS
+                    """ +SET_TEXT_COLOR_MAGENTA+
+                    """
                     register <username> <password> <email> - to create an account
                     login <username> <password> - to play chess
                     quit - playing chess
                     help - with possible commands
                     """;
         }
-        return """
+        return SET_TEXT_COLOR_LIGHT_GREY+
+                """
+                LOGGED IN:
+                """ +SET_TEXT_COLOR_MAGENTA+"""
                 create <name> - a game
                 list - games
                 join <ID> [WHITE|BLACK] - a game

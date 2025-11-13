@@ -1,3 +1,4 @@
+import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
@@ -29,11 +30,14 @@ public class ServerFacadeTests {
 
     @Test
     public void normalRegister() {
-
+        UserData user = new UserData("a", "123", "aa");
+        Assertions.assertDoesNotThrow(()->facade.register(user));
     }
 
     @Test
     public void reRegister(){
-
+        UserData user = new UserData("a", "123", "a@a");
+        Assertions.assertDoesNotThrow(()->facade.register(user));
+        Assertions.assertThrows(Exception.class, ()->facade.register(user));
     }
 }

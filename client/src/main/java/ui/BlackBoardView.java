@@ -12,10 +12,7 @@ import static ui.EscapeSequences.*;
 
 public class BlackBoardView {
 
-    private static final int BOARD_SIZE_IN_SQUARES = 8;
-    private static final int LINE_WIDTH_IN_PADDED_CHARS = 1;
     private static boolean isWhite = false;
-    String theBoard;
 
     public static void run(ChessBoard board) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -30,24 +27,21 @@ public class BlackBoardView {
 
     private static void drawBorders(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        String[] headers = {"   H", "   G", "  F", "   E", "   D", "   C", "   B", "   A"};
-        out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
-        for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
+        String[] headers = {CHESS_PIECE+"H ", CHESS_PIECE+"G ", CHESS_PIECE+"F ", CHESS_PIECE+"E ", CHESS_PIECE+"D ", CHESS_PIECE+"C ", CHESS_PIECE+"B ", CHESS_PIECE+"A "};
+        out.print(EMPTY);
+        for (int boardCol = 0; boardCol < 8; ++boardCol) {
             printBorderText(out, headers[boardCol]);
         }
-        out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
-        out.print("  ");
-        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(EMPTY);
+        out.print(EMPTY);
+        out.print(RESET_BG_COLOR);
         out.println();
     }
 
     private static void drawSideCol(PrintStream out, int index) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        String[] cols = {"  1", "  2", "  3", "  4", "  5", "  6", "  7", "  8"};
+        String[] cols = {CHESS_PIECE+"1  ", CHESS_PIECE+"2  ", CHESS_PIECE+"3  ", CHESS_PIECE+"4  ", CHESS_PIECE+"5  ", CHESS_PIECE+"6  ", CHESS_PIECE+"7  ", CHESS_PIECE+"8  "};
         printBorderText(out, cols[index]);
-        if (index < BOARD_SIZE_IN_SQUARES) {
-            out.print("  ");
-        }
     }
 
     private static void printBorderText(PrintStream out, String text){
@@ -67,21 +61,27 @@ public class BlackBoardView {
     }
 
     private static void drawCheckers(PrintStream out, ChessBoard board){
-        for(int i = 1; i <= BOARD_SIZE_IN_SQUARES; ++i){
+        for(int i = 1; i <= 8; ++i){
             resetColor();
             drawSideCol(out, i-1);
-            for(int j = 1; j <= BOARD_SIZE_IN_SQUARES; ++j){
+            for(int j = 1; j <= 8; ++j){
                 out.print(RESET_TEXT_COLOR);
                 ChessPosition pos =  board.getPos(i,j);
                 if(board.getPiece(pos) == null && isWhite){
                     out.print(SET_BG_COLOR_RED);
-                    out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+                    out.print(SET_TEXT_COLOR_RED);
+                    //out.print(EMPTY);
+                    out.print(WHITE_PAWN);
+                    //out.print(" ");
                     resetColor();
                     continue;
                 }
                 if(board.getPiece(pos) == null && !isWhite){
                     out.print(SET_BG_COLOR_BLACK);
-                    out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+                    out.print(SET_TEXT_COLOR_BLACK);
+                    //out.print(EMPTY);
+                    out.print(BLACK_PAWN);
+                    //out.print();
                     resetColor();
                     continue;
                 }
@@ -98,7 +98,7 @@ public class BlackBoardView {
                 }
             }
             drawSideCol(out, i-1);
-            out.print(SET_BG_COLOR_DARK_GREY);
+            out.print(RESET_BG_COLOR);
             out.println();
         }
     }
@@ -153,10 +153,6 @@ public class BlackBoardView {
                     break;
             }
         }
-    }
-
-    public String getBoard(){
-        return theBoard;
     }
 
 }

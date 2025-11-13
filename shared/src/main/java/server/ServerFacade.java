@@ -22,13 +22,14 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public UserData addUser(UserData user) throws Exception{
+    public UserData register(UserData user) throws Exception{
         var request = buildRequest("POST", "/user", user);
         var response = sendRequest(request);
         return handleResponse(response, UserData.class);
     }
 
-    public String loginUser(String... params) throws Exception{
+    public String login
+            (String... params) throws Exception{
         var request = buildRequest("POST", "/session", params);
         var response = sendRequest(request);
         token = handleResponse(response, AuthData.class);
