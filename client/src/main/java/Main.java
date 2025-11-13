@@ -4,14 +4,14 @@ import ui.*;
 public class Main {
     public static void main(String[] args) {
 
-        ChessClient client = new ChessClient("http://localhost:8080");
+        //ChessClient client = new ChessClient("http://localhost:8080");
 
-        client.run();
+        //client.run();
 
         /** testing the board **/
-        //ChessGame g = new ChessGame();
-        //WhiteBoardView.run(g.getBoard());
-        //BlackBoardView.run(g.getBoard());
+        ChessGame g = new ChessGame();
+        WhiteBoardView.run(g.getBoard());
+        BlackBoardView.run(g.getBoard());
 
 
     }

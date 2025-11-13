@@ -72,7 +72,6 @@ public class BlackBoardView {
                     out.print(SET_TEXT_COLOR_RED);
                     //out.print(EMPTY);
                     out.print(WHITE_PAWN);
-                    //out.print(" ");
                     resetColor();
                     continue;
                 }
@@ -81,7 +80,6 @@ public class BlackBoardView {
                     out.print(SET_TEXT_COLOR_BLACK);
                     //out.print(EMPTY);
                     out.print(BLACK_PAWN);
-                    //out.print();
                     resetColor();
                     continue;
                 }
