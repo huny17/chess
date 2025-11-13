@@ -58,8 +58,8 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "create game" -> createGame(params);
                 case "list games" -> listGames();
-                case "play game" -> play();
-                case "observe games" -> observe();
+                case "play game" -> play(params);
+                case "observe games" -> observe(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -114,7 +114,7 @@ public class ChessClient {
         return result.toString();
     }
 
-    public void play(String... params) throws Exception{
+    public String play(String... params) throws Exception{
         assertSignedIn();
         if(params.length == 2) {
             try{
@@ -122,11 +122,16 @@ public class ChessClient {
                 GameData findGame = getGame(id);
                 if(findGame != null){
                     GameData connectGame = server.joinGame(params);
-                    String notification = String.format("You are now playing %s", findGame.gameName());
-                    System.print()
+                    String notification = String.format("You are now playing %s", connectGame.gameName());
+                    System.out.print(notification);
                     //check color
-                    WhiteBoardView.run(connectGame.chessGame().getBoard());
-                    return notification; //return full string
+                    if(params[1].equals("white")){
+                        WhiteBoardView.run(connectGame.chessGame().getBoard());
+                    }
+                    if(params[1].equals("black")){
+                        BlackBoardView.run(connectGame.chessGame().getBoard());
+                    }
+                    return notification;
                 }
             }catch(NumberFormatException ignored){
             }
@@ -143,8 +148,8 @@ public class ChessClient {
                 GameData findGame = getGame(id);
                 if(findGame != null){
                     String notification = String.format("You are now observing %s", findGame.gameName());
-                    //append board string
-                    return notification; //return full string
+                    WhiteBoardView.run(findGame.chessGame().getBoard());
+                    return notification;
                 }
             }catch(NumberFormatException ignored){
             }

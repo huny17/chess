@@ -28,24 +28,20 @@ public class WhiteBoardView {
 
     private static void drawBorders(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        String[] headers = {" A", "  B", "   C", "   D", "   E", "  F", "   G", "   H"};
+        String[] headers = {" A ", " B ", " C ", " D ", " E ", " F ", " G ", " H "};
         out.print("   ");
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             printBorderText(out, headers[boardCol]);
         }
         out.print("   ");
-        out.print("  ");
         out.print(RESET_BG_COLOR);
         out.println();
     }
 
     private static void drawSideCol(PrintStream out, int index) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        String[] cols = {"  1", "  2", "  3", "  4", "  5", "  6", "  7", "  8"};
+        String[] cols = {" 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 "};
         printBorderText(out, cols[index]);
-        if (index < BOARD_SIZE_IN_SQUARES) {
-            out.print("  ");
-        }
     }
 
     private static void printBorderText(PrintStream out, String text){

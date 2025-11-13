@@ -31,8 +31,8 @@ public class ServerFacade {
     public String loginUser(String... params) throws Exception{
         var request = buildRequest("POST", "/session", params);
         var response = sendRequest(request);
-        AuthData user = handleResponse(response, AuthData.class);
-        return user.username();
+        token = handleResponse(response, AuthData.class);
+        return token.username();
     }
 
     public GameData createGame(String... params) throws Exception{
@@ -60,7 +60,7 @@ public class ServerFacade {
         return handleResponse(response, UserData.class);
     }
 
-    private HttpRequest buildRequest(String method, String path, Object body{
+    private HttpRequest buildRequest(String method, String path, Object body){
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))
                 .method(method, makeRequestBody(body));
