@@ -1,4 +1,5 @@
 import model.UserData;
+import model.request.RegisterRequest;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
@@ -8,7 +9,7 @@ public class ServerFacadeTests {
 
     private static ServerFacade facade;
     private static Server server;
-    UserData user = new UserData("d", "123", "d@d");
+    RegisterRequest user = new RegisterRequest("d", "123", "d@d");
 
     @BeforeAll
     public static void init() {
@@ -25,6 +26,7 @@ public class ServerFacadeTests {
     }
 
     @AfterEach
+    @Test
     void clear() {
         Assertions.assertDoesNotThrow(()->facade.clear());
     }

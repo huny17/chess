@@ -47,7 +47,7 @@ public class UserService {
         if(req.username() == null | req.password() == null){
             throw new GeneralException("400","Username and password required");
         }
-        if(!userDataAccess.getUserMap().containsKey(req.username())){ //no user obtained
+        if(userDataAccess.getUser(req.username()) == null){//Map().containsKey(req.username())){ //no user obtained
             throw new GeneralException("401","User does not exist");
         }
         if(!userDataAccess.verifyUser(req.username(), req.password())) {

@@ -28,7 +28,6 @@ public class MySQLGameDAO implements GameDAO {
 
     @Override
     public Integer createGame(String gameName) throws DataAccessException{
-        configureGameTable();
         var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?)";
         return update.executeUpdate(statement, null, null, gameName, serializeChessGame(new ChessGame()));
     }

@@ -5,6 +5,10 @@ import java.util.Collection;
 import java.util.Scanner;
 import com.google.gson.Gson;
 import model.*;
+import model.request.CreateGameRequest;
+import model.request.JoinGameRequest;
+import model.request.LoginRequest;
+import model.request.RegisterRequest;
 import server.ServerFacade;
 import javax.management.Notification;
 import static ui.EscapeSequences.*;
@@ -38,11 +42,6 @@ public class ChessClient {
         System.out.println();
     }
 
-    public void notify(Notification notification){
-        System.out.println();
-        printPrompt();
-    }
-
     private void printPrompt() {
         System.out.print("\n" + SET_TEXT_COLOR_BLUE + ">>> ");
     }
@@ -56,34 +55,35 @@ public class ChessClient {
                 case "login" -> login(params);
                 case "register" -> register(params);
                 case "logout" -> logout();
-                case "create game" -> createGame(params);
-                case "list games" -> listGames();
-                case "play game" -> play(params);
-                case "observe games" -> observe(params);
+                case "create" -> createGame(params);
+                case "list" -> listGames();
+                case "play" -> play(params);
+                case "observe" -> observe(params);
                 case "quit" -> "quit";
                 default -> help();
             };
         }catch(Exception e){
-            return e.getMessage();
+            String str = e.getMessage();
+            return str;
         }
     }
 
     public String login(String... params) throws Exception{
         if(params.length == 2){
             state = State.SIGNEDIN;
-            String loggedIn = server.login(params[0], params[1]);
+            String loggedIn = server.login(new LoginRequest(params[0], params[1]));
             visitorName = String.join("-", loggedIn);
-            return String.format("LOGGED_IN %s", visitorName);
+            return String.format("LOGGED_IN AS %s", visitorName);
         }
         throw new Exception();
     }
 
     public String register(String... params) throws Exception{
         if(params.length == 3){
-            UserData registered = server.register(new UserData(params[0], params[1], params[2]));
+            String registered = server.register(new RegisterRequest(params[0], params[1], params[2]));
             state = State.SIGNEDIN;
-            visitorName = String.join("-", registered.username());
-            return String.format("LOGGED_IN %s", visitorName);
+            visitorName = String.join("-", registered);
+            return String.format("LOGGED_IN AS %s", visitorName);
         }
         throw new Exception();
     }
@@ -98,8 +98,8 @@ public class ChessClient {
     public String createGame(String... params) throws Exception{
         assertSignedIn();
         if(params.length == 1) {
-            GameData game = server.createGame(params);
-            return String.format("Game %s created", game.gameName());
+            GameData game = server.createGame(new CreateGameRequest(params[0]));
+            return String.format("Game %s created", params[0]);
         }
         throw new Exception();
     }
@@ -122,7 +122,7 @@ public class ChessClient {
                 int id = Integer.parseInt(params[0]);
                 GameData findGame = getGame(id);
                 if(findGame != null){
-                    GameData connectGame = server.joinGame(params);
+                    GameData connectGame = server.joinGame(new JoinGameRequest(params[0], params[1]));
                     String notification = String.format("You are now playing %s", connectGame.gameName());
                     System.out.print(notification);
                     //check color
@@ -188,7 +188,7 @@ public class ChessClient {
                 """ +SET_TEXT_COLOR_MAGENTA+"""
                 create <name> - a game
                 list - games
-                join <ID> [WHITE|BLACK] - a game
+                play <ID> [WHITE|BLACK] - a game
                 observe <ID> - a game
                 logout - when you are done
                 quit - playing chess

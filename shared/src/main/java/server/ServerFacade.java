@@ -2,6 +2,10 @@ package server;
 
 import com.google.gson.Gson;
 import model.*;
+import model.request.CreateGameRequest;
+import model.request.JoinGameRequest;
+import model.request.LoginRequest;
+import model.request.RegisterRequest;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -22,14 +26,15 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public UserData register(UserData user) throws Exception{
-        var request = buildRequest("POST", "/user", user);
+    public String register(RegisterRequest req) throws Exception{
+        var request = buildRequest("POST", "/user", req);
         var response = sendRequest(request);
-        return handleResponse(response, UserData.class);
+        token = handleResponse(response, AuthData.class);
+        return token.username();
     }
 
-    public String login(String... params) throws Exception{
-        var request = buildRequest("POST", "/session", params);
+    public String login(LoginRequest req) throws Exception{
+        var request = buildRequest("POST", "/session", req);
         var response = sendRequest(request);
         token = handleResponse(response, AuthData.class);
         return token.username();
@@ -38,18 +43,21 @@ public class ServerFacade {
     public String logout() throws Exception{
         var request = buildRequest("DELETE", "/session", null);
         var response = sendRequest(request);
-        token = handleResponse(response, AuthData.class);
-        return token.username();
+        String user = token.username();
+        handleResponse(response, AuthData.class);
+        token = null;
+        return user;
     }
 
-    public GameData createGame(String... params) throws Exception{
-        var request = buildRequest("POST", "/game", params);
+    public GameData createGame(CreateGameRequest req) throws Exception{
+        var request = buildRequest("POST", "/game", req);
         var response = sendRequest(request);
-        return handleResponse(response, GameData.class);
+        GameData game = handleResponse(response, GameData.class);
+        return game;
     }
 
-    public GameData joinGame(String... params) throws Exception{
-        var request = buildRequest("PUT", "/game", params);
+    public GameData joinGame(JoinGameRequest req) throws Exception{
+        var request = buildRequest("PUT", "/game", req);
         var response = sendRequest(request);
         return handleResponse(response, GameData.class);
     }
