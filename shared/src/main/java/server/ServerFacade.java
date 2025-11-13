@@ -16,6 +16,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
     private final String serverUrl;
+    private AuthData token;
 
     public ServerFacade(String url){
         serverUrl = url;
@@ -27,10 +28,11 @@ public class ServerFacade {
         return handleResponse(response, UserData.class);
     }
 
-    public UserData loginUser(String... params) throws Exception{
+    public String loginUser(String... params) throws Exception{
         var request = buildRequest("POST", "/session", params);
         var response = sendRequest(request);
-        return handleResponse(response, UserData.class);
+        AuthData user = handleResponse(response, AuthData.class);
+        return user.username();
     }
 
     public GameData createGame(String... params) throws Exception{
@@ -52,12 +54,21 @@ public class ServerFacade {
         return handleResponse(response, Collection.class);
     }
 
-    private HttpRequest buildRequest(String method, String path, Object body){
+    public UserData clear() throws Exception{
+        var request = buildRequest("DELETE", "/db", null);
+        var response = sendRequest(request);
+        return handleResponse(response, UserData.class);
+    }
+
+    private HttpRequest buildRequest(String method, String path, Object body{
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))
                 .method(method, makeRequestBody(body));
         if(body != null){
             request.setHeader("Content-Type", "application/json");
+        }
+        if(token != null){
+            request.header("Authorization",token.authToken());
         }
         return request.build();
     }

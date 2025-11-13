@@ -28,14 +28,14 @@ public class WhiteBoardView {
 
     private static void drawBorders(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        String[] headers = {"   A", "  B", "   C", "   D", "   E", "  F", "   G", "   H"};
-        out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+        String[] headers = {" A", "  B", "   C", "   D", "   E", "  F", "   G", "   H"};
+        out.print("   ");
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             printBorderText(out, headers[boardCol]);
         }
-        out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
+        out.print("   ");
         out.print("  ");
-        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(RESET_BG_COLOR);
         out.println();
     }
 
@@ -55,7 +55,7 @@ public class WhiteBoardView {
         out.print(SET_BG_COLOR_LIGHT_GREY);
     }
 
-    private static void resetColor(){
+    private static void resetBoxColor(){
         if(isWhite == false){
             isWhite = true;
         }
@@ -66,37 +66,37 @@ public class WhiteBoardView {
 
     private static void drawCheckers(PrintStream out, ChessBoard board){
         for(int i = BOARD_SIZE_IN_SQUARES; i >= 1; --i){
-            resetColor();
+            resetBoxColor();
             drawSideCol(out, i-1);
             for(int j = BOARD_SIZE_IN_SQUARES; j >= 1; --j){
                 out.print(RESET_TEXT_COLOR);
                 ChessPosition pos =  board.getPos(i,j);
                 if(board.getPiece(pos) == null && isWhite){
                     out.print(SET_BG_COLOR_RED);
-                    out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
-                    resetColor();
+                    out.print("   ");
+                    resetBoxColor();
                     continue;
                 }
                 if(board.getPiece(pos) == null && !isWhite){
                     out.print(SET_BG_COLOR_BLACK);
-                    out.print(EMPTY.repeat(LINE_WIDTH_IN_PADDED_CHARS));
-                    resetColor();
+                    out.print("   ");
+                    resetBoxColor();
                     continue;
                 }
                 if(board.getPiece(pos) != null && isWhite){
                     out.print(SET_BG_COLOR_RED);
                     printPlayer(out, board.getPiece(pos));
-                    resetColor();
+                    resetBoxColor();
                     continue;
                 }
                 if(board.getPiece(pos) != null && !isWhite){
                     out.print(SET_BG_COLOR_BLACK);
                     printPlayer(out, board.getPiece(pos));
-                    resetColor();
+                    resetBoxColor();
                 }
             }
             drawSideCol(out, i-1);
-            out.print(SET_BG_COLOR_DARK_GREY);
+            out.print(RESET_BG_COLOR);
             out.println();
         }
     }
@@ -107,23 +107,22 @@ public class WhiteBoardView {
             out.print(SET_TEXT_COLOR_WHITE);
             switch (piece.getPieceType()) {
                 case KING:
-                    out.print(SET_TEXT_COLOR_WHITE);
-                    out.print(WHITE_KING);
+                    out.print(" K ");
                     break;
                 case QUEEN:
-                    out.print(WHITE_QUEEN);
+                    out.print(" Q ");
                     break;
                 case BISHOP:
-                    out.print(WHITE_BISHOP);
+                    out.print(" B ");
                     break;
                 case KNIGHT:
-                    out.print(WHITE_KNIGHT);
+                    out.print(" N ");
                     break;
                 case ROOK:
-                    out.print(WHITE_ROOK);
+                    out.print(" R ");
                     break;
                 case PAWN:
-                    out.print(WHITE_PAWN);
+                    out.print(" P ");
                     break;
             }
         }
@@ -132,22 +131,22 @@ public class WhiteBoardView {
             out.print(SET_TEXT_COLOR_DARK_GREY);
             switch (piece.getPieceType()) {
                 case KING:
-                    out.print(BLACK_KING);
+                    out.print(" K ");
                     break;
                 case QUEEN:
-                    out.print(BLACK_QUEEN);
+                    out.print(" Q ");
                     break;
                 case BISHOP:
-                    out.print(BLACK_BISHOP);
+                    out.print(" B ");
                     break;
                 case KNIGHT:
-                    out.print(BLACK_KNIGHT);
+                    out.print(" N ");
                     break;
                 case ROOK:
-                    out.print(BLACK_ROOK);
+                    out.print(" R ");
                     break;
                 case PAWN:
-                    out.print(BLACK_PAWN);
+                    out.print(" P ");
                     break;
             }
         }

@@ -3,15 +3,16 @@ import ui.*;
 
 public class Main {
     public static void main(String[] args) {
-        //var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        //System.out.println("♕ 240 Chess Client: " + piece);
 
-        ChessGame g = new ChessGame();
+        ChessClient client = new ChessClient("http://localhost:8080");
 
-       //WhiteBoardView.run(g.getBoard());
-       BlackBoardView.run(g.getBoard());
+        client.run();
 
-       //chessboard.main();
+        /** testing the board **/
+        //ChessGame g = new ChessGame();
+        //WhiteBoardView.run(g.getBoard());
+        //BlackBoardView.run(g.getBoard());
+
 
     }
 }
