@@ -76,7 +76,7 @@ public class ChessClient {
             visitorName = String.join("-", loggedIn);
             return String.format("LOGGED_IN AS %s", visitorName);
         }
-        return "Error";
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
     }
 
     public String register(String... params) throws GeneralException{
@@ -86,7 +86,7 @@ public class ChessClient {
             visitorName = String.join("-", registered);
             return String.format("LOGGED_IN AS %s", visitorName);
         }
-        return "Error";
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password> <email>");
     }
 
     public String logout() throws GeneralException{
@@ -102,7 +102,7 @@ public class ChessClient {
             GameData game = server.createGame(new CreateGameRequest(params[0]));
             return String.format("Game %s created", params[0]);
         }
-        return "Error";
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <name> ");
     }
 
     public String listGames() throws GeneralException{
@@ -138,7 +138,7 @@ public class ChessClient {
             }catch(NumberFormatException ignored){
             }
         }
-        return "Error";
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <ID> [WHITE|BLACK]");
     }
 
     public String observe(String... params) throws GeneralException{
@@ -155,7 +155,7 @@ public class ChessClient {
             }catch(NumberFormatException ignored){
             }
         }
-        return "Error";
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <ID>");
     }
 
     private GameData getGame(int id) throws GeneralException{
@@ -174,7 +174,7 @@ public class ChessClient {
                     SET_TEXT_COLOR_WHITE+
                     """
                     WELCOME TO CHESS
-                    """ +SET_TEXT_COLOR_MAGENTA+
+                    """ +SET_TEXT_COLOR_BLUE+
                     """
                     register <username> <password> <email> - to create an account
                     login <username> <password> - to play chess
@@ -182,10 +182,7 @@ public class ChessClient {
                     help - with possible commands
                     """;
         }
-        return SET_TEXT_COLOR_LIGHT_GREY+
-                """
-                LOGGED IN:
-                """ +SET_TEXT_COLOR_MAGENTA+"""
+        return SET_TEXT_COLOR_BLUE+"""
                 create <name> - a game
                 list - games
                 play <ID> [WHITE|BLACK] - a game
