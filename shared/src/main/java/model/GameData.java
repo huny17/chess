@@ -11,4 +11,8 @@ public record GameData(Integer gameID, String whiteUsername, String blackUsernam
         String str = String.format(", whiteUsername: %s, blackUsername: %s, gameName: %s", whiteUsername, blackUsername, gameName);
         return "{gameID: " + gameID + str + "}";
     }
+
+    public String simpleString() {
+        return String.format(", whiteUsername: %s, blackUsername: %s, gameName: %s", whiteUsername, blackUsername, gameName);
+    }
 }

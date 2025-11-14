@@ -7,6 +7,7 @@ import model.request.CreateGameRequest;
 import model.request.JoinGameRequest;
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
+import model.result.ListGamesResult;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -65,10 +66,10 @@ public class ServerFacade {
     }
 
 
-    public Map listGames() throws GeneralException{
+    public ListGamesResult listGames() throws GeneralException{
         var request = buildRequest("GET", "/game", null);
         var response = sendRequest(request);
-        return handleResponse(response, Map.class);
+        return handleResponse(response, ListGamesResult.class);
     }
 
     public UserData clear() throws GeneralException{

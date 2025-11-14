@@ -1,17 +1,14 @@
 package ui;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+
 import Exceptions.*;
-import chess.ChessGame;
-import com.google.gson.Gson;
 import model.*;
 import model.request.CreateGameRequest;
 import model.request.JoinGameRequest;
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
+import model.result.ListGamesResult;
 import server.ServerFacade;
 import static ui.EscapeSequences.*;
 
@@ -19,6 +16,7 @@ public class ChessClient {
     private String visitorName = null;
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
+    private TreeMap<Integer, GameData> listedGames = new TreeMap<>();
 
     public ChessClient(String serverUrl){
         server = new ServerFacade(serverUrl);
@@ -58,7 +56,7 @@ public class ChessClient {
                 case "register" -> register(params);
                 case "logout" -> logout();
                 case "create" -> createGame(params);
-                case "list" -> listGames();
+                case "list" -> list();
                 case "play" -> play(params);
                 case "observe" -> observe(params);
                 case "quit" -> "quit";
@@ -105,13 +103,15 @@ public class ChessClient {
         throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <name> ");
     }
 
-    public String listGames() throws GeneralException{
+    public String list() throws GeneralException{
+        int i = 1;
         assertSignedIn();
-        Map games = server.listGames();
+        ListGamesResult games = server.listGames();
         var result = new StringBuilder();
-        var gson = new Gson();
-        for (Object game : games.values()) {
-            result.append(gson.toJson(game)).append('\n');
+        for (GameData game : games.games()) {
+            result.append("ID: ").append(i).append(game.simpleString()).append('\n');;
+            listedGames.put(i, game);
+            i++;
         }
         return result.toString();
     }
@@ -121,20 +121,20 @@ public class ChessClient {
         if(params.length == 2) {
             try{
                 int id = Integer.parseInt(params[0]);
-//                GameData findGame = getGame(id);
-//                if(findGame != null){
-//                    GameData connectGame = server.joinGame(new JoinGameRequest(params[0], params[1]));
-//                    String notification = String.format("You are now playing %s", connectGame.gameName());
-//                    System.out.print(notification);
-//                    //check color
-//                    if(params[1].equals("white")){
-//                        WhiteBoardView.run(connectGame.chessGame().getBoard());
-//                    }
-//                    if(params[1].equals("black")){
-//                        BlackBoardView.run(connectGame.chessGame().getBoard());
-//                    }
-//                    return notification;
-//                }
+                GameData findGame = getGame(id);
+                if(findGame != null){
+                    GameData connectGame = server.joinGame(new JoinGameRequest(params[0], params[1]));
+                    String notification = String.format("You are now playing %s", connectGame.gameName());
+                    System.out.print(notification);
+                    //check color
+                    if(params[1].equals("white")){
+                        WhiteBoardView.run(connectGame.chessGame().getBoard());
+                    }
+                    if(params[1].equals("black")){
+                        BlackBoardView.run(connectGame.chessGame().getBoard());
+                    }
+                    return notification;
+                }
             }catch(NumberFormatException ignored){
             }
         }
@@ -146,12 +146,12 @@ public class ChessClient {
         if(params.length == 2) {
             try{
                 int id = Integer.parseInt(params[0]);
-                //GameData findGame = getGame(id);
-//                if(findGame != null){
-//                    String notification = String.format("You are now observing %s", findGame.gameName());
-//                    WhiteBoardView.run(findGame.chessGame().getBoard());
-//                    return notification;
-//                }
+                GameData findGame = getGame(id);
+                if(findGame != null){
+                    String notification = String.format("You are now observing %s", findGame.gameName());
+                    WhiteBoardView.run(findGame.chessGame().getBoard());
+                    return notification;
+                }
             }catch(NumberFormatException ignored){
             }
         }
@@ -159,13 +159,9 @@ public class ChessClient {
     }
 
     private GameData getGame(int id) throws GeneralException{
-        Object item = server.listGames().values();
-//        for(GameData game : ){
-//            if(game.gameID() == id){
-//                return game;
-//            }
-//        }
-        return null;
+        return listedGames.get(id);
+
+        //return null;
     }
 
     public String help(){
