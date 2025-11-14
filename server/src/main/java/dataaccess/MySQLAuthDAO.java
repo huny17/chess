@@ -1,6 +1,6 @@
 package dataaccess;
 
-import Exceptions.*;
+import exceptions.*;
 import model.AuthData;
 
 import java.sql.Connection;

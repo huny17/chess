@@ -1,11 +1,12 @@
-import Exceptions.GeneralException;
+package client;
+
+import exceptions.GeneralException;
 import model.request.CreateGameRequest;
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
-
 
 public class ServerFacadeTests {
 
@@ -76,7 +77,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void LogoutCreateGame(){
+    public void logoutCreateGame(){
         Assertions.assertThrows(GeneralException.class, ()-> facade.createGame(new CreateGameRequest("test")));
     }
 
@@ -89,7 +90,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void LogoutListGame(){
+    public void logoutListGame(){
         Assertions.assertThrows(GeneralException.class, ()-> facade.listGames());
     }
 }

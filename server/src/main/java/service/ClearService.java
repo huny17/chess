@@ -3,7 +3,7 @@ package service;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
-import Exceptions.*;
+import exceptions.*;
 
 public class ClearService {
 

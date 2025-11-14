@@ -2,7 +2,7 @@ package dataaccess;
 
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
-import Exceptions.*;
+import exceptions.*;
 import java.sql.*;
 import java.util.HashMap;
 

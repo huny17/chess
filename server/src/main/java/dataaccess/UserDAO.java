@@ -1,7 +1,7 @@
 package dataaccess;
 
 import model.UserData;
-import Exceptions.*;
+import exceptions.*;
 import java.util.HashMap;
 
 public interface UserDAO {

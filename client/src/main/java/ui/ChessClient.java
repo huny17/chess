@@ -2,7 +2,7 @@ package ui;
 
 import java.util.*;
 
-import Exceptions.*;
+import exceptions.*;
 import model.*;
 import model.request.CreateGameRequest;
 import model.request.JoinGameRequest;

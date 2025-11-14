@@ -1,6 +1,6 @@
 package server;
 
-import Exceptions.GeneralException;
+import exceptions.GeneralException;
 import com.google.gson.Gson;
 import dataaccess.*;
 import io.javalin.*;

@@ -9,7 +9,7 @@ import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.LogoutResult;
 import model.result.RegisterResult;
-import Exceptions.*;
+import exceptions.*;
 
 import java.util.UUID;
 

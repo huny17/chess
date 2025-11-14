@@ -1,7 +1,7 @@
 package service;
 
 
-import Exceptions.GeneralException;
+import exceptions.GeneralException;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import model.*;

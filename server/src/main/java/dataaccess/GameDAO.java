@@ -1,7 +1,7 @@
 package dataaccess;
 
 import model.GameData;
-import Exceptions.*;
+import exceptions.*;
 import java.util.Collection;
 
 public interface GameDAO {

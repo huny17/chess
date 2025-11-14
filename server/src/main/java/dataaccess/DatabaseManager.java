@@ -1,6 +1,6 @@
 package dataaccess;
 
-import Exceptions.GeneralException;
+import exceptions.GeneralException;
 
 import java.sql.*;
 import java.util.Properties;

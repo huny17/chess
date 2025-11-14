@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
-import Exceptions.*;
+import exceptions.*;
 
 public class MySQLGameDAO implements GameDAO {
 

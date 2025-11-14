@@ -6,7 +6,7 @@ import org.junit.jupiter.api.*;
 import passoff.server.TestServerFacade;
 import server.Server;
 import static org.junit.jupiter.api.Assertions.*;
-import Exceptions.*;
+import exceptions.*;
 
 class DataAccessTest {
     private static final UserData TEST_USER = new UserData("joe", "j@j", "j");

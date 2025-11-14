@@ -2,7 +2,7 @@ package dataaccess;
 
 import model.AuthData;
 import java.util.HashMap;
-import Exceptions.*;
+import exceptions.*;
 
 public interface AuthDAO {
     void clear() throws GeneralException;

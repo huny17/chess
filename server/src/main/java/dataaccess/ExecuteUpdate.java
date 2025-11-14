@@ -1,6 +1,6 @@
 package dataaccess;
 
-import Exceptions.GeneralException;
+import exceptions.GeneralException;
 import model.UserData;
 import java.sql.*;
 import static java.sql.Types.NULL;

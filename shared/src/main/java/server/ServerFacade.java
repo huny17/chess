@@ -1,6 +1,6 @@
 package server;
 
-import Exceptions.*;
+import exceptions.*;
 import com.google.gson.Gson;
 import model.*;
 import model.request.CreateGameRequest;
