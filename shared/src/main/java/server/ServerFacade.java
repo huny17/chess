@@ -17,6 +17,7 @@ import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
+import java.util.Map;
 
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -64,10 +65,10 @@ public class ServerFacade {
     }
 
 
-    public GameList listGames() throws GeneralException{
+    public Map listGames() throws GeneralException{
         var request = buildRequest("GET", "/game", null);
         var response = sendRequest(request);
-        return handleResponse(response, GameList.class);
+        return handleResponse(response, Map.class);
     }
 
     public UserData clear() throws GeneralException{
@@ -106,18 +107,20 @@ public class ServerFacade {
     }
 
     private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws GeneralException{
+        var err = response.body();
         var status = response.statusCode();
         if(!(status == 200)){
             var body = response.body();
             if(body != null){
-                throw new GeneralException(GeneralException.ExceptionType.invalid, body);
+                throw GeneralException.fromJson(body, status);
             }
-            throw new GeneralException(GeneralException.ExceptionType.invalid, body);
+            throw new GeneralException(GeneralException.convertStatus(status), "other failure: " + status);
         }
         if(responseClass != null){
             return new Gson().fromJson(response.body(), responseClass);
         }
         return null;
     }
+
 
 }

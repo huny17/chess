@@ -2,6 +2,7 @@ package ui;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Scanner;
 import Exceptions.*;
 import chess.ChessGame;
@@ -44,7 +45,7 @@ public class ChessClient {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + SET_TEXT_COLOR_GREEN + ">>> " + SET_TEXT_COLOR_BLUE);
+        System.out.print("\n" + SET_TEXT_COLOR_LIGHT_GREY + ">>> " + SET_TEXT_COLOR_BLUE);
     }
 
     public String eval(String input){
@@ -106,10 +107,10 @@ public class ChessClient {
 
     public String listGames() throws GeneralException{
         assertSignedIn();
-        GameList games = server.listGames();
+        Map games = server.listGames();
         var result = new StringBuilder();
         var gson = new Gson();
-        for (GameData game : games) {
+        for (Object game : games.values()) {
             result.append(gson.toJson(game)).append('\n');
         }
         return result.toString();
@@ -120,20 +121,20 @@ public class ChessClient {
         if(params.length == 2) {
             try{
                 int id = Integer.parseInt(params[0]);
-                GameData findGame = getGame(id);
-                if(findGame != null){
-                    GameData connectGame = server.joinGame(new JoinGameRequest(params[0], params[1]));
-                    String notification = String.format("You are now playing %s", connectGame.gameName());
-                    System.out.print(notification);
-                    //check color
-                    if(params[1].equals("white")){
-                        WhiteBoardView.run(connectGame.chessGame().getBoard());
-                    }
-                    if(params[1].equals("black")){
-                        BlackBoardView.run(connectGame.chessGame().getBoard());
-                    }
-                    return notification;
-                }
+//                GameData findGame = getGame(id);
+//                if(findGame != null){
+//                    GameData connectGame = server.joinGame(new JoinGameRequest(params[0], params[1]));
+//                    String notification = String.format("You are now playing %s", connectGame.gameName());
+//                    System.out.print(notification);
+//                    //check color
+//                    if(params[1].equals("white")){
+//                        WhiteBoardView.run(connectGame.chessGame().getBoard());
+//                    }
+//                    if(params[1].equals("black")){
+//                        BlackBoardView.run(connectGame.chessGame().getBoard());
+//                    }
+//                    return notification;
+//                }
             }catch(NumberFormatException ignored){
             }
         }
@@ -145,12 +146,12 @@ public class ChessClient {
         if(params.length == 2) {
             try{
                 int id = Integer.parseInt(params[0]);
-                GameData findGame = getGame(id);
-                if(findGame != null){
-                    String notification = String.format("You are now observing %s", findGame.gameName());
-                    WhiteBoardView.run(findGame.chessGame().getBoard());
-                    return notification;
-                }
+                //GameData findGame = getGame(id);
+//                if(findGame != null){
+//                    String notification = String.format("You are now observing %s", findGame.gameName());
+//                    WhiteBoardView.run(findGame.chessGame().getBoard());
+//                    return notification;
+//                }
             }catch(NumberFormatException ignored){
             }
         }
@@ -158,11 +159,12 @@ public class ChessClient {
     }
 
     private GameData getGame(int id) throws GeneralException{
-        for(GameData game : server.listGames()){
-            if(game.gameID() == id){
-                return game;
-            }
-        }
+        Object item = server.listGames().values();
+//        for(GameData game : ){
+//            if(game.gameID() == id){
+//                return game;
+//            }
+//        }
         return null;
     }
 
