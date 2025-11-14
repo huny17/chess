@@ -40,6 +40,9 @@ public class ServerFacade {
     }
 
     public String logout() throws GeneralException{
+        if(token == null){
+            throw new GeneralException(GeneralException.ExceptionType.invalid, "Login before you logout");
+        }
         var request = buildRequest("DELETE", "/session", null);
         var response = sendRequest(request);
         String user = token.username();

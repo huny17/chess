@@ -1,3 +1,6 @@
+import Exceptions.GeneralException;
+import model.request.CreateGameRequest;
+import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -41,5 +44,52 @@ public class ServerFacadeTests {
             facade.register(user);
             facade.register(user);
         });
+    }
+
+    @Test
+    public void normalLogout(){
+        normalRegister();
+        Assertions.assertDoesNotThrow(()->facade.logout());
+    }
+
+    @Test
+    public void invalidLogout(){
+        Assertions.assertThrows(GeneralException.class, ()->facade.logout());
+    }
+
+    @Test
+    public void normalLogin(){
+        normalLogout();
+        Assertions.assertDoesNotThrow(()->facade.login(new LoginRequest("d", "123")));
+    }
+
+    @Test
+    public void wrongPassword(){
+        normalLogout();
+        Assertions.assertThrows(GeneralException.class, ()->facade.login(new LoginRequest("d", "456")));
+    }
+
+    @Test
+    public void normalCreateGame(){
+        normalRegister();
+        Assertions.assertDoesNotThrow(()->facade.createGame(new CreateGameRequest("test")));
+    }
+
+    @Test
+    public void LogoutCreateGame(){
+        Assertions.assertThrows(GeneralException.class, ()-> facade.createGame(new CreateGameRequest("test")));
+    }
+
+    @Test
+    public void normalListGame(){
+        normalRegister();
+        Assertions.assertDoesNotThrow(()->facade.createGame(new CreateGameRequest("test")));
+        Assertions.assertDoesNotThrow(()->facade.createGame(new CreateGameRequest("test2")));
+        Assertions.assertDoesNotThrow(()->facade.listGames());
+    }
+
+    @Test
+    public void LogoutListGame(){
+        Assertions.assertThrows(GeneralException.class, ()-> facade.listGames());
     }
 }
