@@ -65,6 +65,12 @@ public class ServerFacadeTests {
     }
 
     @Test
+    public void loginWithoutLogout(){
+        normalRegister();
+        Assertions.assertDoesNotThrow(()->facade.login(new LoginRequest("d", "123")));
+    }
+
+    @Test
     public void wrongPassword(){
         normalLogout();
         Assertions.assertThrows(GeneralException.class, ()->facade.login(new LoginRequest("d", "456")));
@@ -86,6 +92,12 @@ public class ServerFacadeTests {
         normalRegister();
         Assertions.assertDoesNotThrow(()->facade.createGame(new CreateGameRequest("test")));
         Assertions.assertDoesNotThrow(()->facade.createGame(new CreateGameRequest("test2")));
+        Assertions.assertDoesNotThrow(()->facade.listGames());
+    }
+
+    @Test
+    public void emptyListGame(){
+        normalRegister();
         Assertions.assertDoesNotThrow(()->facade.listGames());
     }
 
