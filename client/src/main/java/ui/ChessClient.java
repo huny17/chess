@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Scanner;
 import Exceptions.*;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.*;
 import model.request.CreateGameRequest;
@@ -43,7 +44,7 @@ public class ChessClient {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + SET_TEXT_COLOR_BLUE + ">>> ");
+        System.out.print("\n" + SET_TEXT_COLOR_GREEN + ">>> " + SET_TEXT_COLOR_BLUE);
     }
 
     public String eval(String input){
@@ -105,7 +106,7 @@ public class ChessClient {
 
     public String listGames() throws GeneralException{
         assertSignedIn();
-        Collection<GameData> games = server.listGames();
+        GameList games = server.listGames();
         var result = new StringBuilder();
         var gson = new Gson();
         for (GameData game : games) {

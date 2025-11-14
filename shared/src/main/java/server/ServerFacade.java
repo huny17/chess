@@ -64,10 +64,10 @@ public class ServerFacade {
     }
 
 
-    public List<GameData> listGames() throws GeneralException{
+    public GameList listGames() throws GeneralException{
         var request = buildRequest("GET", "/game", null);
         var response = sendRequest(request);
-        return handleResponse(response, List.class);
+        return handleResponse(response, GameList.class);
     }
 
     public UserData clear() throws GeneralException{

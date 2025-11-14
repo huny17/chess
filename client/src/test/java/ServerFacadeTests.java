@@ -1,4 +1,3 @@
-import model.UserData;
 import model.request.RegisterRequest;
 import org.junit.jupiter.api.*;
 import server.Server;
