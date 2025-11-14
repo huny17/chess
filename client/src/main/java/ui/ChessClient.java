@@ -3,6 +3,7 @@ package ui;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Scanner;
+import Exceptions.*;
 import com.google.gson.Gson;
 import model.*;
 import model.request.CreateGameRequest;
@@ -10,7 +11,6 @@ import model.request.JoinGameRequest;
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import server.ServerFacade;
-import javax.management.Notification;
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
@@ -62,49 +62,48 @@ public class ChessClient {
                 case "quit" -> "quit";
                 default -> help();
             };
-        }catch(Exception e){
-            String str = e.getMessage();
-            return str;
+        }catch(GeneralException e){
+            return e.getMessage();
         }
     }
 
-    public String login(String... params) throws Exception{
+    public String login(String... params) throws GeneralException{
         if(params.length == 2){
             state = State.SIGNEDIN;
             String loggedIn = server.login(new LoginRequest(params[0], params[1]));
             visitorName = String.join("-", loggedIn);
             return String.format("LOGGED_IN AS %s", visitorName);
         }
-        throw new Exception();
+        return "Error";
     }
 
-    public String register(String... params) throws Exception{
+    public String register(String... params) throws GeneralException{
         if(params.length == 3){
             String registered = server.register(new RegisterRequest(params[0], params[1], params[2]));
             state = State.SIGNEDIN;
             visitorName = String.join("-", registered);
             return String.format("LOGGED_IN AS %s", visitorName);
         }
-        throw new Exception();
+        return "Error";
     }
 
-    public String logout() throws Exception{
+    public String logout() throws GeneralException{
         assertSignedIn();
         state = State.SIGNEDOUT;
         String loggedOut = server.logout();
         return "LOGGED_OUT";
     }
 
-    public String createGame(String... params) throws Exception{
+    public String createGame(String... params) throws GeneralException{
         assertSignedIn();
         if(params.length == 1) {
             GameData game = server.createGame(new CreateGameRequest(params[0]));
             return String.format("Game %s created", params[0]);
         }
-        throw new Exception();
+        return "Error";
     }
 
-    public String listGames() throws Exception{
+    public String listGames() throws GeneralException{
         assertSignedIn();
         Collection<GameData> games = server.listGames();
         var result = new StringBuilder();
@@ -115,7 +114,7 @@ public class ChessClient {
         return result.toString();
     }
 
-    public String play(String... params) throws Exception{
+    public String play(String... params) throws GeneralException{
         assertSignedIn();
         if(params.length == 2) {
             try{
@@ -136,12 +135,11 @@ public class ChessClient {
                 }
             }catch(NumberFormatException ignored){
             }
-            throw new Exception();
         }
-        throw new Exception();
+        return "Error";
     }
 
-    public String observe(String... params) throws Exception{
+    public String observe(String... params) throws GeneralException{
         assertSignedIn();
         if(params.length == 2) {
             try{
@@ -154,12 +152,11 @@ public class ChessClient {
                 }
             }catch(NumberFormatException ignored){
             }
-            throw new Exception();
         }
-        throw new Exception();
+        return "Error";
     }
 
-    private GameData getGame(int id) throws Exception{
+    private GameData getGame(int id) throws GeneralException{
         for(GameData game : server.listGames()){
             if(game.gameID() == id){
                 return game;
@@ -196,9 +193,9 @@ public class ChessClient {
                 """;
     }
 
-    private void assertSignedIn() throws Exception{
+    private void assertSignedIn() throws GeneralException{
         if(state == State.SIGNEDOUT){
-            throw new Exception();
+            throw new GeneralException(GeneralException.ExceptionType.unauthorized, "Please login to use these commands");
         }
     }
 }

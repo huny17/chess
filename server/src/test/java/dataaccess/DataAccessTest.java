@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 import passoff.server.TestServerFacade;
 import server.Server;
 import static org.junit.jupiter.api.Assertions.*;
+import Exceptions.*;
 
 class DataAccessTest {
     private static final UserData TEST_USER = new UserData("joe", "j@j", "j");
@@ -18,7 +19,7 @@ class DataAccessTest {
     private static GameDAO gameAccess;
 
 @BeforeAll
-public static void configureDatabase() throws DataAccessException{
+public static void configureDatabase() throws GeneralException{
     server = new Server();
     var port = server.run(0);
     fakeServer = new TestServerFacade("localhost", Integer.toString(port));
@@ -28,7 +29,7 @@ public static void configureDatabase() throws DataAccessException{
 }
 
 @BeforeEach
-public void preClear() throws DataAccessException{
+public void preClear() throws GeneralException{
     fakeServer.clear();
     userAccess.clear();
     authAccess.clear();
@@ -68,7 +69,7 @@ static void stop(){server.stop();}
     @Test
     void longUser() {
         UserData user = new UserData("joe", "123", "some really long thing, not sure how long I officially need to make it but like it needs to be unreasonably long almost like it needs to cause a length issue as was set when the table was made.");
-        assertThrows(DataAccessException.class, ()-> userAccess.createUser(user));
+        assertThrows(GeneralException.class, ()-> userAccess.createUser(user));
     }
 
     @Test
@@ -91,7 +92,7 @@ static void stop(){server.stop();}
     @Test
     void longAuth(){
             AuthData auth = new AuthData("joe","some really long thing, not sure how long I officially need to make it but like it needs to be unreasonably long almost like it needs to cause a length issue as was set when the table was made.");
-            assertThrows(DataAccessException.class, ()-> authAccess.createAuth(auth));
+            assertThrows(GeneralException.class, ()-> authAccess.createAuth(auth));
     }
 
     @Test
@@ -126,7 +127,7 @@ static void stop(){server.stop();}
     @Test
     void longGameName(){
         assertDoesNotThrow(()->userAccess.createUser(TEST_USER));
-        assertThrows(DataAccessException.class, ()-> gameAccess.createGame("some really long thing, not sure how long I officially need to make it but like it needs to be unreasonably long almost like it needs to cause a length issue as was set when the table was made."));
+        assertThrows(GeneralException.class, ()-> gameAccess.createGame("some really long thing, not sure how long I officially need to make it but like it needs to be unreasonably long almost like it needs to cause a length issue as was set when the table was made."));
     }
 
     @Test
@@ -200,7 +201,7 @@ static void stop(){server.stop();}
             gameAccess.createGame("test");
             assertNotNull(gameAccess.getGame(1));
             GameData updateGame = new GameData(1, null, "joeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "test", new ChessGame());
-            assertThrows(DataAccessException.class, ()-> gameAccess.updateBlackTeam("1", updateGame));
+            assertThrows(GeneralException.class, ()-> gameAccess.updateBlackTeam("1", updateGame));
         });
     }
 

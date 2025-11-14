@@ -1,7 +1,7 @@
 package dataaccess;
 
+import Exceptions.*;
 import model.AuthData;
-import model.UserData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,19 +14,19 @@ public class MySQLAuthDAO implements AuthDAO{
     private final ExecuteUpdate update = new ExecuteUpdate();
     private final HashMap<String, AuthData> authentications = new HashMap<>();
 
-    public MySQLAuthDAO() throws DataAccessException{
+    public MySQLAuthDAO() throws GeneralException {
         configureAuthTable();
     }
 
     @Override
-    public void clear() throws DataAccessException{
+    public void clear() throws GeneralException{
         String statement = "TRUNCATE auth";
         authentications.clear();
         update.executeUpdate(statement);
     }
 
     @Override
-    public void createAuth(AuthData auth) throws DataAccessException{
+    public void createAuth(AuthData auth) throws GeneralException{
         var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
         update.executeUpdate(statement, auth.authToken(), auth.username());
         authentications.put(auth.authToken(), auth);
@@ -34,7 +34,7 @@ public class MySQLAuthDAO implements AuthDAO{
 
     //want return user or token?
     @Override
-    public AuthData getAuth(String authToken) throws DataAccessException{
+    public AuthData getAuth(String authToken) throws GeneralException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, authToken FROM auth WHERE authToken=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -46,13 +46,13 @@ public class MySQLAuthDAO implements AuthDAO{
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
 
     @Override
-    public String getUser(String authToken) throws DataAccessException{
+    public String getUser(String authToken) throws GeneralException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, authToken FROM auth WHERE authToken=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -64,13 +64,13 @@ public class MySQLAuthDAO implements AuthDAO{
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
 
     @Override
-    public void deleteAuth(String authToken) throws DataAccessException{
+    public void deleteAuth(String authToken) throws GeneralException{
         var statement = "DELETE FROM auth WHERE authToken=?";
         authentications.remove(authToken);
         update.executeUpdate(statement, authToken);
@@ -90,12 +90,12 @@ public class MySQLAuthDAO implements AuthDAO{
                 )"""
     };
 
-    public void configureAuthTable() throws DataAccessException {
+    public void configureAuthTable() throws GeneralException {
         update.configureDatabase(createAuthTable);
     }
 
     @Override
-    public HashMap<String, AuthData> getAuthentications() throws DataAccessException{
+    public HashMap<String, AuthData> getAuthentications() throws GeneralException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, authToken FROM auth";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -110,7 +110,7 @@ public class MySQLAuthDAO implements AuthDAO{
                 return authentications;
             }
         } catch (Exception e) {
-            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to read data: %s", e.getMessage()));
         }
     }
 }

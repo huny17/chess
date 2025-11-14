@@ -1,8 +1,6 @@
 package service;
 
 import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.GeneralException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -11,7 +9,7 @@ import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.LogoutResult;
 import model.result.RegisterResult;
-import org.mindrot.jbcrypt.BCrypt;
+import Exceptions.*;
 
 import java.util.UUID;
 
@@ -25,12 +23,12 @@ public class UserService {
         this.authDataAccess = authDataAccess;
     }
 
-    public RegisterResult register(RegisterRequest req) throws GeneralException, DataAccessException{
+    public RegisterResult register(RegisterRequest req) throws GeneralException{
         if(userDataAccess.getUser(req.username()) != null){
-            throw new GeneralException("403","Username already taken");
+            throw new GeneralException(GeneralException.ExceptionType.forbidden,"Username already taken");
         }
         if(req.password() == null | req.email() == null){
-            throw new GeneralException("400","Password or Email is empty");
+            throw new GeneralException(GeneralException.ExceptionType.invalid,"Password or Email is empty");
         }
 
         UserData user = new UserData(req.username(), req.password(), req.email());
@@ -42,16 +40,16 @@ public class UserService {
         return new RegisterResult(auth.username(), auth.authToken());
     }
 
-    public LoginResult login(LoginRequest req) throws GeneralException, DataAccessException{
+    public LoginResult login(LoginRequest req) throws GeneralException{
 
         if(req.username() == null | req.password() == null){
-            throw new GeneralException("400","Username and password required");
+            throw new GeneralException(GeneralException.ExceptionType.invalid,"Username and password required");
         }
         if(userDataAccess.getUser(req.username()) == null){//Map().containsKey(req.username())){ //no user obtained
-            throw new GeneralException("401","User does not exist");
+            throw new GeneralException(GeneralException.ExceptionType.unauthorized,"User does not exist");
         }
         if(!userDataAccess.verifyUser(req.username(), req.password())) {
-            throw new GeneralException("401", "Wrong password");
+            throw new GeneralException(GeneralException.ExceptionType.unauthorized, "Wrong password");
         }
 
         AuthData auth = new AuthData(req.username(), generateAuthToken());
@@ -60,7 +58,7 @@ public class UserService {
         return new LoginResult(auth.username(), auth.authToken());
     }
 
-    public LogoutResult logout(String authToken) throws DataAccessException{
+    public LogoutResult logout(String authToken) throws GeneralException{
         authDataAccess.deleteAuth(authToken);
         return new LogoutResult(" ");
     }

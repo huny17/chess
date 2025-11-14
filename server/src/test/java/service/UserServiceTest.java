@@ -1,6 +1,5 @@
 package service;
 
-import dataaccess.GeneralException;
 import dataaccess.*;
 import memory.MemoryAuthDAO;
 import memory.MemoryGameDAO;
@@ -11,8 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import passoff.server.TestServerFacade;
-import server.Server;
+import Exceptions.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,13 +20,13 @@ public class UserServiceTest {
     private static GameDAO gameDataAccess;
 
     @BeforeAll
-    public static void configureDatabase() throws DataAccessException{
+    public static void configureDatabase() throws GeneralException{
         try {
             DatabaseManager.createDatabase();
             userDataAccess = new MySQLUserDAO(); //mySQL
             gameDataAccess = new MySQLGameDAO();
             authDataAccess = new MySQLAuthDAO();
-        }catch(DataAccessException e){
+        }catch(GeneralException e){
             userDataAccess = new MemoryUserDAO(); //mySQL
             gameDataAccess = new MemoryGameDAO();
             authDataAccess = new MemoryAuthDAO();
@@ -36,7 +34,7 @@ public class UserServiceTest {
     }
 
     @BeforeEach
-    public void preClear() throws DataAccessException{
+    public void preClear() throws GeneralException{
         userDataAccess.clear();
         authDataAccess.clear();
         gameDataAccess.clear();
@@ -73,7 +71,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void logoutWrong() throws GeneralException, DataAccessException{
+    public void logoutWrong() throws GeneralException, GeneralException{
         var userService = new UserService(userDataAccess, authDataAccess);
 
         model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));
@@ -94,7 +92,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void loginWithoutPassword() throws GeneralException, DataAccessException{
+    public void loginWithoutPassword() throws GeneralException, GeneralException{
         var userService = new UserService(userDataAccess, authDataAccess);
 
         model.result.RegisterResult register = userService.register(new RegisterRequest("user", "word", "u@u"));

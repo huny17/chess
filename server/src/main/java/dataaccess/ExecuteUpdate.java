@@ -1,12 +1,14 @@
 package dataaccess;
 
+import Exceptions.GeneralException;
 import model.UserData;
 import java.sql.*;
 import static java.sql.Types.NULL;
 
+
 public class ExecuteUpdate {
 
-    public int executeUpdate(String statement, Object... params) throws DataAccessException{ //obj .. param ~ array
+    public int executeUpdate(String statement, Object... params) throws GeneralException { //obj .. param ~ array
         try(Connection con = DatabaseManager.getConnection()){
             try(PreparedStatement ps = con.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS)){
                 for(int i = 0; i < params.length; i++){  //reading through to update
@@ -25,11 +27,11 @@ public class ExecuteUpdate {
                 return 0;
             }
         } catch (SQLException e){
-            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
     }
 
-    public void configureDatabase(String[] createStatements) throws DataAccessException{
+    public void configureDatabase(String[] createStatements) throws GeneralException{
         try (Connection conn = DatabaseManager.getConnection()){
             for (String statement : createStatements){
                 try (var preparedStatement = conn.prepareStatement(statement)){
@@ -37,7 +39,7 @@ public class ExecuteUpdate {
                 }
             }
         } catch(SQLException e){
-            throw new DataAccessException(String.format("Unable to configure database: %s", e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to configure database: %s", e.getMessage()));
         }
     }
 

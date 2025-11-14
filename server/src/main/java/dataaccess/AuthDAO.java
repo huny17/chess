@@ -1,14 +1,14 @@
 package dataaccess;
 
 import model.AuthData;
-
 import java.util.HashMap;
+import Exceptions.*;
 
 public interface AuthDAO {
-    void clear() throws DataAccessException;
-    void createAuth(AuthData auth) throws DataAccessException;
-    AuthData getAuth(String authToken) throws DataAccessException;
-    public String getUser(String authToken) throws DataAccessException;
-    void deleteAuth(String authToken) throws DataAccessException;
-    public HashMap<String, AuthData> getAuthentications() throws DataAccessException;
+    void clear() throws GeneralException;
+    void createAuth(AuthData auth) throws GeneralException;
+    AuthData getAuth(String authToken) throws GeneralException;
+    public String getUser(String authToken) throws GeneralException;
+    void deleteAuth(String authToken) throws GeneralException;
+    public HashMap<String, AuthData> getAuthentications() throws GeneralException;
 }

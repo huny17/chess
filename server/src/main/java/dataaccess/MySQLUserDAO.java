@@ -2,13 +2,13 @@ package dataaccess;
 
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
-
+import Exceptions.*;
 import java.sql.*;
 import java.util.HashMap;
 
 public class MySQLUserDAO implements UserDAO {
 
-    public MySQLUserDAO() throws DataAccessException{
+    public MySQLUserDAO() throws GeneralException{
         configureUserTable();
     }
 
@@ -16,14 +16,14 @@ public class MySQLUserDAO implements UserDAO {
     private final HashMap<String, UserData> users = new HashMap<>();
 
     @Override
-    public void clear() throws DataAccessException{
+    public void clear() throws GeneralException{
         String statement = "TRUNCATE user";
         users.clear();
         update.executeUpdate(statement);
     }
 
     @Override
-    public void createUser(UserData user) throws DataAccessException{
+    public void createUser(UserData user) throws GeneralException{
         configureUserTable();
         var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)"; //How is json being used?
         String hashPassword = hashUserPassword(user.password());
@@ -34,13 +34,13 @@ public class MySQLUserDAO implements UserDAO {
         return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
     }
 
-    public boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException{
+    public boolean verifyUser(String username, String providedClearTextPassword) throws GeneralException{
         String hashedPassword = readHashedPasswordFromDatabase(username);
 
         return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
     }
 
-    private String readHashedPasswordFromDatabase(String username) throws DataAccessException{
+    private String readHashedPasswordFromDatabase(String username) throws GeneralException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT password FROM user WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -52,13 +52,13 @@ public class MySQLUserDAO implements UserDAO {
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
 
     @Override
-    public UserData getUser(String username) throws DataAccessException{
+    public UserData getUser(String username) throws GeneralException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, password, email FROM user WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -70,7 +70,7 @@ public class MySQLUserDAO implements UserDAO {
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
@@ -91,13 +91,13 @@ public class MySQLUserDAO implements UserDAO {
         )"""
     };
 
-    public void configureUserTable() throws DataAccessException {
+    public void configureUserTable() throws GeneralException {
         update.configureDatabase(createUserTable);
     }
 
 
     @Override
-    public HashMap<String, UserData> getUserMap() throws DataAccessException{
+    public HashMap<String, UserData> getUserMap() throws GeneralException{
 
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM user";
@@ -111,7 +111,7 @@ public class MySQLUserDAO implements UserDAO {
                 return users;
             }
         } catch (Exception e) {
-            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to read data: %s", e.getMessage()));
         }
     }
 

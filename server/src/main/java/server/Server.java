@@ -1,6 +1,8 @@
 package server;
 
+import Exceptions.GeneralException;
 import com.google.gson.Gson;
+
 import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
@@ -32,7 +34,7 @@ public class Server {
             userDataAccess = new MySQLUserDAO(); //mySQL
             gameDataAccess = new MySQLGameDAO();
             authDataAccess = new MySQLAuthDAO();
-        }catch(DataAccessException e){
+        }catch(GeneralException e){
             userDataAccess = new MemoryUserDAO(); //mySQL
             gameDataAccess = new MemoryGameDAO();
             authDataAccess = new MemoryAuthDAO();
@@ -59,12 +61,11 @@ public class Server {
         server.delete("db", this::clearHandler);
         /*exception*/
         server.exception(GeneralException.class, this::generalExceptionHandler);
-        server.exception(DataAccessException.class, this::dataExceptionHandler);
 
     }
 
     //Call User Service
-    private void registerHandler(Context ctx) throws GeneralException, DataAccessException{ //created func to be called
+    private void registerHandler(Context ctx) throws GeneralException, GeneralException{ //created func to be called
         createDatabase();
         var serializer = new Gson(); //Gson = google json
         String reqJson = ctx.body(); //Json string format from request
@@ -81,7 +82,7 @@ public class Server {
         }
     }
 
-    private void logoutHandler(Context ctx) throws DataAccessException{
+    private void logoutHandler(Context ctx) throws GeneralException{
         if(authorized(ctx)){
             var serializer = new Gson();
             String reqJson = ctx.header("authorization");
@@ -91,7 +92,7 @@ public class Server {
     }
 
     //Call Game Service
-    private void createGameHandler(Context ctx) throws GeneralException, DataAccessException{
+    private void createGameHandler(Context ctx) throws GeneralException, GeneralException{
         if(authorized(ctx)) {
             var serializer = new Gson();
             String reqJson = ctx.body();
@@ -103,7 +104,7 @@ public class Server {
         }
     }
 
-    private void joinGameHandler(Context ctx) throws GeneralException, DataAccessException{ //created func to be called
+    private void joinGameHandler(Context ctx) throws GeneralException, GeneralException{ //created func to be called
         if(authorized(ctx)) {
             var serializer = new Gson();
             String reqJson = ctx.body();
@@ -116,7 +117,7 @@ public class Server {
         }
     }
 
-    private void listGamesHandler(Context ctx) throws DataAccessException{ //created func to be called
+    private void listGamesHandler(Context ctx) throws GeneralException{ //created func to be called
         if(authorized(ctx)) {
             var serializer = new Gson();
             ListGamesResult res = gameService.listGames();
@@ -126,7 +127,7 @@ public class Server {
     }
 
     //Call Clear Service
-    private void clearHandler(Context ctx) throws DataAccessException{
+    private void clearHandler(Context ctx) throws GeneralException{
         clearService.clear();
         ctx.result("");
     }
@@ -134,19 +135,12 @@ public class Server {
 
     private void generalExceptionHandler(GeneralException e, Context ctx){
         var message = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage()), "success", false));
-        int exceptionStatus = Integer.parseInt(e.getType());
+        int exceptionStatus = e.getType();
         ctx.status(exceptionStatus);
         ctx.json(message);
     }
 
-    private void dataExceptionHandler(DataAccessException e, Context ctx){
-        var message = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage()), "success", false));
-        int exceptionStatus = 500;
-        ctx.status(exceptionStatus);
-        ctx.json(message);
-    }
-
-    private boolean authorized(Context ctx) throws DataAccessException{
+    private boolean authorized(Context ctx) throws GeneralException{
         String authToken = ctx.header("authorization");
         if (!authDataAccess.getAuthentications().containsKey(authToken)) {
             ctx.contentType("application/json");

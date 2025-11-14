@@ -1,5 +1,6 @@
 package server;
 
+import Exceptions.*;
 import com.google.gson.Gson;
 import model.*;
 import model.request.CreateGameRequest;
@@ -9,13 +10,13 @@ import model.request.RegisterRequest;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.util.Collection;
 
 import java.net.*;
 import java.net.http.*;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.List;
 
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -26,21 +27,21 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public String register(RegisterRequest req) throws Exception{
+    public String register(RegisterRequest req) throws GeneralException{
         var request = buildRequest("POST", "/user", req);
         var response = sendRequest(request);
         token = handleResponse(response, AuthData.class);
         return token.username();
     }
 
-    public String login(LoginRequest req) throws Exception{
+    public String login(LoginRequest req) throws GeneralException{
         var request = buildRequest("POST", "/session", req);
         var response = sendRequest(request);
         token = handleResponse(response, AuthData.class);
         return token.username();
     }
 
-    public String logout() throws Exception{
+    public String logout() throws GeneralException{
         var request = buildRequest("DELETE", "/session", null);
         var response = sendRequest(request);
         String user = token.username();
@@ -49,27 +50,27 @@ public class ServerFacade {
         return user;
     }
 
-    public GameData createGame(CreateGameRequest req) throws Exception{
+    public GameData createGame(CreateGameRequest req) throws GeneralException{
         var request = buildRequest("POST", "/game", req);
         var response = sendRequest(request);
         GameData game = handleResponse(response, GameData.class);
         return game;
     }
 
-    public GameData joinGame(JoinGameRequest req) throws Exception{
+    public GameData joinGame(JoinGameRequest req) throws GeneralException{
         var request = buildRequest("PUT", "/game", req);
         var response = sendRequest(request);
         return handleResponse(response, GameData.class);
     }
 
 
-    public Collection<GameData> listGames() throws Exception{
+    public List<GameData> listGames() throws GeneralException{
         var request = buildRequest("GET", "/game", null);
         var response = sendRequest(request);
-        return handleResponse(response, Collection.class);
+        return handleResponse(response, List.class);
     }
 
-    public UserData clear() throws Exception{
+    public UserData clear() throws GeneralException{
         var request = buildRequest("DELETE", "/db", null);
         var response = sendRequest(request);
         return handleResponse(response, UserData.class);
@@ -96,22 +97,22 @@ public class ServerFacade {
         }
     }
 
-    private HttpResponse<String> sendRequest(HttpRequest request) throws Exception{
-        try{
+    private HttpResponse<String> sendRequest(HttpRequest request) throws GeneralException {
+        try {
             return client.send(request, BodyHandlers.ofString());
-        }catch (Exception e){
-            throw new Exception();
+        } catch (Exception e) {
+            throw new GeneralException(GeneralException.ExceptionType.invalid, e.getMessage());
         }
     }
 
-    private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws Exception{
+    private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws GeneralException{
         var status = response.statusCode();
         if(!(status == 200)){
             var body = response.body();
             if(body != null){
-                throw new Exception();
+                throw new GeneralException(GeneralException.ExceptionType.invalid, body);
             }
-            throw new Exception();
+            throw new GeneralException(GeneralException.ExceptionType.invalid, body);
         }
         if(responseClass != null){
             return new Gson().fromJson(response.body(), responseClass);

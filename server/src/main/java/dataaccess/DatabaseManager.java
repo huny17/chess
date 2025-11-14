@@ -1,7 +1,10 @@
 package dataaccess;
 
+import Exceptions.GeneralException;
+
 import java.sql.*;
 import java.util.Properties;
+
 
 public class DatabaseManager {
     private static String databaseName;
@@ -19,13 +22,13 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    static public void createDatabase() throws DataAccessException {
+    static public void createDatabase() throws GeneralException {
         var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
              var preparedStatement = conn.prepareStatement(statement)) {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            throw new DataAccessException("failed to create database", ex);
+            throw new GeneralException(GeneralException.ExceptionType.server, "failed to create database"+ex);
         }
     }
 
@@ -42,14 +45,14 @@ public class DatabaseManager {
      * }
      * </code>
      */
-    static Connection getConnection() throws DataAccessException {
+    static Connection getConnection() throws GeneralException {
         try {
             //do not wrap the following line with a try-with-resources
             var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
             conn.setCatalog(databaseName);
             return conn;
         } catch (SQLException ex) {
-            throw new DataAccessException("failed to get connection", ex);
+            throw new GeneralException(GeneralException.ExceptionType.server, "failed to get connection"+ex);
         }
     }
 

@@ -1,7 +1,9 @@
 package service;
 
-import dataaccess.*;
-import dataaccess.GeneralException;
+
+import Exceptions.GeneralException;
+import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
 import model.*;
 import model.request.*;
 import model.result.*;
@@ -16,9 +18,9 @@ public class GameService {
         this.authDataAccess = authDataAccess;
     }
 
-    public CreateGameResult createGame(CreateGameRequest req) throws GeneralException, DataAccessException{
+    public CreateGameResult createGame(CreateGameRequest req) throws GeneralException {
         if(req.gameName() == null){
-            throw new GeneralException("400","Please name your game");
+            throw new GeneralException(GeneralException.ExceptionType.invalid,"Please name your game");
         }
 
         int gameID = gameDataAccess.createGame(req.gameName());
@@ -26,21 +28,21 @@ public class GameService {
         return new CreateGameResult(gameID);
     }
 
-    public JoinGameResult joinGame(JoinGameRequest req, String authToken) throws GeneralException, DataAccessException {
+    public JoinGameResult joinGame(JoinGameRequest req, String authToken) throws GeneralException {
         if(req.gameID() == null | req.playerColor() ==  null){
-            throw new GeneralException("400","Please choose a Game ID or Team Color");
+            throw new GeneralException(GeneralException.ExceptionType.invalid,"Please choose a Game ID or Team Color");
         }
         if(gameDataAccess.getGame(Integer.parseInt(req.gameID())) == null){
-            throw new GeneralException("400","Game ID does not exist");
+            throw new GeneralException(GeneralException.ExceptionType.invalid,"Game ID does not exist");
         }
         if(!req.playerColor().equals("WHITE") && !req.playerColor().equals("BLACK")){
-            throw new GeneralException("400","Team Color is invalid");
+            throw new GeneralException(GeneralException.ExceptionType.invalid,"Team Color is invalid");
         }
         if(req.playerColor().equals("WHITE") && gameDataAccess.getWhiteUser(req.gameID()) != null){
-            throw new GeneralException("403","Color already taken");
+            throw new GeneralException(GeneralException.ExceptionType.forbidden,"Color already taken");
         }
         if(req.playerColor().equals("BLACK") && gameDataAccess.getBlackUser(req.gameID()) != null){
-            throw new GeneralException("403","Color already taken");
+            throw new GeneralException(GeneralException.ExceptionType.forbidden,"Color already taken");
         }
 
         String user = authDataAccess.getUser(authToken);
@@ -48,12 +50,12 @@ public class GameService {
         return updateColor(req, user);
     }
 
-    public ListGamesResult listGames() throws DataAccessException{
+    public ListGamesResult listGames() throws GeneralException{
 
         return new ListGamesResult(gameDataAccess.listGames());
     }
 
-    public JoinGameResult updateColor(JoinGameRequest req, String user) throws GeneralException, DataAccessException{
+    public JoinGameResult updateColor(JoinGameRequest req, String user) throws GeneralException{
         if(req.playerColor().equals("WHITE")){
             GameData oldGame = gameDataAccess.getGame(Integer.parseInt(req.gameID()));
             GameData newGame = new GameData(oldGame.gameID(), user, oldGame.blackUsername(), oldGame.gameName(), oldGame.chessGame());

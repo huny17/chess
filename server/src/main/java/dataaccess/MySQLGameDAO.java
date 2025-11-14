@@ -9,31 +9,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
+import Exceptions.*;
 
 public class MySQLGameDAO implements GameDAO {
 
     private final ExecuteUpdate update = new ExecuteUpdate();
     private final HashMap<Integer, GameData> games = new HashMap<>();
 
-    public MySQLGameDAO() throws DataAccessException{
+    public MySQLGameDAO() throws GeneralException{
         configureGameTable();
     }
 
     @Override
-    public void clear() throws DataAccessException{
+    public void clear() throws GeneralException{
         String statement = "TRUNCATE game";
         games.clear();
         update.executeUpdate(statement);
     }
 
     @Override
-    public Integer createGame(String gameName) throws DataAccessException{
+    public Integer createGame(String gameName) throws GeneralException{
         var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?)";
         return update.executeUpdate(statement, null, null, gameName, serializeChessGame(new ChessGame()));
     }
 
     @Override
-    public String getBlackUser(String gameID) throws DataAccessException{
+    public String getBlackUser(String gameID) throws GeneralException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -45,13 +46,13 @@ public class MySQLGameDAO implements GameDAO {
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
 
     @Override
-    public String getWhiteUser(String gameID) throws DataAccessException{
+    public String getWhiteUser(String gameID) throws GeneralException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -63,13 +64,13 @@ public class MySQLGameDAO implements GameDAO {
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
 
     @Override
-    public GameData getGame(int gameID) throws DataAccessException{
+    public GameData getGame(int gameID) throws GeneralException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM game WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -81,13 +82,13 @@ public class MySQLGameDAO implements GameDAO {
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+            throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
 
     @Override
-    public Collection<GameData> listGames() throws DataAccessException{
+    public Collection<GameData> listGames() throws GeneralException{
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM game";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -99,12 +100,12 @@ public class MySQLGameDAO implements GameDAO {
                 return games.values();
             }
     } catch (Exception e) {
-        throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        throw new GeneralException(GeneralException.ExceptionType.server, String.format("Unable to read data: %s", e.getMessage()));
     }
     }
 
     @Override
-    public void updateGame(String gameID, GameData newGame) throws DataAccessException{
+    public void updateGame(String gameID, GameData newGame) throws GeneralException{
         ChessGame theGame = newGame.chessGame();
 
         var statement = "UPDATE game SET chessGame=? WHERE gameID=?";
@@ -112,14 +113,14 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public void updateWhiteTeam(String gameID, GameData game) throws DataAccessException{
+    public void updateWhiteTeam(String gameID, GameData game) throws GeneralException{
             var statement = "UPDATE game SET whiteUsername=? WHERE gameID=?";
             update.executeUpdate(statement, game.whiteUsername(), Integer.parseInt(gameID));
 
     }
 
     @Override
-    public void updateBlackTeam(String gameID, GameData game) throws DataAccessException{
+    public void updateBlackTeam(String gameID, GameData game) throws GeneralException{
         var statement = "UPDATE game SET blackUsername=? WHERE gameID=?";
         update.executeUpdate(statement, game.blackUsername(), Integer.parseInt(gameID));
     }
@@ -155,7 +156,7 @@ public class MySQLGameDAO implements GameDAO {
         )"""
     };
 
-    public void configureGameTable() throws DataAccessException {
+    public void configureGameTable() throws GeneralException {
         update.configureDatabase(createGameTable);
     }
 
