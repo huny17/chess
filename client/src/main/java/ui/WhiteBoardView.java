@@ -22,8 +22,8 @@ public class WhiteBoardView {
         drawBorders(out);
         drawCheckers(out, board);
         drawBorders(out);
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_WHITE);
+        out.print(RESET_BG_COLOR+RESET_TEXT_COLOR+RESET_TEXT_BOLD_FAINT);
+        out.println();
     }
 
     private static void drawBorders(PrintStream out) {

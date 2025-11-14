@@ -91,7 +91,7 @@ public class ChessClient {
         assertSignedIn();
         state = State.SIGNEDOUT;
         String loggedOut = server.logout();
-        return "LOGGED_OUT";
+        return String.format("%s LOGGED_OUT", visitorName);
     }
 
     public String createGame(String... params) throws GeneralException{
@@ -107,6 +107,9 @@ public class ChessClient {
         int i = 1;
         assertSignedIn();
         ListGamesResult games = server.listGames();
+        if(games.games().isEmpty()) {
+            return "No games have been created yet. Create a Game!";
+        }
         var result = new StringBuilder();
         for (GameData game : games.games()) {
             result.append("ID: ").append(i).append(game.simpleString()).append('\n');;
@@ -118,37 +121,32 @@ public class ChessClient {
 
     public String play(String... params) throws GeneralException{
         assertSignedIn();
-        if(params.length == 2) {
+        populateList();
+        if(params.length == 2 && checkTeam(params[0])) {
             try{
-                int id = Integer.parseInt(params[0]);
-                GameData findGame = getGame(id);
+                int id = Integer.parseInt(params[1]);
+                GameData findGame = listedGames.get(id);
                 if(findGame != null){
-                    GameData connectGame = server.joinGame(new JoinGameRequest(params[0], params[1]));
-                    String notification = String.format("You are now playing %s", connectGame.gameName());
-                    System.out.print(notification);
-                    //check color
-                    if(params[1].equals("white")){
-                        WhiteBoardView.run(connectGame.chessGame().getBoard());
-                    }
-                    if(params[1].equals("black")){
-                        BlackBoardView.run(connectGame.chessGame().getBoard());
-                    }
-                    return notification;
+                    server.joinGame(new JoinGameRequest(params[0].toUpperCase(), findGame.gameID().toString()));
+                    String notification = String.format("You are now playing %s", findGame.gameName());
+                    runGame(params[0], findGame);
+                    return SET_TEXT_COLOR_BLUE+notification;
                 }
             }catch(NumberFormatException ignored){
             }
         }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <ID> [WHITE|BLACK]");
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: [WHITE|BLACK] <ID>");
     }
 
     public String observe(String... params) throws GeneralException{
         assertSignedIn();
-        if(params.length == 2) {
+        populateList();
+        if(params.length == 1) {
             try{
                 int id = Integer.parseInt(params[0]);
-                GameData findGame = getGame(id);
+                GameData findGame = listedGames.get(id);
                 if(findGame != null){
-                    String notification = String.format("You are now observing %s", findGame.gameName());
+                    String notification = String.format(SET_TEXT_COLOR_BLUE+"You are now observing %s", findGame.gameName());
                     WhiteBoardView.run(findGame.chessGame().getBoard());
                     return notification;
                 }
@@ -158,10 +156,29 @@ public class ChessClient {
         throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <ID>");
     }
 
-    private GameData getGame(int id) throws GeneralException{
-        return listedGames.get(id);
+    private void runGame(String color, GameData game) throws GeneralException{
+        if(color.equals("white")){
+            WhiteBoardView.run(game.chessGame().getBoard());
+        }
+        if(color.equals("black")){
+            BlackBoardView.run(game.chessGame().getBoard());
+        }
+    }
 
-        //return null;
+    private boolean checkTeam(String color) throws GeneralException{
+        if(color.equals("white") | color.equals("black")){
+            return true;
+        }
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: [WHITE|BLACK] <ID>");
+    }
+
+    private void populateList() throws GeneralException{
+        int i = 1;
+        ListGamesResult games = server.listGames();
+        for (GameData game : games.games()) {
+            listedGames.put(i, game);
+            i++;
+        }
     }
 
     public String help(){
@@ -181,7 +198,7 @@ public class ChessClient {
         return SET_TEXT_COLOR_BLUE+"""
                 create <name> - a game
                 list - games
-                play <ID> [WHITE|BLACK] - a game
+                play [WHITE|BLACK] <ID> - a game
                 observe <ID> - a game
                 logout - when you are done
                 quit - playing chess

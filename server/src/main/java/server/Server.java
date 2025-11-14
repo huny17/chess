@@ -2,7 +2,6 @@ package server;
 
 import Exceptions.GeneralException;
 import com.google.gson.Gson;
-
 import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
@@ -12,9 +11,7 @@ import memory.MemoryUserDAO;
 import model.request.*;
 import model.result.*;
 import service.*;
-
 import java.util.Map;
-
 import static dataaccess.DatabaseManager.createDatabase;
 
 public class Server {
@@ -61,10 +58,8 @@ public class Server {
         server.delete("db", this::clearHandler);
         /*exception*/
         server.exception(GeneralException.class, this::generalExceptionHandler);
-
     }
 
-    //Call User Service
     private void registerHandler(Context ctx) throws GeneralException, GeneralException{ //created func to be called
         createDatabase();
         var serializer = new Gson(); //Gson = google json
@@ -91,15 +86,12 @@ public class Server {
         }
     }
 
-    //Call Game Service
     private void createGameHandler(Context ctx) throws GeneralException, GeneralException{
         if(authorized(ctx)) {
             var serializer = new Gson();
             String reqJson = ctx.body();
-
             CreateGameRequest req = serializer.fromJson(reqJson, CreateGameRequest.class);
             CreateGameResult res = gameService.createGame(req);
-
             ctx.result(serializer.toJson(res));
         }
     }
@@ -109,8 +101,6 @@ public class Server {
             var serializer = new Gson();
             String reqJson = ctx.body();
             String authToken = ctx.header("authorization");
-
-
             JoinGameRequest req = serializer.fromJson(reqJson, JoinGameRequest.class); //serializer = Gson, makes json request from ctx body
             JoinGameResult res = gameService.joinGame(req, authToken);
             ctx.result(serializer.toJson(res)); //json response
@@ -126,12 +116,10 @@ public class Server {
         }
     }
 
-    //Call Clear Service
     private void clearHandler(Context ctx) throws GeneralException{
         clearService.clear();
         ctx.result("");
     }
-
 
     private void generalExceptionHandler(GeneralException e, Context ctx){
         var message = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage()), "success", false));
