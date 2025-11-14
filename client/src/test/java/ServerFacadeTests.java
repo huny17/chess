@@ -24,13 +24,12 @@ public class ServerFacadeTests {
         server.stop();
     }
 
-    @AfterEach
+    @BeforeEach
     @Test
     void clear() {
         Assertions.assertDoesNotThrow(()->facade.clear());
     }
 
-    @BeforeEach
     @Test
     public void normalRegister() {
         Assertions.assertDoesNotThrow(()->facade.register(user));
@@ -38,6 +37,9 @@ public class ServerFacadeTests {
 
     @Test
     public void reRegister(){
-        Assertions.assertThrows(Exception.class, ()->facade.register(user));
+        Assertions.assertThrows(Exception.class, ()->{
+            facade.register(user);
+            facade.register(user);
+        });
     }
 }

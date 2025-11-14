@@ -8,17 +8,13 @@ import model.request.JoinGameRequest;
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.ListGamesResult;
-
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-
 import java.net.*;
 import java.net.http.*;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.List;
-import java.util.Map;
 
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -55,14 +51,13 @@ public class ServerFacade {
     public GameData createGame(CreateGameRequest req) throws GeneralException{
         var request = buildRequest("POST", "/game", req);
         var response = sendRequest(request);
-        GameData game = handleResponse(response, GameData.class);
-        return game;
+        return handleResponse(response, GameData.class);
     }
 
-    public GameData joinGame(JoinGameRequest req) throws GeneralException{
+    public void joinGame(JoinGameRequest req) throws GeneralException{
         var request = buildRequest("PUT", "/game", req);
         var response = sendRequest(request);
-        return handleResponse(response, GameData.class);
+        handleResponse(response, GameData.class);
     }
 
 
@@ -108,7 +103,6 @@ public class ServerFacade {
     }
 
     private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws GeneralException{
-        var err = response.body();
         var status = response.statusCode();
         if(!(status == 200)){
             var body = response.body();
