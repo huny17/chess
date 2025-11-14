@@ -65,7 +65,7 @@ public class BlackBoardView {
         for(int i = 1; i <= 8; ++i){
             resetColor();
             drawSideCol(out, i-1);
-            for(int j = 1; j <= 8; ++j){
+            for(int j = 8; j >= 1; --j){
                 out.print(RESET_TEXT_COLOR);
                 ChessPosition pos =  board.getPos(i,j);
                 if(board.getPiece(pos) == null && isWhite){
@@ -106,50 +106,35 @@ public class BlackBoardView {
         if(piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
             out.print(SET_TEXT_BOLD);
             out.print(SET_TEXT_COLOR_WHITE);
-            switch (piece.getPieceType()) {
-                    case KING:
-                        out.print(BLACK_KING);
-                        break;
-                    case QUEEN:
-                        out.print(BLACK_QUEEN);
-                        break;
-                    case BISHOP:
-                        out.print(BLACK_BISHOP);
-                        break;
-                    case KNIGHT:
-                        out.print(BLACK_KNIGHT);
-                        break;
-                    case ROOK:
-                        out.print(BLACK_ROOK);
-                        break;
-                    case PAWN:
-                        out.print(BLACK_PAWN);
-                        break;
-                }
+            switchPlayer(out, piece);
         }
         else{
             out.print(SET_TEXT_BOLD);
             out.print(SET_TEXT_COLOR_DARK_GREY);
-            switch (piece.getPieceType()) {
-                case KING:
-                    out.print(BLACK_KING);
-                    break;
-                case QUEEN:
-                    out.print(BLACK_QUEEN);
-                    break;
-                case BISHOP:
-                    out.print(BLACK_BISHOP);
-                    break;
-                case KNIGHT:
-                    out.print(BLACK_KNIGHT);
-                    break;
-                case ROOK:
-                    out.print(BLACK_ROOK);
-                    break;
-                case PAWN:
-                    out.print(BLACK_PAWN);
-                    break;
-            }
+            switchPlayer(out, piece);
+        }
+    }
+
+    private static void switchPlayer(PrintStream out, ChessPiece piece){
+        switch (piece.getPieceType()) {
+            case KING:
+                out.print(BLACK_KING);
+                break;
+            case QUEEN:
+                out.print(BLACK_QUEEN);
+                break;
+            case BISHOP:
+                out.print(BLACK_BISHOP);
+                break;
+            case KNIGHT:
+                out.print(BLACK_KNIGHT);
+                break;
+            case ROOK:
+                out.print(BLACK_ROOK);
+                break;
+            case PAWN:
+                out.print(BLACK_PAWN);
+                break;
         }
     }
 
