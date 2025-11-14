@@ -19,6 +19,7 @@ public class WhiteBoardView {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
         out.print(SET_TEXT_BOLD);
+        out.println();
         drawBorders(out);
         drawCheckers(out, board);
         drawBorders(out);
