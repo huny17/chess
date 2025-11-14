@@ -125,6 +125,9 @@ public class ChessClient {
         if(params.length == 2 && checkTeam(params[0])) {
             try{
                 int id = Integer.parseInt(params[1]);
+                if(!listedGames.containsKey(id)){
+                    throw new GeneralException(GeneralException.ExceptionType.invalid, "That game does not exist yet, try another game.");
+                }
                 GameData findGame = listedGames.get(id);
                 if(findGame != null){
                     server.joinGame(new JoinGameRequest(params[0].toUpperCase(), findGame.gameID().toString()));
