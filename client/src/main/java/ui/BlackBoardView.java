@@ -52,7 +52,7 @@ public class BlackBoardView {
         out.print(SET_BG_COLOR_LIGHT_GREY);
     }
 
-    private static void resetColor(){
+    private static void resetBoxColor(){
         if(isWhite == false){
             isWhite = true;
         }
@@ -63,37 +63,37 @@ public class BlackBoardView {
 
     private static void drawCheckers(PrintStream out, ChessBoard board){
         for(int i = 1; i <= 8; ++i){
-            resetColor();
+            resetBoxColor();
             drawSideCol(out, i-1);
             for(int j = 8; j >= 1; --j){
                 out.print(RESET_TEXT_COLOR);
                 ChessPosition pos =  board.getPos(i,j);
                 if(board.getPiece(pos) == null && isWhite){
-                    out.print(SET_BG_COLOR_RED);
-                    out.print(SET_TEXT_COLOR_RED);
+                    out.print(SET_BG_COLOR_LIGHT_BLUE);
+                    out.print(SET_TEXT_COLOR__LIGHT_BLUE);
                     out.print(EMPTY);
                     //out.print(WHITE_PAWN);
-                    resetColor();
+                    resetBoxColor();
                     continue;
                 }
                 if(board.getPiece(pos) == null && !isWhite){
-                    out.print(SET_BG_COLOR_BLACK);
-                    out.print(SET_TEXT_COLOR_BLACK);
+                    out.print(SET_BG_COLOR_BLUE);
+                    out.print(SET_TEXT_COLOR_BLUE);
                     out.print(EMPTY);
                     //out.print(BLACK_PAWN);
-                    resetColor();
+                    resetBoxColor();
                     continue;
                 }
                 if(board.getPiece(pos) != null && isWhite){
-                    out.print(SET_BG_COLOR_RED);
+                    out.print(SET_BG_COLOR_LIGHT_BLUE);
                     printPlayer(out, board.getPiece(pos));
-                    resetColor();
+                    resetBoxColor();
                     continue;
                 }
                 if(board.getPiece(pos) != null && !isWhite){
-                    out.print(SET_BG_COLOR_BLACK);
+                    out.print(SET_BG_COLOR_BLUE);
                     printPlayer(out, board.getPiece(pos));
-                    resetColor();
+                    resetBoxColor();
                 }
             }
             drawSideCol(out, i-1);
@@ -110,7 +110,7 @@ public class BlackBoardView {
         }
         else{
             out.print(SET_TEXT_BOLD);
-            out.print(SET_TEXT_COLOR_DARK_GREY);
+            out.print(SET_TEXT_COLOR_DARK_BLUE);
             switchPlayer(out, piece);
         }
     }

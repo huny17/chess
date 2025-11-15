@@ -69,25 +69,29 @@ public class WhiteBoardView {
                 out.print(RESET_TEXT_COLOR);
                 ChessPosition pos =  board.getPos(i,j);
                 if(board.getPiece(pos) == null && isWhite){
-                    out.print(SET_BG_COLOR_RED);
-                    out.print("   ");
+                    out.print(SET_BG_COLOR_LIGHT_BLUE);
+                    out.print(SET_TEXT_COLOR__LIGHT_BLUE);
+                    out.print(EMPTY);
+                    //out.print(WHITE_PAWN);
                     resetBoxColor();
                     continue;
                 }
                 if(board.getPiece(pos) == null && !isWhite){
-                    out.print(SET_BG_COLOR_BLACK);
-                    out.print("   ");
+                    out.print(SET_BG_COLOR_BLUE);
+                    out.print(SET_TEXT_COLOR_BLUE);
+                    out.print(EMPTY);
+                    //out.print(BLACK_PAWN);
                     resetBoxColor();
                     continue;
                 }
                 if(board.getPiece(pos) != null && isWhite){
-                    out.print(SET_BG_COLOR_RED);
+                    out.print(SET_BG_COLOR_LIGHT_BLUE);
                     printPlayer(out, board.getPiece(pos));
                     resetBoxColor();
                     continue;
                 }
                 if(board.getPiece(pos) != null && !isWhite){
-                    out.print(SET_BG_COLOR_BLACK);
+                    out.print(SET_BG_COLOR_BLUE);
                     printPlayer(out, board.getPiece(pos));
                     resetBoxColor();
                 }
@@ -106,7 +110,7 @@ public class WhiteBoardView {
         }
         else{
             out.print(SET_TEXT_BOLD);
-            out.print(SET_TEXT_COLOR_DARK_GREY);
+            out.print(SET_TEXT_COLOR_DARK_BLUE);
             switchPlayer(out, piece);
         }
     }
