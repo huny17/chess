@@ -10,7 +10,6 @@ public class Main {
 
         /** testing the board **/
 //        ChessGame g = new ChessGame();
-//
 //        BlackBoardView.run(g.getBoard());
 //        WhiteBoardView.run(g.getBoard());
 
