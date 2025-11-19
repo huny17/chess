@@ -10,7 +10,6 @@ import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.ListGamesResult;
 import server.ServerFacade;
-import websocket.WebSocketFacade;
 
 import static ui.EscapeSequences.*;
 
