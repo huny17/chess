@@ -10,19 +10,21 @@ import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.ListGamesResult;
 import server.ServerFacade;
+import ui.websocket.WebSocketFacade;
+import websocket.Notification;
 
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
     private String visitorName = null;
     private final ServerFacade server;
-    //private final WebSocketFacade ws;
+    private final WebSocketFacade ws;
     private State state = State.SIGNEDOUT;
     private final TreeMap<Integer, GameData> listedGames = new TreeMap<>();
 
-    public ChessClient(String serverUrl){
+    public ChessClient(String serverUrl) throws GeneralException{
         server = new ServerFacade(serverUrl);
-        //ws = new WebSocketFacade(serverUrl, this);
+        ws = new WebSocketFacade(serverUrl, this);
     }
 
     public void run() {
@@ -45,10 +47,10 @@ public class ChessClient {
         System.out.println();
     }
 
-//    public void notify(Notification notification){
-//        System.out.println( notification.message());
-//        printPrompt();
-//    }
+    public void notify(Notification notification){
+        System.out.println( notification.message());
+        printPrompt();
+    }
 
     private void printPrompt() {
         System.out.print("\n" + SET_TEXT_COLOR_LIGHT_GREY + ">>> " + SET_TEXT_COLOR_BLUE);
@@ -80,7 +82,6 @@ public class ChessClient {
             state = State.SIGNEDIN;
             String loggedIn = server.login(new LoginRequest(params[0], params[1]));
             visitorName = String.join("-", loggedIn);
-            //ws.
             return String.format("LOGGED_IN AS %s", visitorName);
         }
         throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
@@ -98,7 +99,6 @@ public class ChessClient {
 
     public String logout() throws GeneralException{
         assertSignedIn();
-        //ws.
         state = State.SIGNEDOUT;
         String loggedOut = server.logout();
         return String.format("%s LOGGED_OUT", visitorName);
@@ -143,7 +143,7 @@ public class ChessClient {
                     server.joinGame(new JoinGameRequest(params[0].toUpperCase(), findGame.gameID().toString()));
                     String notification = String.format("You are now playing %s", findGame.gameName());
                     runGame(params[0], findGame);
-                    //ws.
+                    ws.makeConnection(server.getToken()., findGame.gameID());
                     return SET_TEXT_COLOR_BLUE+notification;
                 }
             }catch(NumberFormatException ignored){

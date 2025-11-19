@@ -119,4 +119,6 @@ public class ServerFacade {
         }
         return null;
     }
+
+    public String getToken(){return token.authToken();}
 }
