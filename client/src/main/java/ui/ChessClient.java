@@ -144,6 +144,7 @@ public class ChessClient {
                     server.joinGame(new JoinGameRequest(params[0].toUpperCase(), findGame.gameID().toString()));
                     String notification = String.format("You are now playing %s", findGame.gameName());
                     runGame(params[0], findGame);
+                    //ws.
                     return SET_TEXT_COLOR_BLUE+notification;
                 }
             }catch(NumberFormatException ignored){
