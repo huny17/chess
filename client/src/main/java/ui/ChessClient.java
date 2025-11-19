@@ -81,6 +81,7 @@ public class ChessClient {
             state = State.SIGNEDIN;
             String loggedIn = server.login(new LoginRequest(params[0], params[1]));
             visitorName = String.join("-", loggedIn);
+            //ws.
             return String.format("LOGGED_IN AS %s", visitorName);
         }
         throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
@@ -98,6 +99,7 @@ public class ChessClient {
 
     public String logout() throws GeneralException{
         assertSignedIn();
+        //ws.
         state = State.SIGNEDOUT;
         String loggedOut = server.logout();
         return String.format("%s LOGGED_OUT", visitorName);
