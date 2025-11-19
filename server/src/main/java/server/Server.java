@@ -56,6 +56,9 @@ public class Server {
         server.put("game", this::joinGameHandler);
         /*clear*/
         server.delete("db", this::clearHandler);
+        server.ws("/ws", ws -> {
+
+        });
         /*exception*/
         server.exception(GeneralException.class, this::generalExceptionHandler);
     }

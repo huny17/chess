@@ -10,16 +10,20 @@ import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.ListGamesResult;
 import server.ServerFacade;
+import websocket.WebSocketFacade;
+
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
     private String visitorName = null;
     private final ServerFacade server;
+    //private final WebSocketFacade ws;
     private State state = State.SIGNEDOUT;
-    private TreeMap<Integer, GameData> listedGames = new TreeMap<>();
+    private final TreeMap<Integer, GameData> listedGames = new TreeMap<>();
 
     public ChessClient(String serverUrl){
         server = new ServerFacade(serverUrl);
+        //ws = new WebSocketFacade(serverUrl, this);
     }
 
     public void run() {
@@ -41,6 +45,11 @@ public class ChessClient {
         }
         System.out.println();
     }
+
+//    public void notify(Notification notification){
+//        System.out.println( notification.message());
+//        printPrompt();
+//    }
 
     private void printPrompt() {
         System.out.print("\n" + SET_TEXT_COLOR_LIGHT_GREY + ">>> " + SET_TEXT_COLOR_BLUE);
@@ -112,7 +121,7 @@ public class ChessClient {
         }
         var result = new StringBuilder();
         for (GameData game : games.games()) {
-            result.append("ID: ").append(i).append(game.simpleString()).append('\n');;
+            result.append("ID: ").append(i).append(game.simpleString()).append('\n');
             listedGames.put(i, game);
             i++;
         }
