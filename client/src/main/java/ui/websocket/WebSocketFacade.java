@@ -1,17 +1,21 @@
 package ui.websocket;
 
+import com.google.gson.Gson;
 import exceptions.GeneralException;
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.WebSocketContainer;
+import websocket.Notification;
 import websocket.NotificationHandler;
 import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import jakarta.websocket.Session;
+import jakarta.websocket.*;
 
-public class WebSocketFacade { //extends Endpoint
+public class WebSocketFacade extends Endpoint{
 
-    //Session session;
+    Session session;
     NotificationHandler notificationHandler;
 
     public WebSocketFacade(String url, NotificationHandler notificationHandler) throws GeneralException{
@@ -19,7 +23,17 @@ public class WebSocketFacade { //extends Endpoint
             url = url.replace("http","ws");
             URI socketURI = new URI(url + "/ws");
             this.notificationHandler = notificationHandler;
-        }catch(URISyntaxException e){
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            this.session = container.connectToServer(this, socketURI);
+
+            this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+                @Override
+                public  void onMessage(String message){
+                    Notification notification = new Gson().fromJson(message, Notification.class);
+                    notificationHandler.notify(notification);
+                }
+            });
+        }catch(IOException|DeploymentException|URISyntaxException e){
             throw new GeneralException(GeneralException.ExceptionType.server, e.getMessage());
         }
     }
