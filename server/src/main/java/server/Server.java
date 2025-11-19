@@ -57,7 +57,12 @@ public class Server {
         /*clear*/
         server.delete("db", this::clearHandler);
         server.ws("/ws", ws -> {
-
+            ws.onConnect(ctx -> {
+                ctx.enableAutomaticPings();
+                System.out.println("connected");
+            });
+            ws.onMessage(ctx -> ctx.send("WebSocket response:" + ctx.message()));
+            ws.onClose(_ -> System.out.println("Websocket closed"));
         });
         /*exception*/
         server.exception(GeneralException.class, this::generalExceptionHandler);
