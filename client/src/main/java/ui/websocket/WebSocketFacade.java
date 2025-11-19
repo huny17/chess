@@ -38,10 +38,31 @@ public class WebSocketFacade extends Endpoint{
         }
     }
 
-    public void makeConnection(String username, String authToken, Integer gameID) throws GeneralException{
+    @Override
+    public void onOpen(Session session, EndpointConfig endpointConfig){}
+
+    public void makeConnection(String authToken, Integer gameID) throws GeneralException{
         try{
             var command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        }catch(IOException e){
+            throw new GeneralException(GeneralException.ExceptionType.server, e.getMessage());
+        }
+    }
 
+    public void leaveGame(String authToken, Integer gameID) throws GeneralException{
+        try{
+            var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        }catch(IOException e){
+            throw new GeneralException(GeneralException.ExceptionType.server, e.getMessage());
+        }
+    }
+
+    public void resignGame(String authToken, Integer gameID) throws GeneralException{
+        try{
+            var command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
         }catch(IOException e){
             throw new GeneralException(GeneralException.ExceptionType.server, e.getMessage());
         }
