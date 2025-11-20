@@ -1,16 +1,13 @@
 package ui;
 
 import exceptions.GeneralException;
-import model.GameData;
-import model.request.CreateGameRequest;
-import model.request.JoinGameRequest;
-import model.result.ListGamesResult;
+import model.*;
+import model.request.*;
+import model.result.*;
 import server.ServerFacade;
 import ui.websocket.WebSocketFacade;
-
 import java.util.TreeMap;
-
-import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
+import static ui.EscapeSequences.*;
 
 public class Postlogin {
     private String visitorName = null;

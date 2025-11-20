@@ -1,10 +1,8 @@
 package ui;
 
 import exceptions.GeneralException;
-import model.request.LoginRequest;
-import model.request.RegisterRequest;
+import model.request.*;
 import server.ServerFacade;
-import static ui.EscapeSequences.*;
 
 public class Prelogin {
 

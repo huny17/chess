@@ -1,13 +1,11 @@
 package ui;
 
 import java.util.*;
-
 import exceptions.*;
 import model.*;
 import server.ServerFacade;
 import ui.websocket.WebSocketFacade;
 import websocket.Notification;
-
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
@@ -19,7 +17,7 @@ public class ChessClient {
 
     public ChessClient(String serverUrl) throws GeneralException{
         server = new ServerFacade(serverUrl);
-        ws = new WebSocketFacade(serverUrl);
+        ws = new WebSocketFacade(serverUrl, this);
         prelogin = new Prelogin(server);
         postlogin = new Postlogin(server, ws);
     }
