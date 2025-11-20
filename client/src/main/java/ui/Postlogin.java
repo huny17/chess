@@ -1,4 +1,4 @@
-package ui.websocket;
+package ui;
 
 import exceptions.GeneralException;
 import model.GameData;
@@ -6,8 +6,7 @@ import model.request.CreateGameRequest;
 import model.request.JoinGameRequest;
 import model.result.ListGamesResult;
 import server.ServerFacade;
-import ui.BlackBoardView;
-import ui.WhiteBoardView;
+import ui.websocket.WebSocketFacade;
 
 import java.util.TreeMap;
 
