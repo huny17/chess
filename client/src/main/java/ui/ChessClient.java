@@ -9,17 +9,17 @@ import websocket.Notification;
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
-    private final ServerFacade server;
-    private final WebSocketFacade ws;
     private State state = State.SIGNEDOUT;
-    private Prelogin prelogin;
-    private Postlogin postlogin;
+    private final Prelogin prelogin;
+    private final Postlogin postlogin;
+    private final Gameplay gameplay;
 
     public ChessClient(String serverUrl) throws GeneralException{
-        server = new ServerFacade(serverUrl);
-        ws = new WebSocketFacade(serverUrl, this);
+        ServerFacade server = new ServerFacade(serverUrl);
+        WebSocketFacade ws = new WebSocketFacade(serverUrl, this);
         prelogin = new Prelogin(server);
         postlogin = new Postlogin(server, ws);
+        gameplay = new Gameplay(server, ws);
     }
 
     public void run() {
@@ -87,9 +87,19 @@ public class ChessClient {
                     assertSignedIn();
                     result = postlogin.observe(params);
                 }
+                case "redraw" ->{
+                }
+                case "leave" ->{
+                }
+                case "make move" ->{
+                }
+                case "resign" ->{
+                }
+                case "legal moves" ->{
+                }
                 case "quit" -> result = "quit";
                 default -> result = help();
-            };
+            }
             return result;
         }catch(GeneralException e){
             return e.getMessage();
