@@ -13,6 +13,7 @@ public class ChessClient {
     private final Prelogin prelogin;
     private final Postlogin postlogin;
     private final Gameplay gameplay;
+    private HelpConsole help;
 
     public ChessClient(String serverUrl) throws GeneralException{
         ServerFacade server = new ServerFacade(serverUrl);
@@ -20,11 +21,12 @@ public class ChessClient {
         prelogin = new Prelogin(server);
         postlogin = new Postlogin(server, ws);
         gameplay = new Gameplay(server, ws);
+        help = new HelpConsole(state);
     }
 
     public void run() {
         System.out.println();
-        System.out.print(help());
+        System.out.print(help.helpScreen());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -61,15 +63,18 @@ public class ChessClient {
                 case "login"->{
                     result = prelogin.login(params);
                     state = State.SIGNEDIN;
+                    help = new HelpConsole(state);
                 }
                 case "register" ->{
                     result = prelogin.register(params);
                     state = State.SIGNEDIN;
+                    help = new HelpConsole(state);
                 }
                 case "logout" ->{
                     assertSignedIn();
                     result = postlogin.logout();
                     state = State.SIGNEDOUT;
+                    help = new HelpConsole(state);
                 }
                 case "create" -> {
                     assertSignedIn();
@@ -82,53 +87,37 @@ public class ChessClient {
                 case "play" ->{
                     assertSignedIn();
                     result = postlogin.play(params);
+                    state = State.INGAME;
+                    help = new HelpConsole(state);
                 }
                 case "observe" ->{
                     assertSignedIn();
                     result = postlogin.observe(params);
+                    state = State.INGAME;
+                    help = new HelpConsole(state);
                 }
                 case "redraw" ->{
+                    result = null;
                 }
                 case "leave" ->{
+                    result = null;
                 }
                 case "make move" ->{
+                    result = null;
                 }
                 case "resign" ->{
+                    result = null;
                 }
                 case "legal moves" ->{
+                    result = null;
                 }
                 case "quit" -> result = "quit";
-                default -> result = help();
+                default -> result = help.helpScreen();
             }
             return result;
         }catch(GeneralException e){
             return e.getMessage();
         }
-    }
-
-    public String help(){
-        if(state == State.SIGNEDOUT){
-            return
-                    SET_TEXT_COLOR_WHITE+
-                            """
-                            WELCOME TO CHESS
-                            """ +SET_TEXT_COLOR_BLUE+
-                            """
-                            register <username> <password> <email> - to create an account
-                            login <username> <password> - to play chess
-                            quit - playing chess
-                            help - with possible commands
-                            """;
-        }
-        return SET_TEXT_COLOR_BLUE+"""
-                create <name> - a game
-                list - games
-                play [WHITE|BLACK] <ID> - a game
-                observe <ID> - a game
-                logout - when you are done
-                quit - playing chess
-                help - with possible commands
-                """;
     }
 
     private void assertSignedIn() throws GeneralException{
