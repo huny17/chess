@@ -21,6 +21,7 @@ public class Postlogin {
     public Postlogin(ServerFacade server, WebSocketFacade ws) throws GeneralException{
         this.server = server;
         this.ws = ws;
+        visitorName  = server.getName();
     }
 
     public String logout() throws GeneralException {

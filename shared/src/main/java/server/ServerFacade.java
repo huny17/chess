@@ -121,4 +121,5 @@ public class ServerFacade {
     }
 
     public String getToken(){return token.authToken();}
+    public String getName(){return token.username();}
 }

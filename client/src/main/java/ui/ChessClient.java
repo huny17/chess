@@ -11,12 +11,9 @@ import websocket.Notification;
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
-    private String visitorName = null;
     private final ServerFacade server;
     private final WebSocketFacade ws;
     private State state = State.SIGNEDOUT;
-
-    private final TreeMap<Integer, GameData> listedGames = new TreeMap<>();
     private Prelogin prelogin;
     private Postlogin postlogin;
 
