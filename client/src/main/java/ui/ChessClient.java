@@ -17,7 +17,7 @@ public class ChessClient {
 
     public ChessClient(String serverUrl) throws GeneralException{
         ServerFacade server = new ServerFacade(serverUrl);
-        WebSocketFacade ws = new WebSocketFacade(serverUrl, this);
+        WebSocketFacade ws = new WebSocketFacade(serverUrl, this::notify);
         prelogin = new Prelogin(server);
         postlogin = new Postlogin(server, ws);
         gameplay = new Gameplay(server, ws);
@@ -112,7 +112,7 @@ public class ChessClient {
                 }
                 case "resign" ->{
                     assertSignedIn();
-                    result = postlogin.observe(params);
+                    result = gameplay.resign(params);
                     state = State.SIGNEDIN;
                     help = new HelpConsole(state);
                 }
