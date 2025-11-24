@@ -36,6 +36,13 @@ public class Gameplay {
         throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
     }
 
+    public String leave(String... params) throws GeneralException {
+        if(params.length == 1){
+
+        }
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
+    }
+
     public String highlight(String... params) throws GeneralException {
         if(params.length == 1){
 

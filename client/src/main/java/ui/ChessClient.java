@@ -97,19 +97,28 @@ public class ChessClient {
                     help = new HelpConsole(state);
                 }
                 case "redraw" ->{
-                    result = null;
+                    assertSignedIn();
+                    result = gameplay.redraw(params);
                 }
                 case "leave" ->{
-                    result = null;
+                    assertSignedIn();
+                    result = gameplay.leave(params);
+                    state = State.SIGNEDIN;
+                    help = new HelpConsole(state);
                 }
-                case "make move" ->{
-                    result = null;
+                case "move" ->{
+                    assertSignedIn();
+                    result = gameplay.makeMove(params);
                 }
                 case "resign" ->{
-                    result = null;
+                    assertSignedIn();
+                    result = postlogin.observe(params);
+                    state = State.SIGNEDIN;
+                    help = new HelpConsole(state);
                 }
-                case "legal moves" ->{
-                    result = null;
+                case "highlight" ->{
+                    assertSignedIn();
+                    result = gameplay.highlight(params);
                 }
                 case "quit" -> result = "quit";
                 default -> result = help.helpScreen();
