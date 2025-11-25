@@ -13,7 +13,7 @@ public class Gameplay {
     private final ServerFacade server;
     private final WebSocketFacade ws;
 
-    public Gameplay(ServerFacade server, WebSocketFacade ws) throws GeneralException {
+    public Gameplay(ServerFacade server, WebSocketFacade ws){
         this.server = server;
         this.ws = ws;
     }

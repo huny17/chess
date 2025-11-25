@@ -11,12 +11,12 @@ import java.util.TreeMap;
 import static ui.EscapeSequences.*;
 
 public class Postlogin {
-    private String visitorName = null;
+    private final String visitorName;
     private final TreeMap<Integer, GameData> listedGames = new TreeMap<>();
     private final ServerFacade server;
     private final WebSocketFacade ws;
 
-    public Postlogin(ServerFacade server, WebSocketFacade ws) throws GeneralException{
+    public Postlogin(ServerFacade server, WebSocketFacade ws){
         this.server = server;
         this.ws = ws;
         visitorName  = server.getName();
@@ -106,7 +106,6 @@ public class Postlogin {
     }
 
     public GameData getGameData(String... params){
-        GameData findGame = listedGames.get(Integer.parseInt(params[0]));
-        return findGame;
+        return listedGames.get(Integer.parseInt(params[0]));
     }
 }
