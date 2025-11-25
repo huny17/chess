@@ -13,11 +13,11 @@ public class HelpConsole {
     public String helpScreen(){
         if(state == State.INGAME){
             return  SET_TEXT_COLOR_BLUE + """
-                    move - a piece
+                    move <start position> <end position> - a piece
                     redraw - the chessboard
-                    leave - the game
-                    resign - the game
-                    highlight - possible moves
+                    leave - exiting the current game
+                    resign - admitting defeat
+                    highlight <start position> - possible moves
                     quit - playing chess
                     help - with possible commands
                     """;

@@ -18,41 +18,32 @@ public class Gameplay {
         this.ws = ws;
     }
 
-    public String redraw(GameData gameData, String team, String... params) throws GeneralException {
-        if (params.length == 1) {
-            BoardView.run(gameData.chessGame().getBoard(), team);
-            String notification = String.format("%s redrawn", gameData.gameName());
-            ws.makeConnection(server.getToken(), gameData.gameID());
-            return SET_TEXT_COLOR_BLUE + notification;
-        }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
+    public String redraw(GameData gameData, String team) throws GeneralException {
+        BoardView.run(gameData.chessGame().getBoard(), team);
+        String notification = String.format("%s was redrawn", gameData.gameName());
+        ws.makeConnection(server.getToken(), gameData.gameID());
+        return SET_TEXT_COLOR_BLUE + notification;
     }
 
     public String makeMove(String... params) throws GeneralException {
         if(params.length == 2){
 
         }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position> <end position>");
     }
 
     public String resign(String... params) throws GeneralException {
-        if(params.length == 1){
-
-        }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
+        return null;
     }
 
     public String leave(String... params) throws GeneralException {
-        if(params.length == 1){
-
-        }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
+        return null;
     }
 
     public String highlight(String... params) throws GeneralException {
         if(params.length == 1){
 
         }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position>");
     }
 }

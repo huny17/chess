@@ -106,11 +106,12 @@ public class ChessClient {
                 }
                 case "redraw" ->{
                     assertSignedIn();
-                    result = gameplay.redraw(chessGame, color, params);
+                    result = gameplay.redraw(chessGame, color);
                 }
                 case "leave" ->{
                     assertSignedIn();
                     result = gameplay.leave(params);
+                    color = null;
                     state = State.SIGNEDIN;
                     help = new HelpConsole(state);
                 }
@@ -121,6 +122,7 @@ public class ChessClient {
                 case "resign" ->{
                     assertSignedIn();
                     result = gameplay.resign(params);
+                    color = null;
                     state = State.SIGNEDIN;
                     help = new HelpConsole(state);
                 }

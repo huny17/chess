@@ -106,6 +106,6 @@ public class Postlogin {
     }
 
     public GameData getGameData(String... params){
-        return listedGames.get(Integer.parseInt(params[0]));
+        return listedGames.get(Integer.parseInt(params[1]));
     }
 }
