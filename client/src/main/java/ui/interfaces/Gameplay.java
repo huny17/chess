@@ -25,22 +25,22 @@ public class Gameplay {
         return SET_TEXT_COLOR_BLUE + notification;
     }
 
-    public String makeMove(String... params) throws GeneralException {
+    public String makeMove(GameData gameData, String team, String... params) throws GeneralException {
         if(params.length == 2){
 
         }
         throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position> <end position>");
     }
 
-    public String resign(String... params) throws GeneralException {
+    public String resign(GameData gameData, String team) throws GeneralException {
         return null;
     }
 
-    public String leave(String... params) throws GeneralException {
+    public String leave(GameData gameData, String team) throws GeneralException {
         return null;
     }
 
-    public String highlight(String... params) throws GeneralException {
+    public String highlight(GameData gameData, String team, String... params) throws GeneralException {
         if(params.length == 1){
 
         }

@@ -110,25 +110,25 @@ public class ChessClient {
                 }
                 case "leave" ->{
                     assertSignedIn();
-                    result = gameplay.leave(params);
+                    result = gameplay.leave(chessGame, color);
                     color = null;
                     state = State.SIGNEDIN;
                     help = new HelpConsole(state);
                 }
                 case "move" ->{
                     assertSignedIn();
-                    result = gameplay.makeMove(params);
+                    result = gameplay.makeMove(chessGame, color, params);
                 }
                 case "resign" ->{
                     assertSignedIn();
-                    result = gameplay.resign(params);
+                    result = gameplay.resign(chessGame, color);
                     color = null;
                     state = State.SIGNEDIN;
                     help = new HelpConsole(state);
                 }
                 case "highlight" ->{
                     assertSignedIn();
-                    result = gameplay.highlight(params);
+                    result = gameplay.highlight(chessGame, color, params);
                 }
                 case "quit" -> result = "quit";
                 default -> result = help.helpScreen();
