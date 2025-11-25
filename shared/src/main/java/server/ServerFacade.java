@@ -19,7 +19,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
     private final String serverUrl;
-    private AuthData token;
+    private AuthData token = new AuthData("null","null");
 
     public ServerFacade(String url){
         serverUrl = url;

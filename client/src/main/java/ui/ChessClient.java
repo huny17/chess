@@ -1,11 +1,12 @@
 package ui;
 
 import java.util.*;
-
-import chess.ChessGame;
 import exceptions.*;
 import model.*;
 import server.ServerFacade;
+import ui.interfaces.Gameplay;
+import ui.interfaces.Postlogin;
+import ui.interfaces.Prelogin;
 import ui.websocket.WebSocketFacade;
 import websocket.Notification;
 import static ui.EscapeSequences.*;
@@ -16,7 +17,7 @@ public class ChessClient {
     private final Postlogin postlogin;
     private final Gameplay gameplay;
     private HelpConsole help;
-    private ChessGame chessGame;
+    private GameData chessGame;
     private String color = null;
 
     public ChessClient(String serverUrl) throws GeneralException{
@@ -91,7 +92,7 @@ public class ChessClient {
                 case "play" ->{
                     assertSignedIn();
                     result = postlogin.play(params);
-                    chessGame = postlogin.getGame(params);
+                    chessGame = postlogin.getGameData(params);
                     color = params[0];
                     state = State.INGAME;
                     help = new HelpConsole(state);

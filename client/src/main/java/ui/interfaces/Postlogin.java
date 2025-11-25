@@ -1,11 +1,11 @@
-package ui;
+package ui.interfaces;
 
-import chess.ChessGame;
 import exceptions.GeneralException;
 import model.*;
 import model.request.*;
 import model.result.*;
 import server.ServerFacade;
+import ui.theboard.BoardView;
 import ui.websocket.WebSocketFacade;
 import java.util.TreeMap;
 import static ui.EscapeSequences.*;
@@ -62,7 +62,7 @@ public class Postlogin {
                 if(findGame != null){
                     server.joinGame(new JoinGameRequest(params[0].toUpperCase(), findGame.gameID().toString()));
                     String notification = String.format("You are now playing %s", findGame.gameName());
-                    runGame(params[0], findGame);
+                    BoardView.run(findGame.chessGame().getBoard(), params[0]);
                     ws.makeConnection(server.getToken(), findGame.gameID());
                     return SET_TEXT_COLOR_BLUE+notification;
                 }
@@ -80,22 +80,13 @@ public class Postlogin {
                 GameData findGame = listedGames.get(id);
                 if(findGame != null){
                     String notification = String.format(SET_TEXT_COLOR_BLUE+"You are now observing %s", findGame.gameName());
-                    WhiteBoardView.run(findGame.chessGame().getBoard());
+                    BoardView.run(findGame.chessGame().getBoard(), "white");
                     return notification;
                 }
             }catch(NumberFormatException ignored){
             }
         }
         throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <ID>");
-    }
-
-    private void runGame(String color, GameData game) throws GeneralException{
-        if(color.equals("white")){
-            WhiteBoardView.run(game.chessGame().getBoard());
-        }
-        if(color.equals("black")){
-            BlackBoardView.run(game.chessGame().getBoard(), color);
-        }
     }
 
     private boolean checkTeam(String color) throws GeneralException{
@@ -114,10 +105,8 @@ public class Postlogin {
         }
     }
 
-    public ChessGame getGame(String... params){
+    public GameData getGameData(String... params){
         GameData findGame = listedGames.get(Integer.parseInt(params[0]));
-        return findGame.chessGame();
+        return findGame;
     }
-
-
 }

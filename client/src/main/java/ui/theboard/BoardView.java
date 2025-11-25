@@ -1,15 +1,13 @@
-package ui;
+package ui.theboard;
 
 import chess.ChessBoard;
 import chess.ChessPosition;
-import model.GameData;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-
 import static ui.EscapeSequences.*;
 
-public class BlackBoardView {
+public class BoardView {
 
     private static boolean isWhite = false;
     private static final PrintPieces pieces = new PrintPieces();
@@ -64,26 +62,32 @@ public class BlackBoardView {
     }
 
     private static void drawCheckers(PrintStream out, ChessBoard board){
-        for(int i = 1; i <= 8; ++i){
-            resetBoxColor();
-            drawSideCol(out, i-1);
-            if(team.equals("black")) {
+        if(team.equals("black")) {
+            for(int i = 1; i <= 8; ++i) {
+                drawSideCol(out, i - 1);
                 for (int j = 8; j >= 1; --j) {
-                    ChessPosition pos = new ChessPosition(i,j);
+                    ChessPosition pos = new ChessPosition(i, j);
                     printTeam(out, board, pos);
+                    resetBoxColor();
                 }
                 drawSideCol(out, i - 1);
                 out.print(RESET_BG_COLOR);
                 out.println();
+                resetBoxColor();
             }
-            if(team.equals("white")){
+        }
+        if(team.equals("white")){
+            for(int i = 1; i <= 8; ++i) {
+                drawSideCol(out, i - 1);
                 for (int j = 1; j <= 8; ++j) {
-                    ChessPosition pos = new ChessPosition(i,j);
+                    ChessPosition pos = new ChessPosition(i, j);
                     printTeam(out, board, pos);
+                    resetBoxColor();
                 }
                 drawSideCol(out, i - 1);
                 out.print(RESET_BG_COLOR);
                 out.println();
+                resetBoxColor();
             }
         }
     }
@@ -94,23 +98,20 @@ public class BlackBoardView {
             out.print(SET_BG_COLOR_LIGHT_BLUE);
             out.print(SET_TEXT_COLOR__LIGHT_BLUE);
             out.print(EMPTY);
-            resetBoxColor();
         }
         if (board.getPiece(pos) == null && !isWhite) {
             out.print(SET_BG_COLOR_BLUE);
             out.print(SET_TEXT_COLOR_BLUE);
             out.print(EMPTY);
-            resetBoxColor();
         }
         if (board.getPiece(pos) != null && isWhite) {
             out.print(SET_BG_COLOR_LIGHT_BLUE);
             pieces.printPlayer(out, board.getPiece(pos));
-            resetBoxColor();
         }
         if (board.getPiece(pos) != null && !isWhite) {
             out.print(SET_BG_COLOR_BLUE);
             pieces.printPlayer(out, board.getPiece(pos));
-            resetBoxColor();
+
         }
     }
 

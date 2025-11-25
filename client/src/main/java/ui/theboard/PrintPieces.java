@@ -1,17 +1,9 @@
-package ui;
+package ui.theboard;
 
 import chess.ChessGame;
 import chess.ChessPiece;
-
 import java.io.PrintStream;
-
 import static ui.EscapeSequences.*;
-import static ui.EscapeSequences.BLACK_BISHOP;
-import static ui.EscapeSequences.BLACK_KING;
-import static ui.EscapeSequences.BLACK_KNIGHT;
-import static ui.EscapeSequences.BLACK_PAWN;
-import static ui.EscapeSequences.BLACK_QUEEN;
-import static ui.EscapeSequences.BLACK_ROOK;
 
 public class PrintPieces{
 

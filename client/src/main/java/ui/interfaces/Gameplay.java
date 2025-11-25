@@ -1,16 +1,14 @@
-package ui;
+package ui.interfaces;
 
-import chess.ChessGame;
 import exceptions.GeneralException;
 import model.GameData;
-import model.request.JoinGameRequest;
-import model.request.LoginRequest;
 import server.ServerFacade;
+import ui.theboard.BoardView;
 import ui.websocket.WebSocketFacade;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 
-public class Gameplay{
+public class Gameplay {
 
     private final ServerFacade server;
     private final WebSocketFacade ws;
@@ -20,15 +18,12 @@ public class Gameplay{
         this.ws = ws;
     }
 
-    public String redraw(ChessGame game, String team, String... params) throws GeneralException {
-        if(params.length == 1){
-                    BlackBoardView.run(game, team);
-                    String notification = String.format("You are now playing %s", findGame.gameName());
-                    ws.makeConnection(server.getToken(), game.gameID());
-                    return SET_TEXT_COLOR_BLUE+notification;
-                }
-            }catch(NumberFormatException ignored){
-            }
+    public String redraw(GameData gameData, String team, String... params) throws GeneralException {
+        if (params.length == 1) {
+            BoardView.run(gameData.chessGame().getBoard(), team);
+            String notification = String.format("%s redrawn", gameData.gameName());
+            ws.makeConnection(server.getToken(), gameData.gameID());
+            return SET_TEXT_COLOR_BLUE + notification;
         }
         throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <username> <password>");
     }

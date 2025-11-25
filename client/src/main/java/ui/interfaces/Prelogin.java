@@ -1,4 +1,4 @@
-package ui;
+package ui.interfaces;
 
 import exceptions.GeneralException;
 import model.request.*;
