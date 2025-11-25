@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import exceptions.GeneralException;
 import model.GameData;
 import model.request.JoinGameRequest;
@@ -9,7 +10,7 @@ import ui.websocket.WebSocketFacade;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 
-public class Gameplay {
+public class Gameplay{
 
     private final ServerFacade server;
     private final WebSocketFacade ws;
@@ -19,19 +20,11 @@ public class Gameplay {
         this.ws = ws;
     }
 
-    public String redraw(String... params) throws GeneralException {
+    public String redraw(ChessGame game, String team, String... params) throws GeneralException {
         if(params.length == 1){
-            try{
-                int id = Integer.parseInt(params[1]);
-                if(!listedGames.containsKey(id)){
-                    throw new GeneralException(GeneralException.ExceptionType.invalid, "That game does not exist yet, try another game.");
-                }
-                GameData findGame = listedGames.get(id);
-                if(findGame != null){
-                    server.joinGame(new JoinGameRequest(params[0].toUpperCase(), findGame.gameID().toString()));
+                    BlackBoardView.run(game, team);
                     String notification = String.format("You are now playing %s", findGame.gameName());
-                    runGame(params[0], findGame);
-                    ws.makeConnection(server.getToken(), findGame.gameID());
+                    ws.makeConnection(server.getToken(), game.gameID());
                     return SET_TEXT_COLOR_BLUE+notification;
                 }
             }catch(NumberFormatException ignored){

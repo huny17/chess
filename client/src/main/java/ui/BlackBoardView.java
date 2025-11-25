@@ -1,9 +1,8 @@
 package ui;
 
 import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
 import chess.ChessPosition;
+import model.GameData;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -13,8 +12,11 @@ import static ui.EscapeSequences.*;
 public class BlackBoardView {
 
     private static boolean isWhite = false;
+    private static final PrintPieces pieces = new PrintPieces();
+    private static String team;
 
-    public static void run(ChessBoard board) {
+    public static void run(ChessBoard board, String color) {
+        team = color;
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
         out.print(SET_TEXT_BOLD);
@@ -53,7 +55,7 @@ public class BlackBoardView {
     }
 
     private static void resetBoxColor(){
-        if(isWhite == false){
+        if(!isWhite){
             isWhite = true;
         }
         else{
@@ -65,77 +67,52 @@ public class BlackBoardView {
         for(int i = 1; i <= 8; ++i){
             resetBoxColor();
             drawSideCol(out, i-1);
-            for(int j = 8; j >= 1; --j){
-                out.print(RESET_TEXT_COLOR);
-                ChessPosition pos =  board.getPos(i,j);
-                if(board.getPiece(pos) == null && isWhite){
-                    out.print(SET_BG_COLOR_LIGHT_BLUE);
-                    out.print(SET_TEXT_COLOR__LIGHT_BLUE);
-                    out.print(EMPTY);
-                    //out.print(WHITE_PAWN);
-                    resetBoxColor();
-                    continue;
+            if(team.equals("black")) {
+                for (int j = 8; j >= 1; --j) {
+                    ChessPosition pos = new ChessPosition(i,j);
+                    printTeam(out, board, pos);
                 }
-                if(board.getPiece(pos) == null && !isWhite){
-                    out.print(SET_BG_COLOR_BLUE);
-                    out.print(SET_TEXT_COLOR_BLUE);
-                    out.print(EMPTY);
-                    //out.print(BLACK_PAWN);
-                    resetBoxColor();
-                    continue;
-                }
-                if(board.getPiece(pos) != null && isWhite){
-                    out.print(SET_BG_COLOR_LIGHT_BLUE);
-                    printPlayer(out, board.getPiece(pos));
-                    resetBoxColor();
-                    continue;
-                }
-                if(board.getPiece(pos) != null && !isWhite){
-                    out.print(SET_BG_COLOR_BLUE);
-                    printPlayer(out, board.getPiece(pos));
-                    resetBoxColor();
-                }
+                drawSideCol(out, i - 1);
+                out.print(RESET_BG_COLOR);
+                out.println();
             }
-            drawSideCol(out, i-1);
-            out.print(RESET_BG_COLOR);
-            out.println();
+            if(team.equals("white")){
+                for (int j = 1; j <= 8; ++j) {
+                    ChessPosition pos = new ChessPosition(i,j);
+                    printTeam(out, board, pos);
+                }
+                drawSideCol(out, i - 1);
+                out.print(RESET_BG_COLOR);
+                out.println();
+            }
         }
     }
 
-    private static void printPlayer(PrintStream out, ChessPiece piece){
-        if(piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-            out.print(SET_TEXT_BOLD);
-            out.print(SET_TEXT_COLOR_WHITE);
-            switchPlayer(out, piece);
+    private static void printTeam(PrintStream out, ChessBoard board, ChessPosition pos){
+        out.print(RESET_TEXT_COLOR);
+        if (board.getPiece(pos) == null && isWhite) {
+            out.print(SET_BG_COLOR_LIGHT_BLUE);
+            out.print(SET_TEXT_COLOR__LIGHT_BLUE);
+            out.print(EMPTY);
+            resetBoxColor();
         }
-        else{
-            out.print(SET_TEXT_BOLD);
-            out.print(SET_TEXT_COLOR_DARK_BLUE);
-            switchPlayer(out, piece);
+        if (board.getPiece(pos) == null && !isWhite) {
+            out.print(SET_BG_COLOR_BLUE);
+            out.print(SET_TEXT_COLOR_BLUE);
+            out.print(EMPTY);
+            resetBoxColor();
+        }
+        if (board.getPiece(pos) != null && isWhite) {
+            out.print(SET_BG_COLOR_LIGHT_BLUE);
+            pieces.printPlayer(out, board.getPiece(pos));
+            resetBoxColor();
+        }
+        if (board.getPiece(pos) != null && !isWhite) {
+            out.print(SET_BG_COLOR_BLUE);
+            pieces.printPlayer(out, board.getPiece(pos));
+            resetBoxColor();
         }
     }
 
-    private static void switchPlayer(PrintStream out, ChessPiece piece){
-        switch (piece.getPieceType()) {
-            case KING:
-                out.print(BLACK_KING);
-                break;
-            case QUEEN:
-                out.print(BLACK_QUEEN);
-                break;
-            case BISHOP:
-                out.print(BLACK_BISHOP);
-                break;
-            case KNIGHT:
-                out.print(BLACK_KNIGHT);
-                break;
-            case ROOK:
-                out.print(BLACK_ROOK);
-                break;
-            case PAWN:
-                out.print(BLACK_PAWN);
-                break;
-        }
-    }
 
 }

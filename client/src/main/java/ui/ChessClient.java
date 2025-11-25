@@ -1,6 +1,8 @@
 package ui;
 
 import java.util.*;
+
+import chess.ChessGame;
 import exceptions.*;
 import model.*;
 import server.ServerFacade;
@@ -14,6 +16,8 @@ public class ChessClient {
     private final Postlogin postlogin;
     private final Gameplay gameplay;
     private HelpConsole help;
+    private ChessGame chessGame;
+    private String color = null;
 
     public ChessClient(String serverUrl) throws GeneralException{
         ServerFacade server = new ServerFacade(serverUrl);
@@ -87,18 +91,21 @@ public class ChessClient {
                 case "play" ->{
                     assertSignedIn();
                     result = postlogin.play(params);
+                    chessGame = postlogin.getGame(params);
+                    color = params[0];
                     state = State.INGAME;
                     help = new HelpConsole(state);
                 }
                 case "observe" ->{
                     assertSignedIn();
                     result = postlogin.observe(params);
+                    color = "white";
                     state = State.INGAME;
                     help = new HelpConsole(state);
                 }
                 case "redraw" ->{
                     assertSignedIn();
-                    result = gameplay.redraw(params);
+                    result = gameplay.redraw(chessGame, color, params);
                 }
                 case "leave" ->{
                     assertSignedIn();

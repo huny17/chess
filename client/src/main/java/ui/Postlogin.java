@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import exceptions.GeneralException;
 import model.*;
 import model.request.*;
@@ -93,7 +94,7 @@ public class Postlogin {
             WhiteBoardView.run(game.chessGame().getBoard());
         }
         if(color.equals("black")){
-            BlackBoardView.run(game.chessGame().getBoard());
+            BlackBoardView.run(game.chessGame().getBoard(), color);
         }
     }
 
@@ -111,6 +112,11 @@ public class Postlogin {
             listedGames.put(i, game);
             i++;
         }
+    }
+
+    public ChessGame getGame(String... params){
+        GameData findGame = listedGames.get(Integer.parseInt(params[0]));
+        return findGame.chessGame();
     }
 
 
