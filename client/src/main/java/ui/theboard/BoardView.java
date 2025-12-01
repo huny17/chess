@@ -12,8 +12,10 @@ public class BoardView {
     private static boolean isWhite = false;
     private static final PrintPieces pieces = new PrintPieces();
     private static String team;
+    private static ChessBoard board;
 
-    public static void run(ChessBoard board, String color) {
+    public static void run(ChessBoard theBoard, String color) {
+        board = theBoard;
         team = color;
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
@@ -115,5 +117,11 @@ public class BoardView {
         }
     }
 
+    public static String getTeam() {
+        return team;
+    }
 
+    public static ChessBoard getBoard() {
+        return board;
+    }
 }
