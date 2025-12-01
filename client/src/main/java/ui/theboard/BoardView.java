@@ -1,22 +1,27 @@
 package ui.theboard;
 
 import chess.ChessBoard;
+import chess.ChessMove;
 import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+
 import static ui.EscapeSequences.*;
 
 public class BoardView {
 
-    private static boolean isWhite = false;
-    private static final PrintPieces pieces = new PrintPieces();
+    public static boolean isWhite = false;
+    public static final PrintPieces pieces = new PrintPieces();
     private static String team;
     private static ChessBoard board;
+    private static Collection<ChessMove> moves;
 
-    public static void run(ChessBoard theBoard, String color) {
+    public static void run(ChessBoard theBoard, String color, Collection<ChessMove> theMoves) {
         board = theBoard;
         team = color;
+        moves = theMoves;
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
         out.print(SET_TEXT_BOLD);
@@ -54,7 +59,7 @@ public class BoardView {
         out.print(SET_BG_COLOR_LIGHT_GREY);
     }
 
-    private static void resetBoxColor(){
+    public static void resetBoxColor(){
         if(!isWhite){
             isWhite = true;
         }
@@ -69,6 +74,7 @@ public class BoardView {
                 drawSideCol(out, i - 1);
                 for (int j = 8; j >= 1; --j) {
                     ChessPosition pos = new ChessPosition(i, j);
+
                     printTeam(out, board, pos);
                     resetBoxColor();
                 }
@@ -123,5 +129,11 @@ public class BoardView {
 
     public static ChessBoard getBoard() {
         return board;
+    }
+
+    private static void checkHighlight(PrintStream out, ChessPosition pos){
+        if (Highlight.checkHighlight(pos, moves)){
+            Highlight.highlight(out, board, pos);
+        }
     }
 }
