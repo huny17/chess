@@ -34,7 +34,7 @@ public class BoardView {
             printBorderText(out, headers[boardCol]);
         }
         out.print(EMPTY);
-        out.print(EMPTY);
+        out.print("   ");
         out.print(RESET_BG_COLOR);
         out.println();
     }
