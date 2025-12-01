@@ -74,7 +74,9 @@ public class BoardView {
                 drawSideCol(out, i - 1);
                 for (int j = 8; j >= 1; --j) {
                     ChessPosition pos = new ChessPosition(i, j);
+                    if(checkHighlight(out, pos)){
 
+                    }
                     printTeam(out, board, pos);
                     resetBoxColor();
                 }
@@ -131,9 +133,11 @@ public class BoardView {
         return board;
     }
 
-    private static void checkHighlight(PrintStream out, ChessPosition pos){
+    private static boolean checkHighlight(PrintStream out, ChessPosition pos){
         if (Highlight.checkHighlight(pos, moves)){
             Highlight.highlight(out, board, pos);
+            return true;
         }
+        return false;
     }
 }
