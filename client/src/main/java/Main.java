@@ -17,8 +17,8 @@ public class Main {
         ChessGame g = new ChessGame();
         BoardView.run(g.getBoard(),"white", null);
         BoardView.run(g.getBoard(),"black", null);
-//        Highlight.run(new ChessPosition(2,1));
-//
+        Highlight.run(new ChessPosition(2,1));
+
 
     }
 }

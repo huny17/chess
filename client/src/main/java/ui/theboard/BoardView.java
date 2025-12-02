@@ -45,7 +45,6 @@ public class BoardView {
                 printBorderText(out, headers[i]);
             }
         }
-
         out.print(EMPTY);
         out.print("   ");
         out.print(RESET_BG_COLOR);
@@ -81,9 +80,9 @@ public class BoardView {
                 drawSideCol(out, i - 1);
                 for (int j = 8; j >= 1; --j) {
                     ChessPosition pos = new ChessPosition(i, j);
-//                    if(checkHighlight(out, pos)){
-//                        continue;
-//                    }
+                    if(moves != null | Highlight.checkHighlight(out, pos, moves)){
+                        continue;
+                    }
                     printTeam(out, board, pos);
                     resetBoxColor();
                 }
@@ -100,9 +99,9 @@ public class BoardView {
                 drawSideCol(out, i - 1);
                 for (int j = 1; j <= 8; ++j) {
                     ChessPosition pos = new ChessPosition(i, j);
-//                    if(checkHighlight(out, pos)){
-//                        continue;
-//                    }
+                    if(moves != null | Highlight.checkHighlight(out, pos, moves)){
+                        continue;
+                    }
                     printTeam(out, board, pos);
                     resetBoxColor();
                 }

@@ -31,12 +31,13 @@ public class Highlight {
         return piece.pieceMoves(board, pos);
     }
 
-    public static boolean checkHighlight(ChessPosition pos, Collection<ChessMove> moves){
+    public static boolean checkHighlight(PrintStream out, ChessPosition pos, Collection<ChessMove> moves){
         if(moves == null){
             return false;
         }
         for(ChessMove move : moves){
-            if(pos == move.getStartPosition() || pos == move.getEndPosition()){
+            if(pos == move.getStartPosition() | pos == move.getEndPosition()){
+                highlight(out, board, pos);
                 return true;
             }
         }
