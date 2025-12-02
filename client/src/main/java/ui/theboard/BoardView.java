@@ -27,7 +27,6 @@ public class BoardView {
         out.print(SET_TEXT_BOLD);
         out.println();
         drawCheckers(out, board);
-
         out.print(RESET_BG_COLOR+RESET_TEXT_COLOR+RESET_TEXT_BOLD_FAINT);
         out.println();
     }
@@ -97,7 +96,7 @@ public class BoardView {
         }
         if(team.equals("white")){
             drawBorders(out, 7, 0);
-            for(int i = 1; i <= 8; ++i) {
+            for(int i = 8; i >= 1; --i) {
                 drawSideCol(out, i - 1);
                 for (int j = 1; j <= 8; ++j) {
                     ChessPosition pos = new ChessPosition(i, j);
