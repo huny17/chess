@@ -80,7 +80,7 @@ public class BoardView {
                 drawSideCol(out, i - 1);
                 for (int j = 8; j >= 1; --j) {
                     ChessPosition pos = new ChessPosition(i, j);
-                    if(moves != null | Highlight.checkHighlight(out, pos, moves)){
+                    if(Highlight.checkHighlight(out, pos, moves)){
                         continue;
                     }
                     printTeam(out, board, pos);
@@ -99,7 +99,7 @@ public class BoardView {
                 drawSideCol(out, i - 1);
                 for (int j = 1; j <= 8; ++j) {
                     ChessPosition pos = new ChessPosition(i, j);
-                    if(moves != null | Highlight.checkHighlight(out, pos, moves)){
+                    if(Highlight.checkHighlight(out, pos, moves)){
                         continue;
                     }
                     printTeam(out, board, pos);

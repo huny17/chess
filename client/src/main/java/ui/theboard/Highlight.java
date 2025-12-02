@@ -36,8 +36,14 @@ public class Highlight {
             return false;
         }
         for(ChessMove move : moves){
-            if(pos == move.getStartPosition() | pos == move.getEndPosition()){
+            if(pos.equals(move.getStartPosition())){
                 highlight(out, board, pos);
+                BoardView.resetBoxColor();
+                return true;
+            }
+            if(pos.equals(move.getEndPosition())){
+                highlight(out, board, pos);
+                BoardView.resetBoxColor();
                 return true;
             }
         }
@@ -47,7 +53,7 @@ public class Highlight {
     public static void highlight(PrintStream out, ChessBoard board, ChessPosition pos){
         out.print(RESET_TEXT_COLOR);
         if (board.getPiece(pos) == null && BoardView.isWhite) {
-            out.print(SET_BG_COLOR_YELLOW);
+            out.print(SET_BG_COLOR_GREEN_YELLOW);
             out.print(SET_TEXT_COLOR_LIGHT_BLUE);
             out.print(EMPTY);
         }
@@ -57,11 +63,11 @@ public class Highlight {
             out.print(EMPTY);
         }
         if (board.getPiece(pos) != null && BoardView.isWhite) {
-            out.print(SET_BG_COLOR_LIGHT_BLUE);
+            out.print(SET_BG_COLOR_GREEN_YELLOW);
             BoardView.pieces.printPlayer(out, board.getPiece(pos));
         }
         if (board.getPiece(pos) != null && !BoardView.isWhite) {
-            out.print(SET_BG_COLOR_BLUE);
+            out.print(SET_BG_COLOR_DARK_YELLOW);
             BoardView.pieces.printPlayer(out, board.getPiece(pos));
 
         }
