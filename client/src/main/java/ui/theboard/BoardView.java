@@ -26,20 +26,27 @@ public class BoardView {
         out.print(ERASE_SCREEN);
         out.print(SET_TEXT_BOLD);
         out.println();
-        drawBorders(out);
         drawCheckers(out, board);
-        drawBorders(out);
+
         out.print(RESET_BG_COLOR+RESET_TEXT_COLOR+RESET_TEXT_BOLD_FAINT);
         out.println();
     }
 
-    private static void drawBorders(PrintStream out) {
+    private static void drawBorders(PrintStream out, int index, int end) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
         String[] headers = {CHESS_PIECE+"H ", CHESS_PIECE+"G ", CHESS_PIECE+"F ", CHESS_PIECE+"E ", CHESS_PIECE+"D ", CHESS_PIECE+"C ", CHESS_PIECE+"B ", CHESS_PIECE+"A"};
         out.print(EMPTY);
-        for (int boardCol = 0; boardCol < 8; ++boardCol) {
-            printBorderText(out, headers[boardCol]);
+        if(index > end){
+            for (int i = index; i >= end; --i) {
+                printBorderText(out, headers[i]);
+            }
         }
+        if(index < end){
+            for (int i = index; i <= end; ++i) {
+                printBorderText(out, headers[i]);
+            }
+        }
+
         out.print(EMPTY);
         out.print("   ");
         out.print(RESET_BG_COLOR);
@@ -70,13 +77,14 @@ public class BoardView {
 
     private static void drawCheckers(PrintStream out, ChessBoard board){
         if(team.equals("black")) {
+            drawBorders(out, 0, 7);
             for(int i = 1; i <= 8; ++i) {
                 drawSideCol(out, i - 1);
                 for (int j = 8; j >= 1; --j) {
                     ChessPosition pos = new ChessPosition(i, j);
-                    if(checkHighlight(out, pos)){
-
-                    }
+//                    if(checkHighlight(out, pos)){
+//                        continue;
+//                    }
                     printTeam(out, board, pos);
                     resetBoxColor();
                 }
@@ -85,12 +93,17 @@ public class BoardView {
                 out.println();
                 resetBoxColor();
             }
+            drawBorders(out, 0, 7);
         }
         if(team.equals("white")){
+            drawBorders(out, 7, 0);
             for(int i = 1; i <= 8; ++i) {
                 drawSideCol(out, i - 1);
                 for (int j = 1; j <= 8; ++j) {
                     ChessPosition pos = new ChessPosition(i, j);
+//                    if(checkHighlight(out, pos)){
+//                        continue;
+//                    }
                     printTeam(out, board, pos);
                     resetBoxColor();
                 }
@@ -99,6 +112,7 @@ public class BoardView {
                 out.println();
                 resetBoxColor();
             }
+            drawBorders(out, 7, 0);
         }
     }
 
@@ -106,7 +120,7 @@ public class BoardView {
         out.print(RESET_TEXT_COLOR);
         if (board.getPiece(pos) == null && isWhite) {
             out.print(SET_BG_COLOR_LIGHT_BLUE);
-            out.print(SET_TEXT_COLOR__LIGHT_BLUE);
+            out.print(SET_TEXT_COLOR_LIGHT_BLUE);
             out.print(EMPTY);
         }
         if (board.getPiece(pos) == null && !isWhite) {
@@ -131,13 +145,5 @@ public class BoardView {
 
     public static ChessBoard getBoard() {
         return board;
-    }
-
-    private static boolean checkHighlight(PrintStream out, ChessPosition pos){
-        if (Highlight.checkHighlight(pos, moves)){
-            Highlight.highlight(out, board, pos);
-            return true;
-        }
-        return false;
     }
 }

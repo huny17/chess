@@ -62,7 +62,7 @@ public class Postlogin {
                 if(findGame != null){
                     server.joinGame(new JoinGameRequest(params[0].toUpperCase(), findGame.gameID().toString()));
                     String notification = String.format("You are now playing %s", findGame.gameName());
-                    BoardView.run(findGame.chessGame().getBoard(), params[0]);
+                    BoardView.run(findGame.chessGame().getBoard(), params[0], null);
                     ws.makeConnection(server.getToken(), findGame.gameID());
                     return SET_TEXT_COLOR_BLUE+notification;
                 }
@@ -80,7 +80,7 @@ public class Postlogin {
                 GameData findGame = listedGames.get(id);
                 if(findGame != null){
                     String notification = String.format(SET_TEXT_COLOR_BLUE+"You are now observing %s", findGame.gameName());
-                    BoardView.run(findGame.chessGame().getBoard(), "white");
+                    BoardView.run(findGame.chessGame().getBoard(), "white", null);
                     return notification;
                 }
             }catch(NumberFormatException ignored){

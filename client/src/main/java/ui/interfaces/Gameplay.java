@@ -19,7 +19,7 @@ public class Gameplay {
     }
 
     public String redraw(GameData gameData, String team) throws GeneralException {
-        BoardView.run(gameData.chessGame().getBoard(), team);
+        BoardView.run(gameData.chessGame().getBoard(), team, null);
         String notification = String.format("%s was redrawn", gameData.gameName());
         ws.makeConnection(server.getToken(), gameData.gameID());
         return SET_TEXT_COLOR_BLUE + notification;

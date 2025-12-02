@@ -32,6 +32,9 @@ public class Highlight {
     }
 
     public static boolean checkHighlight(ChessPosition pos, Collection<ChessMove> moves){
+        if(moves == null){
+            return false;
+        }
         for(ChessMove move : moves){
             if(pos == move.getStartPosition() || pos == move.getEndPosition()){
                 return true;
@@ -43,13 +46,13 @@ public class Highlight {
     public static void highlight(PrintStream out, ChessBoard board, ChessPosition pos){
         out.print(RESET_TEXT_COLOR);
         if (board.getPiece(pos) == null && BoardView.isWhite) {
-            out.print(SET_BG_COLOR_LIGHT_BLUE);
-            out.print(SET_TEXT_COLOR__LIGHT_BLUE);
+            out.print(SET_BG_COLOR_YELLOW);
+            out.print(SET_TEXT_COLOR_LIGHT_BLUE);
             out.print(EMPTY);
         }
         if (board.getPiece(pos) == null && !BoardView.isWhite) {
-            out.print(SET_BG_COLOR_BLUE);
-            out.print(SET_TEXT_COLOR_BLUE);
+            out.print(SET_BG_COLOR_DARK_YELLOW);
+            out.print(SET_TEXT_COLOR_YELLOW);
             out.print(EMPTY);
         }
         if (board.getPiece(pos) != null && BoardView.isWhite) {
