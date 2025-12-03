@@ -1,6 +1,7 @@
 package ui.interfaces;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import exceptions.GeneralException;
@@ -17,12 +18,14 @@ public class Gameplay {
     private final ServerFacade server;
     private final WebSocketFacade ws;
     private ChessGame.TeamColor color;
-    private final MakeMove move;
+    private final MakeMove moveClass;
+    private String username;
+    private ChessPiece piece;
 
     public Gameplay(ServerFacade server, WebSocketFacade ws) throws GeneralException{
         this.server = server;
         this.ws = ws;
-        move = new MakeMove(server, ws);
+        moveClass = new MakeMove(server, ws);
     }
 
     public String redraw(GameData gameData, String team) throws GeneralException {
@@ -34,9 +37,16 @@ public class Gameplay {
 
     public String makeMove(GameData gameData, String team, String... params) throws GeneralException {
         if(params.length == 2){
-
+            assignTeamColor(gameData, team);
+            ChessPosition start = inputToPos(params[0]);
+            ChessPosition end = inputToPos(params[1]);
+            moveClass.updateMove(gameData, new ChessMove(start, end, null), color); //FIGURE OUT PROMO
+            piece = gameData.chessGame().getBoard().getPiece(end);
         }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position> <end position>");
+        else {
+            throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position> <end position>");
+        }
+        return String.format("%s moved %s %s", username, piece, new ChessMove(inputToPos(params[0]), inputToPos(params[1]), null));
     }
 
     public String resign(GameData gameData, String team) throws GeneralException {
@@ -49,11 +59,11 @@ public class Gameplay {
 
     public String highlight(GameData gameData, String team, String... params) throws GeneralException {
         if (params.length == 1) {
-            assignTeamColor(team);
+            assignTeamColor(gameData, team);
             ChessPosition pos = inputToPos(params[0]);
-            move.checkTeam(gameData.chessGame(), pos, color);
+            moveClass.checkTeam(gameData.chessGame(), pos, color);
             Highlight.run(pos);
-            return String.format("Moves for %s highlighted", params[0]);
+            return String.format("Moves for %s highlighted", params[0].toUpperCase());
         } else {
             throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position>");
         }
@@ -63,20 +73,22 @@ public class Gameplay {
         String i = input.toLowerCase();
         char letter = i.charAt(1);
         int row = Character.getNumericValue(i.charAt(0));
-        int col = move.colLetterToInt(letter);
+        int col = moveClass.colLetterToInt(letter);
         if(col == 0){
             throw new GeneralException(GeneralException.ExceptionType.invalid, "Please input col as a letter [A-H]");
         }
         return new ChessPosition(row, col);
     }
 
-    public void assignTeamColor(String team){
+    public void assignTeamColor(GameData game, String team){
         String lowerCaseTeam = team.toLowerCase();
         if (lowerCaseTeam.equals("white")){
             color = ChessGame.TeamColor.WHITE;
+            username = game.whiteUsername();
         }
         if (lowerCaseTeam.equals("black")){
             color = ChessGame.TeamColor.BLACK;
+            username = game.blackUsername();
         }
     }
 }

@@ -52,11 +52,9 @@ public class ChessGame {
         ArrayList<ChessMove> list = new ArrayList<>();
         getBoard();
         ChessPiece piece = currentBoard.getPiece(startPosition);
-
         if(piece == null){
             return list;
         }
-
         Collection<ChessMove> moves = piece.pieceMoves(currentBoard, startPosition);
         for(ChessMove move : moves){
             if(moveCheck(move, piece.getTeamColor())){
@@ -70,8 +68,6 @@ public class ChessGame {
     public boolean moveCheck(ChessMove move, TeamColor color){
         oldBoard = new ChessBoard(currentBoard);
         currentBoard.movePiece(move);
-        //System.out.println(currentBoard);
-
         if (isInCheck(color)) {
             setBoard(oldBoard);
             return true;

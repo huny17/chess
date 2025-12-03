@@ -1,11 +1,10 @@
 package ui.interfaces;
 
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import exceptions.GeneralException;
+import model.GameData;
 import server.ServerFacade;
+import ui.theboard.BoardView;
 import ui.websocket.WebSocketFacade;
 
 public class MakeMove {
@@ -36,9 +35,25 @@ public class MakeMove {
 
     public boolean checkTeam(ChessGame game, ChessPosition pos, ChessGame.TeamColor color) throws GeneralException{
         ChessPiece piece = game.getBoard().getPiece(pos);
-        if(piece.getTeamColor().equals(color)){
-            return true;
+        if(!piece.getTeamColor().equals(color)){
+            throw new GeneralException(GeneralException.ExceptionType.invalid, "You can only move pieces from your own team");
         }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "You can only move pieces from your own team");
+        if(!piece.getTeamColor().equals(game.getTeamTurn())){
+            throw new GeneralException(GeneralException.ExceptionType.invalid, "Waiting for opponent to make a move");
+        }
+        return true;
+    }
+
+    public void updateMove(GameData data, ChessMove move, ChessGame.TeamColor color) throws GeneralException{
+        checkTeam(data.chessGame(), move.getStartPosition(), color);
+        try {
+            ChessGame game = data.chessGame();
+            game.makeMove(move);
+            //updategame??
+            BoardView.run(game.getBoard(), color.toString().toLowerCase(), null);
+        } catch (InvalidMoveException e) {
+            throw new GeneralException(GeneralException.ExceptionType.invalid, e.getMessage());
+        }
+
     }
 }

@@ -4,9 +4,7 @@ import java.util.*;
 import exceptions.*;
 import model.*;
 import server.ServerFacade;
-import ui.interfaces.Gameplay;
-import ui.interfaces.Postlogin;
-import ui.interfaces.Prelogin;
+import ui.interfaces.*;
 import ui.websocket.WebSocketFacade;
 import websocket.Notification;
 import static ui.EscapeSequences.*;
@@ -32,7 +30,6 @@ public class ChessClient {
     public void run() {
         System.out.println();
         System.out.print(help.helpScreen());
-
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")){
@@ -105,29 +102,29 @@ public class ChessClient {
                     help = new HelpConsole(state);
                 }
                 case "redraw" ->{
-                    assertSignedIn();
+                    assertInGame();
                     result = gameplay.redraw(chessGame, color);
                 }
                 case "leave" ->{
-                    assertSignedIn();
+                    assertInGame();
                     result = gameplay.leave(chessGame, color);
                     color = null;
                     state = State.SIGNEDIN;
                     help = new HelpConsole(state);
                 }
                 case "move" ->{
-                    assertSignedIn();
+                    assertInGame();
                     result = gameplay.makeMove(chessGame, color, params);
                 }
                 case "resign" ->{
-                    assertSignedIn();
+                    assertInGame();
                     result = gameplay.resign(chessGame, color);
                     color = null;
                     state = State.SIGNEDIN;
                     help = new HelpConsole(state);
                 }
                 case "highlight" ->{
-                    assertSignedIn();
+                    assertInGame();
                     result = gameplay.highlight(chessGame, color, params);
                 }
                 case "quit" -> result = "quit";
@@ -145,4 +142,9 @@ public class ChessClient {
         }
     }
 
+    private void assertInGame() throws GeneralException{
+        if(state != State.INGAME){
+            throw new GeneralException(GeneralException.ExceptionType.unauthorized, "Please play or observe a game to use these commands");
+        }
+    }
 }
