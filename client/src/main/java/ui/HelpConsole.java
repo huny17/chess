@@ -17,7 +17,7 @@ public class HelpConsole {
                     redraw - the chessboard
                     leave - exiting the current game
                     resign - admitting defeat
-                    highlight <start position> - possible moves
+                    highlight <start position(row, col)> - possible moves
                     quit - playing chess
                     help - with possible commands
                     """;

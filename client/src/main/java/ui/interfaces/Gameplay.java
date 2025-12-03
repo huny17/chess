@@ -84,12 +84,12 @@ public class Gameplay {
         return num;
     }
 
-    public boolean checkTeam(ChessGame game, ChessPosition pos){
+    public boolean checkTeam(ChessGame game, ChessPosition pos) throws GeneralException{
         ChessPiece piece = game.getBoard().getPiece(pos);
-        if(ChessGame.TeamColor.WHITE.equals(color){
+        if(piece.getTeamColor().equals(color)){
             return true;
         }
-        return false;
+        throw new GeneralException(GeneralException.ExceptionType.invalid, "You can only move pieces from your own team");
     }
 
     public void assignTeamColor(String team){
