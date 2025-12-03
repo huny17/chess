@@ -37,7 +37,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void connect(Session session) throws IOException{
         connections.add(session);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION); //
         connections.broadcast(session, notification);
     }
 

@@ -10,6 +10,7 @@ import memory.MemoryGameDAO;
 import memory.MemoryUserDAO;
 import model.request.*;
 import model.result.*;
+import server.websocket.WebSocketHandler;
 import service.*;
 import java.util.Map;
 import static dataaccess.DatabaseManager.createDatabase;
@@ -20,12 +21,12 @@ public class Server {
     private final UserService userService;
     private final GameService gameService;
     private final ClearService clearService;
+    private final WebSocketHandler wsHandler;
     AuthDAO authDataAccess;
 
     public Server() {
         UserDAO userDataAccess; //mySQL
         GameDAO gameDataAccess;
-
         try {
             DatabaseManager.createDatabase();
             userDataAccess = new MySQLUserDAO(); //mySQL
@@ -40,6 +41,7 @@ public class Server {
         userService = new UserService(userDataAccess, authDataAccess);
         gameService = new GameService(gameDataAccess, authDataAccess);
         clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
+        wsHandler = new WebSocketHandler();
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
         /*register*/
@@ -57,12 +59,9 @@ public class Server {
         /*clear*/
         server.delete("db", this::clearHandler);
         server.ws("/ws", ws -> {
-            ws.onConnect(ctx -> {
-                ctx.enableAutomaticPings();
-                System.out.println("connected");
-            });
-            ws.onMessage(ctx -> ctx.send("WebSocket response:" + ctx.message()));
-            //ws.onClose(_ -> System.out.println("Websocket closed"));
+            ws.onConnect(wsHandler);
+            ws.onMessage(wsHandler);
+            ws.onClose(wsHandler);
         });
         /*exception*/
         server.exception(GeneralException.class, this::generalExceptionHandler);
