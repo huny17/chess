@@ -1,9 +1,11 @@
 package ui.interfaces;
 
+import chess.ChessPosition;
 import exceptions.GeneralException;
 import model.GameData;
 import server.ServerFacade;
 import ui.theboard.BoardView;
+import ui.theboard.Highlight;
 import ui.websocket.WebSocketFacade;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
@@ -42,8 +44,36 @@ public class Gameplay {
 
     public String highlight(GameData gameData, String team, String... params) throws GeneralException {
         if(params.length == 1){
-
+            ChessPosition pos = inputToPos(params[0]);
+            Highlight.run(pos);
         }
         throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position>");
+    }
+
+    public ChessPosition inputToPos(String input) throws GeneralException{
+        String i = input.toLowerCase();
+        char letter = i.charAt(1);
+        int row = Character.getNumericValue(i.charAt(0));
+        int col = colLetterToInt(letter);
+        if(col == 0){
+            throw new GeneralException(GeneralException.ExceptionType.invalid, "Please input col as a letter [A-H]");
+        }
+        return new ChessPosition(row, col);
+    }
+
+    public int colLetterToInt(char input)throws GeneralException{
+        int num;
+        switch (input) {
+            case 'a' -> num = 1;
+            case 'b' -> num = 2;
+            case 'c' -> num = 3;
+            case 'd' -> num = 4;
+            case 'e' -> num = 5;
+            case 'f' -> num = 6;
+            case 'g' -> num = 7;
+            case 'h' -> num = 8;
+            default -> num = 0;
+        }
+        return num;
     }
 }
