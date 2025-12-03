@@ -15,6 +15,7 @@ public class Postlogin {
     private final TreeMap<Integer, GameData> listedGames = new TreeMap<>();
     private final ServerFacade server;
     private final WebSocketFacade ws;
+    private GameData chessGame;
 
     public Postlogin(ServerFacade server, WebSocketFacade ws){
         this.server = server;
@@ -108,4 +109,6 @@ public class Postlogin {
     public GameData getGameData(String... params){
         return listedGames.get(Integer.parseInt(params[1]));
     }
+
+    public GameData updateGameData(){return chessGame;}
 }

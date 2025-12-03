@@ -92,6 +92,7 @@ public class ChessClient {
                     chessGame = postlogin.getGameData(params);
                     color = params[0];
                     state = State.INGAME;
+                    chessGame = postlogin.updateGameData(); //how is updating game and how to call it
                     help = new HelpConsole(state);
                 }
                 case "observe" ->{
@@ -99,6 +100,7 @@ public class ChessClient {
                     result = postlogin.observe(params);
                     color = "white";
                     state = State.INGAME;
+                    chessGame = postlogin.updateGameData();
                     help = new HelpConsole(state);
                 }
                 case "redraw" ->{
