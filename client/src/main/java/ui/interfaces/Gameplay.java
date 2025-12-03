@@ -17,10 +17,12 @@ public class Gameplay {
     private final ServerFacade server;
     private final WebSocketFacade ws;
     private ChessGame.TeamColor color;
+    private final MakeMove move;
 
-    public Gameplay(ServerFacade server, WebSocketFacade ws){
+    public Gameplay(ServerFacade server, WebSocketFacade ws) throws GeneralException{
         this.server = server;
         this.ws = ws;
+        move = new MakeMove(server, ws);
     }
 
     public String redraw(GameData gameData, String team) throws GeneralException {
@@ -49,7 +51,7 @@ public class Gameplay {
         if (params.length == 1) {
             assignTeamColor(team);
             ChessPosition pos = inputToPos(params[0]);
-            checkTeam(gameData.chessGame(), pos);
+            move.checkTeam(gameData.chessGame(), pos, color);
             Highlight.run(pos);
             return String.format("Moves for %s highlighted", params[0]);
         } else {
@@ -61,35 +63,11 @@ public class Gameplay {
         String i = input.toLowerCase();
         char letter = i.charAt(1);
         int row = Character.getNumericValue(i.charAt(0));
-        int col = colLetterToInt(letter);
+        int col = move.colLetterToInt(letter);
         if(col == 0){
             throw new GeneralException(GeneralException.ExceptionType.invalid, "Please input col as a letter [A-H]");
         }
         return new ChessPosition(row, col);
-    }
-
-    public int colLetterToInt(char input)throws GeneralException{
-        int num;
-        switch (input) {
-            case 'a' -> num = 1;
-            case 'b' -> num = 2;
-            case 'c' -> num = 3;
-            case 'd' -> num = 4;
-            case 'e' -> num = 5;
-            case 'f' -> num = 6;
-            case 'g' -> num = 7;
-            case 'h' -> num = 8;
-            default -> num = 0;
-        }
-        return num;
-    }
-
-    public boolean checkTeam(ChessGame game, ChessPosition pos) throws GeneralException{
-        ChessPiece piece = game.getBoard().getPiece(pos);
-        if(piece.getTeamColor().equals(color)){
-            return true;
-        }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "You can only move pieces from your own team");
     }
 
     public void assignTeamColor(String team){
