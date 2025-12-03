@@ -47,7 +47,7 @@ public class ChessClient {
     }
 
     public void notify(Notification notification){
-        System.out.println( notification.message());
+        System.out.println(notification.message());
         printPrompt();
     }
 
@@ -93,6 +93,7 @@ public class ChessClient {
                     color = params[0];
                     state = State.INGAME;
                     chessGame = postlogin.updateGameData(); //how is updating game and how to call it
+                    //notify
                     help = new HelpConsole(state);
                 }
                 case "observe" ->{
@@ -101,6 +102,7 @@ public class ChessClient {
                     color = "white";
                     state = State.INGAME;
                     chessGame = postlogin.updateGameData();
+                    //notify
                     help = new HelpConsole(state);
                 }
                 case "redraw" ->{
@@ -112,10 +114,12 @@ public class ChessClient {
                     result = gameplay.leave(chessGame, color);
                     color = null;
                     state = State.SIGNEDIN;
+                    //notify
                     help = new HelpConsole(state);
                 }
                 case "move" ->{
                     assertInGame();
+                    //notify
                     result = gameplay.makeMove(chessGame, color, params);
                 }
                 case "resign" ->{
@@ -123,6 +127,7 @@ public class ChessClient {
                     result = gameplay.resign(chessGame, color);
                     color = null;
                     state = State.SIGNEDIN;
+                    //notify
                     help = new HelpConsole(state);
                 }
                 case "highlight" ->{

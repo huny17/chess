@@ -1,6 +1,6 @@
 package websocket.commands;
 
-public class MakeMoveCommand{
+public class MakeMoveCommand Extends UserGameCommand{
 
 
 }
