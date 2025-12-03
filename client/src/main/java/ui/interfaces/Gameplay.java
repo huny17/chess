@@ -1,5 +1,7 @@
 package ui.interfaces;
 
+import chess.ChessGame;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import exceptions.GeneralException;
 import model.GameData;
@@ -14,6 +16,7 @@ public class Gameplay {
 
     private final ServerFacade server;
     private final WebSocketFacade ws;
+    private ChessGame.TeamColor color;
 
     public Gameplay(ServerFacade server, WebSocketFacade ws){
         this.server = server;
@@ -44,7 +47,9 @@ public class Gameplay {
 
     public String highlight(GameData gameData, String team, String... params) throws GeneralException {
         if (params.length == 1) {
+            assignTeamColor(team);
             ChessPosition pos = inputToPos(params[0]);
+            checkTeam(gameData.chessGame(), pos);
             Highlight.run(pos);
             return String.format("Moves for %s highlighted", params[0]);
         } else {
@@ -77,5 +82,23 @@ public class Gameplay {
             default -> num = 0;
         }
         return num;
+    }
+
+    public boolean checkTeam(ChessGame game, ChessPosition pos){
+        ChessPiece piece = game.getBoard().getPiece(pos);
+        if(ChessGame.TeamColor.WHITE.equals(color){
+            return true;
+        }
+        return false;
+    }
+
+    public void assignTeamColor(String team){
+        String lowerCaseTeam = team.toLowerCase();
+        if (lowerCaseTeam.equals("white")){
+            color = ChessGame.TeamColor.WHITE;
+        }
+        if (lowerCaseTeam.equals("black")){
+            color = ChessGame.TeamColor.BLACK;
+        }
     }
 }
