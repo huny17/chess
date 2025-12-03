@@ -43,11 +43,13 @@ public class Gameplay {
     }
 
     public String highlight(GameData gameData, String team, String... params) throws GeneralException {
-        if(params.length == 1){
+        if (params.length == 1) {
             ChessPosition pos = inputToPos(params[0]);
             Highlight.run(pos);
+            return String.format("Moves for %s highlighted", params[0]);
+        } else {
+            throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position>");
         }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position>");
     }
 
     public ChessPosition inputToPos(String input) throws GeneralException{
