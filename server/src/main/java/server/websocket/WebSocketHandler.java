@@ -47,12 +47,13 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         System.out.println("ws closed");
     }
 
-    private void connect(String token, int id, Session session) throws IOException, GeneralException{
-        checkAuth(token, id, session);
-        connections.add(id, session);
-        var message = String.format("%s connected", authDAO.getUser(token));
-        connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
-        connections.broadcastOthers(id, session, new NotificationMessage(message));
+    private void connect(String token, int id, Session session) throws IOException, GeneralException {
+        if (checkAuth(token, id, session)) {
+            connections.add(id, session);
+            var message = String.format("%s connected", authDAO.getUser(token));
+            connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
+            connections.broadcastOthers(id, session, new NotificationMessage(message));
+        }
     }
 
     private void leave(String token, int id, Session session) throws IOException, GeneralException{
@@ -77,7 +78,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private boolean checkAuth(String token, int id, Session session) throws IOException, GeneralException{
         if(authDAO.getUser(token) == null){
-            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("errormessage: Not Authorized")));
+            return false;
         }
+        return true;
     }
 }
