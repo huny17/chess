@@ -1,5 +1,7 @@
 package websocket.commands;
 
+import exceptions.GeneralException;
+
 import java.util.Objects;
 
 /**
@@ -11,9 +13,7 @@ import java.util.Objects;
 public class UserGameCommand {
 
     private final CommandType commandType;
-
     private final String authToken;
-
     private final Integer gameID;
 
     public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
@@ -58,4 +58,22 @@ public class UserGameCommand {
     public int hashCode() {
         return Objects.hash(getCommandType(), getAuthToken(), getGameID());
     }
+
+    /* my code */
+    public int colLetterToInt(char input)throws GeneralException {
+        int num;
+        switch (input) {
+            case 'a' -> num = 1;
+            case 'b' -> num = 2;
+            case 'c' -> num = 3;
+            case 'd' -> num = 4;
+            case 'e' -> num = 5;
+            case 'f' -> num = 6;
+            case 'g' -> num = 7;
+            case 'h' -> num = 8;
+            default -> num = 0;
+        }
+        return num;
+    }
+
 }

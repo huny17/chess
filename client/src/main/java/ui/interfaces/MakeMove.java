@@ -54,6 +54,5 @@ public class MakeMove {
         } catch (InvalidMoveException e) {
             throw new GeneralException(GeneralException.ExceptionType.invalid, e.getMessage());
         }
-
     }
 }
