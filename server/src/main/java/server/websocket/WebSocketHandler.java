@@ -42,14 +42,14 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.broadcast(session, notification);
     }
 
-    private void leave(String username, Session session){
+    private void leave(String username, Session session) throws IOException{
         var message = String.format("left");
         var notification = new NotificationMessage(message); //
         connections.broadcast(session, notification);
         connections.remove(session);
     }
 
-    private void resign(String username, Session session){
+    private void resign(String username, Session session) throws IOException{
         var message = String.format("left");
         var notification = new NotificationMessage(message); //
         connections.broadcast(session, notification);
