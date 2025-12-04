@@ -19,10 +19,12 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private final ConnectionManager connections = new ConnectionManager();
     AuthDAO authDAO;
     GameDAO gameDAO;
+    MakeMoveHandler moveHelper;
 
     public WebSocketHandler(GameDAO gameDAO, AuthDAO authDAO){
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
+        moveHelper = new MakeMoveHandler(this.gameDAO, this.authDAO);
     }
 
     @Override
@@ -66,11 +68,18 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void makeMove(String token, int id, ChessMove move, Session session) throws IOException, GeneralException{
-        updateMove(gameDAO.getGame(id), move, getTeam(token, gameDAO.getGame(id)));
-        connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
-        connections.broadcastOthers(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
-        connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s", authDAO.getUser(token), move)));
-        connections.remove(id, session);
+        if (checkInput(token, id, session)) {
+            moveHelper.updateMove(gameDAO.getGame(id), move, moveHelper.getTeam(token, gameDAO.getGame(id)));
+            connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
+            connections.broadcastOthers(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
+            connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s", authDAO.getUser(token), move)));
+            connections.remove(id, session);
+        }
+        else{
+            ErrorMessage err = new ErrorMessage("Not Authorized");
+            String huh = new Gson().toJson(err);
+            session.getRemote().sendString(huh);
+        }
     }
 
 
@@ -93,35 +102,4 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         return true;
     }
 
-    public void updateMove(GameData data, ChessMove move, ChessGame.TeamColor color) throws GeneralException{
-        checkTeam(data.chessGame(), move.getStartPosition(), color);
-        try {
-            ChessGame game = data.chessGame();
-            game.makeMove(move);
-            gameDAO.updateGame(data.gameID().toString(), new GameData(data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName(), game));
-        } catch (InvalidMoveException e) {
-            throw new GeneralException(GeneralException.ExceptionType.invalid, e.getMessage());
-        }
-    }
-
-    public ChessGame.TeamColor getTeam(String token, GameData gameInfo) throws GeneralException{
-        if (authDAO.getUser(token).equals(gameInfo.whiteUsername())){
-            return ChessGame.TeamColor.WHITE;
-        }
-        if (authDAO.getUser(token).equals(gameInfo.blackUsername())){
-            return ChessGame.TeamColor.BLACK;
-        }
-        throw new GeneralException(GeneralException.ExceptionType.invalid, "user not a player in game");
-    }
-
-    public boolean checkTeam(ChessGame game, ChessPosition pos, ChessGame.TeamColor color) throws GeneralException{
-        ChessPiece piece = game.getBoard().getPiece(pos);
-        if(!piece.getTeamColor().equals(color)){
-            throw new GeneralException(GeneralException.ExceptionType.invalid, "You can only move pieces from your own team");
-        }
-        if(!piece.getTeamColor().equals(game.getTeamTurn())){
-            throw new GeneralException(GeneralException.ExceptionType.invalid, "Waiting for opponent to make a move");
-        }
-        return true;
-    }
 }
