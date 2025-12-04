@@ -1,14 +1,12 @@
 package websocket.messages;
 
-import com.google.gson.Gson;
-import websocket.messages.ServerMessage.ServerMessageType;
 
-public class NotificationMessage {
+public class NotificationMessage extends ServerMessage {
     ServerMessageType type;
     String message;
 
     public NotificationMessage(String message){
-        this.type = ServerMessageType.NOTIFICATION;
+        super(ServerMessageType.NOTIFICATION);
         this.message = message;
     }
 }

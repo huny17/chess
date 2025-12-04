@@ -23,7 +23,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try{
             UserGameCommand command = new Gson().fromJson(ctx.message(), UserGameCommand.class);
             switch (command.getCommandType()){
-                case CONNECT -> connect(command.getAuthToken(), ctx.session);//method call
+                case CONNECT -> connect(command.getAuthToken(), command.getGameID(), ctx.session);//method call
             }
         }catch(IOException e){
             e.printStackTrace();
@@ -35,30 +35,26 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         System.out.println("ws closed");
     }
 
-    private void connect(String username, Session session) throws IOException{
-        connections.add(session);
+    private void connect(String token, int id, Session session) throws IOException{
+        connections.add(id, session);
         var message = String.format("connected");
         var notification = new NotificationMessage(message); //
-        connections.broadcast(session, notification);
+        connections.broadcast(id, session,notification);
     }
 
-    private void leave(String username, Session session) throws IOException{
+    private void leave(String token, int id, Session session) throws IOException{
         var message = String.format("left");
         var notification = new NotificationMessage(message); //
-        connections.broadcast(session, notification);
-        connections.remove(session);
+        connections.broadcast(id, session, notification);
+        connections.remove(id, session);
     }
 
-    private void resign(String username, Session session) throws IOException{
+    private void resign(String token, int id, Session session) throws IOException{
         var message = String.format("resigned");
         var notification = new NotificationMessage(message); //
-        connections.broadcast(session, notification);
-        connections.remove(session);
+        connections.broadcast(id, session, notification);
+        connections.remove(id, session);
     }
 
-//    private String getUsername(String token){
-//        String username = //get user from DAO?
-//        return username;
-//    }
 
 }
