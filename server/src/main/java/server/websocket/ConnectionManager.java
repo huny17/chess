@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,15 +12,24 @@ public class ConnectionManager {
     public final ConcurrentHashMap<Integer, Collection<Session>> connections = new ConcurrentHashMap<>();
 
     public void add(int id, Session session){
-        Collection<Session> userConnections = connections.get(id);
-        userConnections.add(session);
-        connections.put(id, userConnections); //ID, session?
+        if(connections.get(id) != null) {
+            Collection<Session> userConnections = connections.get(id);
+            userConnections.add(session);
+            connections.put(id, userConnections);
+        }
+        else{
+            Collection<Session> userConnected = new ArrayList<>();
+            userConnected.add(session);
+            connections.put(id, userConnected);
+        }
     }
 
     public void remove(int id, Session session){
-        Collection<Session> userConnections = connections.get(id);
-        userConnections.remove(session);
-        connections.put(id, userConnections);
+        if(connections.get(id) != null) {
+            Collection<Session> userConnections = connections.get(id);
+            userConnections.remove(session);
+            connections.put(id, userConnections);
+        }
     }
 
     //double check

@@ -21,11 +21,11 @@ public class Server {
     private final UserService userService;
     private final GameService gameService;
     private final ClearService clearService;
-    private final WebSocketHandler wsHandler;
+    final WebSocketHandler wsHandler;
     AuthDAO authDataAccess;
 
     public Server() {
-        UserDAO userDataAccess; //mySQL
+        UserDAO userDataAccess;
         GameDAO gameDataAccess;
         try {
             DatabaseManager.createDatabase();
@@ -33,7 +33,7 @@ public class Server {
             gameDataAccess = new MySQLGameDAO();
             authDataAccess = new MySQLAuthDAO();
         }catch(GeneralException e){
-            userDataAccess = new MemoryUserDAO(); //mySQL
+            userDataAccess = new MemoryUserDAO(); //memory
             gameDataAccess = new MemoryGameDAO();
             authDataAccess = new MemoryAuthDAO();
         }
@@ -41,7 +41,7 @@ public class Server {
         userService = new UserService(userDataAccess, authDataAccess);
         gameService = new GameService(gameDataAccess, authDataAccess);
         clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
-        wsHandler = new WebSocketHandler();
+        wsHandler = new WebSocketHandler(gameDataAccess, authDataAccess);
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
         /*register*/
