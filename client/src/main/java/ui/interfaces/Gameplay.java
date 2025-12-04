@@ -50,10 +50,12 @@ public class Gameplay {
     }
 
     public String resign(GameData gameData, String team) throws GeneralException {
+        ws.resignGame(server.getToken(), gameData.gameID());
         return null;
     }
 
     public String leave(GameData gameData, String team) throws GeneralException {
+        ws.leaveGame(server.getToken(), gameData.gameID());
         return null;
     }
 

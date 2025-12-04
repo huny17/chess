@@ -82,6 +82,7 @@ public class Postlogin {
                 if(findGame != null){
                     String notification = String.format(SET_TEXT_COLOR_BLUE+"You are now observing %s", findGame.gameName());
                     BoardView.run(findGame.chessGame().getBoard(), "white", null);
+                    ws.makeConnection(server.getToken(), findGame.gameID());
                     return notification;
                 }
             }catch(NumberFormatException ignored){

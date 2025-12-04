@@ -50,7 +50,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void resign(String username, Session session) throws IOException{
-        var message = String.format("left");
+        var message = String.format("resigned");
         var notification = new NotificationMessage(message); //
         connections.broadcast(session, notification);
         connections.remove(session);
