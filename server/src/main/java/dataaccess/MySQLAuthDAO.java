@@ -101,8 +101,6 @@ public class MySQLAuthDAO implements AuthDAO{
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        //for(var user : rs.next()){
-
                         AuthData a = readAuth(rs);
                         authentications.put(readAuth(rs).authToken(), a);
                     }

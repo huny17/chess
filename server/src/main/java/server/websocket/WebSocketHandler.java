@@ -8,9 +8,9 @@ import exceptions.GeneralException;
 import io.javalin.websocket.*;
 import websocket.commands.UserGameCommand;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
-import websocket.messages.ServerMessage;
 import java.io.IOException;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
@@ -48,23 +48,22 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void connect(String token, int id, Session session) throws IOException, GeneralException{
+        checkAuth(token, id, session);
         connections.add(id, session);
         var message = String.format("%s connected", authDAO.getUser(token));
-        var notification = new LoadGameMessage(gameDAO.getGame(id).chessGame()); //
-        connections.broadcast(id, session, notification);
+        connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
+        connections.broadcastOthers(id, session, new NotificationMessage(message));
     }
 
     private void leave(String token, int id, Session session) throws IOException, GeneralException{
-        var message = String.format("%s left the game", authDAO.getUser(token));
-        var notification = new NotificationMessage(message); //
-        connections.broadcast(id, session, notification);
+        connections.broadcastRoot(id, session, new NotificationMessage("You left the game"));
+        connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s left the game", authDAO.getUser(token))));
         connections.remove(id, session);
     }
 
     private void resign(String token, int id, Session session) throws IOException, GeneralException{
-        var message = String.format("%s resigned", authDAO.getUser(token));
-        var notification = new NotificationMessage(message); //
-        connections.broadcast(id, session, notification);
+        connections.broadcastRoot(id, session, new NotificationMessage("You resigned"));
+        connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s resigned the game", authDAO.getUser(token))));
         connections.remove(id, session);
     }
 
@@ -74,5 +73,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private String getUsername(String token) throws GeneralException {
         return authDAO.getUser(token);
+    }
+
+    private boolean checkAuth(String token, int id, Session session) throws IOException, GeneralException{
+        if(authDAO.getUser(token) == null){
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
+        }
     }
 }

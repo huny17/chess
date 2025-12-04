@@ -32,8 +32,7 @@ public class ConnectionManager {
         }
     }
 
-    //double check
-    public void broadcast(int id, Session excludeSession, ServerMessage notification) throws IOException { //for sending to everyone and then root user notifications
+    public void broadcastRoot(int id, Session excludeSession, ServerMessage notification) throws IOException { //for sending to everyone and then root user notifications
         String msg = new Gson().toJson(notification);
         Collection<Session> userConnections = connections.get(id);
         for (Session c : userConnections){
@@ -45,4 +44,15 @@ public class ConnectionManager {
         }
     }
 
+    public void broadcastOthers(int id, Session excludeSession, ServerMessage notification) throws IOException { //for sending to everyone and then root user notifications
+        String msg = new Gson().toJson(notification);
+        Collection<Session> userConnections = connections.get(id);
+        for (Session c : userConnections){
+            if (c.isOpen()){
+                if (!c.equals(excludeSession)){
+                    c.getRemote().sendString(msg);
+                }
+            }
+        }
+    }
 }
