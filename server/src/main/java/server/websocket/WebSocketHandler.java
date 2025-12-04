@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import io.javalin.websocket.*;
 import websocket.commands.UserGameCommand;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
-
 import java.io.IOException;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
@@ -23,7 +23,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try{
             UserGameCommand command = new Gson().fromJson(ctx.message(), UserGameCommand.class);
             switch (command.getCommandType()){
-                case CONNECT -> connect(ctx.session);//method call
+                case CONNECT -> connect(command.getAuthToken(), ctx.session);//method call
             }
         }catch(IOException e){
             e.printStackTrace();
@@ -35,10 +35,30 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         System.out.println("ws closed");
     }
 
-    private void connect(Session session) throws IOException{
+    private void connect(String username, Session session) throws IOException{
         connections.add(session);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION); //
+        var message = String.format("connected");
+        var notification = new NotificationMessage(message); //
         connections.broadcast(session, notification);
     }
+
+    private void leave(String username, Session session){
+        var message = String.format("left");
+        var notification = new NotificationMessage(message); //
+        connections.broadcast(session, notification);
+        connections.remove(session);
+    }
+
+    private void resign(String username, Session session){
+        var message = String.format("left");
+        var notification = new NotificationMessage(message); //
+        connections.broadcast(session, notification);
+        connections.remove(session);
+    }
+
+//    private String getUsername(String token){
+//        String username = //get user from DAO?
+//        return username;
+//    }
 
 }

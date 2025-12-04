@@ -41,7 +41,6 @@ public class UserService {
     }
 
     public LoginResult login(LoginRequest req) throws GeneralException{
-
         if(req.username() == null | req.password() == null){
             throw new GeneralException(GeneralException.ExceptionType.invalid,"Username and password required");
         }
@@ -66,5 +65,4 @@ public class UserService {
     private String generateAuthToken() {
         return UUID.randomUUID().toString();
     }
-
 }
