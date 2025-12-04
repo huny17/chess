@@ -11,6 +11,8 @@ import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
+
 import java.io.IOException;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
@@ -54,6 +56,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
             connections.broadcastOthers(id, session, new NotificationMessage(message));
         }
+        else{
+            ErrorMessage err = new ErrorMessage("Not Authorized");
+            String huh = new Gson().toJson(err);
+            session.getRemote().sendString(huh);
+        }
     }
 
     private void leave(String token, int id, Session session) throws IOException, GeneralException{
@@ -78,7 +85,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private boolean checkAuth(String token, int id, Session session) throws IOException, GeneralException{
         if(authDAO.getUser(token) == null){
-            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("errormessage: Not Authorized")));
+
             return false;
         }
         return true;
