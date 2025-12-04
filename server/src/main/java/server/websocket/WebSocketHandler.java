@@ -2,16 +2,12 @@ package server.websocket;
 
 import chess.*;
 import com.google.gson.Gson;
-import dataaccess.AuthDAO;
-import dataaccess.GameDAO;
+import dataaccess.*;
 import exceptions.GeneralException;
 import io.javalin.websocket.*;
-import model.GameData;
-import websocket.commands.MakeMoveCommand;
-import websocket.commands.UserGameCommand;
+import websocket.commands.*;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.*;
-
 import java.io.IOException;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
@@ -54,7 +50,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void connect(String token, int id, Session session) throws IOException, GeneralException {
-        if (checkInput(token, id, session)) {
+        if (checkInput(token, id)) {
             connections.add(id, session);
             var message = String.format("%s connected", authDAO.getUser(token));
             connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
@@ -68,12 +64,14 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void makeMove(String token, int id, ChessMove move, Session session) throws IOException, GeneralException{
-        if (checkInput(token, id, session)) {
-            moveHelper.updateMove(gameDAO.getGame(id), move, moveHelper.getTeam(token, gameDAO.getGame(id)));
-            connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
-            connections.broadcastOthers(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
-            connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s", authDAO.getUser(token), move)));
-            connections.remove(id, session);
+        if(checkPlayer(token, id)) {
+            if (moveHelper.allowedMove(gameDAO.getGame(id).chessGame(), move.getEndPosition(), move, moveHelper.getTeam(token, gameDAO.getGame(id)))) {
+                moveHelper.updateMove(gameDAO.getGame(id), move, moveHelper.getTeam(token, gameDAO.getGame(id)));
+                connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
+                connections.broadcastOthers(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
+                connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s", authDAO.getUser(token), move)));
+                connections.remove(id, session);
+            }
         }
         else{
             ErrorMessage err = new ErrorMessage("Not Authorized");
@@ -81,7 +79,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             session.getRemote().sendString(huh);
         }
     }
-
 
     private void leave(String token, int id, Session session) throws IOException, GeneralException{
         connections.broadcastRoot(id, session, new NotificationMessage("You left the game"));
@@ -95,11 +92,18 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.remove(id, session);
     }
 
-    private boolean checkInput(String token, int id, Session session) throws IOException, GeneralException{
+    private boolean checkInput(String token, int id) throws GeneralException{
         if(authDAO.getUser(token) == null | gameDAO.getGame(id) == null){
             return false;
         }
         return true;
+    }
+
+    private boolean checkPlayer(String token, int id) throws GeneralException{
+        if(authDAO.getUser(token).equals(gameDAO.getGame(id).whiteUsername()) | authDAO.getUser(token).equals(gameDAO.getGame(id).whiteUsername())){
+            return true;
+        }
+        return false;
     }
 
 }
