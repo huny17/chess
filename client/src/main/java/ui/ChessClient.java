@@ -1,15 +1,18 @@
 package ui;
 
 import java.util.*;
+
+import chess.ChessGame;
 import exceptions.*;
 import model.*;
 import server.ServerFacade;
 import ui.interfaces.*;
 import ui.websocket.WebSocketFacade;
+import websocket.ServerMessageHandler;
 import websocket.messages.ServerMessage;
 import static ui.EscapeSequences.*;
 
-public class ChessClient {
+public class ChessClient implements ServerMessageHandler {
     private State state = State.SIGNEDOUT;
     private final Prelogin prelogin;
     private final Postlogin postlogin;
@@ -20,7 +23,7 @@ public class ChessClient {
 
     public ChessClient(String serverUrl) throws GeneralException{
         ServerFacade server = new ServerFacade(serverUrl);
-        WebSocketFacade ws = new WebSocketFacade(serverUrl, this::notify);
+        WebSocketFacade ws = new WebSocketFacade(serverUrl, this);
         prelogin = new Prelogin(server);
         postlogin = new Postlogin(server, ws);
         gameplay = new Gameplay(server, ws);
@@ -46,7 +49,15 @@ public class ChessClient {
         System.out.println();
     }
 
-    public void notify(ServerMessage notification){
+    public void notify(String notification){
+        System.out.println(SET_TEXT_COLOR_GREEN + notification);
+        printPrompt();
+    }
+    public void errorHandle(String notification){
+        System.out.println(SET_TEXT_COLOR_RED + notification);
+        printPrompt();
+    }
+    public void loadingGame(ChessGame notification){
         System.out.println(SET_TEXT_COLOR_GREEN + notification);
         printPrompt();
     }
