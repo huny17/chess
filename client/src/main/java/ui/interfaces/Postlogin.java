@@ -1,5 +1,6 @@
 package ui.interfaces;
 
+import chess.ChessGame;
 import exceptions.GeneralException;
 import model.*;
 import model.request.*;
@@ -15,7 +16,7 @@ public class Postlogin {
     private final TreeMap<Integer, GameData> listedGames = new TreeMap<>();
     private final ServerFacade server;
     private final WebSocketFacade ws;
-    private GameData chessGame;
+    private GameData savedGame;
 
     public Postlogin(ServerFacade server, WebSocketFacade ws){
         this.server = server;
@@ -59,12 +60,11 @@ public class Postlogin {
                 if(!listedGames.containsKey(id)){
                     throw new GeneralException(GeneralException.ExceptionType.invalid, "That game does not exist yet, try another game.");
                 }
-                GameData findGame = listedGames.get(id);
-                if(findGame != null){
-                    server.joinGame(new JoinGameRequest(params[0].toUpperCase(), findGame.gameID().toString()));
-                    String notification = String.format("You are now playing %s", findGame.gameName());
-                    BoardView.run(findGame.chessGame().getBoard(), params[0], null);
-                    ws.makeConnection(server.getToken(), findGame.gameID());
+                savedGame = listedGames.get(id);
+                if(savedGame != null){
+                    server.joinGame(new JoinGameRequest(params[0].toUpperCase(), savedGame.gameID().toString()));
+                    ws.makeConnection(server.getToken(), savedGame.gameID());
+                    String notification = String.format("You are now playing %s", savedGame.gameName());
                     return SET_TEXT_COLOR_BLUE+notification;
                 }
             }catch(NumberFormatException ignored){
@@ -78,11 +78,10 @@ public class Postlogin {
         if(params.length == 1) {
             try{
                 int id = Integer.parseInt(params[0]);
-                GameData findGame = listedGames.get(id);
-                if(findGame != null){
-                    String notification = String.format(SET_TEXT_COLOR_BLUE+"You are now observing %s", findGame.gameName());
-                    BoardView.run(findGame.chessGame().getBoard(), "white", null);
-                    ws.makeConnection(server.getToken(), findGame.gameID());
+                savedGame = listedGames.get(id);
+                if(savedGame != null){
+                    ws.makeConnection(server.getToken(), savedGame.gameID());
+                    String notification = String.format(SET_TEXT_COLOR_BLUE+"You are now observing %s", savedGame.gameName());
                     return notification;
                 }
             }catch(NumberFormatException ignored){
@@ -107,8 +106,14 @@ public class Postlogin {
         }
     }
 
-    public GameData getGameData(String... params){
-        return listedGames.get(Integer.parseInt(params[1]));
+    public GameData getGameData() throws GeneralException{
+        populateList();
+        for (GameData game : listedGames.values()) {
+            if(game.gameID().equals(savedGame.gameID())){
+                return game;
+            }
+        }
+        return null;
     }
 
 }

@@ -7,6 +7,7 @@ import exceptions.*;
 import model.*;
 import server.ServerFacade;
 import ui.interfaces.*;
+import ui.theboard.BoardView;
 import ui.websocket.WebSocketFacade;
 import websocket.ServerMessageHandler;
 import websocket.messages.ServerMessage;
@@ -57,8 +58,8 @@ public class ChessClient implements ServerMessageHandler {
         System.out.println(SET_TEXT_COLOR_RED + notification);
         printPrompt();
     }
-    public void loadingGame(ChessGame notification){
-        System.out.println(SET_TEXT_COLOR_GREEN + notification);
+    public void loadingGame(ChessGame game){
+        BoardView.run(game.getBoard(), color, null);
         printPrompt();
     }
 
@@ -100,7 +101,7 @@ public class ChessClient implements ServerMessageHandler {
                 case "play" ->{
                     assertSignedIn();
                     result = postlogin.play(params);
-                    chessGame = postlogin.getGameData(params);
+                    chessGame = postlogin.getGameData();
                     color = params[0];
                     state = State.INGAME;
                     help = new HelpConsole(state);
@@ -108,6 +109,7 @@ public class ChessClient implements ServerMessageHandler {
                 case "observe" ->{
                     assertSignedIn();
                     result = postlogin.observe(params);
+                    chessGame = postlogin.getGameData();
                     color = "white";
                     state = State.INGAME;
                     help = new HelpConsole(state);
@@ -118,6 +120,7 @@ public class ChessClient implements ServerMessageHandler {
                 }
                 case "leave" ->{
                     assertInGame();
+                    chessGame = postlogin.getGameData();
                     result = gameplay.leave(chessGame);
                     color = null;
                     state = State.SIGNEDIN;
@@ -126,16 +129,16 @@ public class ChessClient implements ServerMessageHandler {
                 case "move" ->{
                     assertInGame();
                     result = gameplay.makeMove(chessGame, color, params);
+                    chessGame = postlogin.getGameData();
                 }
                 case "resign" ->{
                     assertInGame();
+                    chessGame = postlogin.getGameData();
                     result = gameplay.resign(chessGame);
-                    color = null;
-                    state = State.SIGNEDIN;
-                    help = new HelpConsole(state);
                 }
                 case "highlight" ->{
                     assertInGame();
+                    chessGame = postlogin.getGameData();
                     result = gameplay.highlight(chessGame, color, params);
                 }
                 case "quit" -> result = "quit";

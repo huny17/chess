@@ -66,8 +66,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void makeMove(String token, int id, ChessMove move, Session session) throws IOException, GeneralException{
         GameData game = gameDAO.getGame(id);
-        boolean check = game.chessGame().getIsGameOver();
-        if(checkPlayer(token, id) && !check){
+        if(checkPlayer(token, id) && !game.chessGame().getIsGameOver()){
             if(moveHelper.allowedMove(game.chessGame(), move, moveHelper.getTeam(token, game))){
                 moveHelper.updateMove(game, move);
                 ChessGame newGame = game.chessGame();
@@ -78,11 +77,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s", authDAO.getUser(token), move)));
             }
             else{
-                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You cannot make this move")));
             }
         }
         else{
-            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You aren't a player or this game is over")));
         }
     }
 
@@ -103,7 +102,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             gameDAO.updateGame(Integer.toString(id), new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), newGame));
         }
         else{
-            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You aren't a player or this game is over")));
         }
     }
 
