@@ -45,7 +45,7 @@ public class Gameplay {
         else {
             throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position> <end position>");
         }
-        return String.format("%s moved %s %s", moveClass.getUsername(), piece, new ChessMove(inputToPos(params[0]), inputToPos(params[1]), null));
+        return "";
     }
 
     public String resign(GameData gameData) throws GeneralException {

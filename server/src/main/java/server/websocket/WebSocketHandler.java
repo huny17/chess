@@ -74,7 +74,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 gameDAO.updateGame(Integer.toString(id), new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), newGame));
                 connections.broadcastRoot(id, session, new LoadGameMessage(game.chessGame()));
                 connections.broadcastOthers(id, session, new LoadGameMessage(game.chessGame()));
-                connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s", authDAO.getUser(token), move)));
+                connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s %s", authDAO.getUser(token), game.chessGame().getBoard().getPiece(move.getEndPosition()), move)));
             }
             else{
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You cannot make this move")));
