@@ -105,8 +105,8 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public void updateGame(String gameID, GameData newGame) throws GeneralException{
-        ChessGame theGame = newGame.chessGame();
+    public void updateGame(String gameID, GameData gameData) throws GeneralException{
+        ChessGame theGame = gameData.chessGame();
 
         var statement = "UPDATE game SET chessGame=? WHERE gameID=?";
         update.executeUpdate(statement, serializeChessGame(theGame), Integer.parseInt(gameID));
@@ -116,7 +116,6 @@ public class MySQLGameDAO implements GameDAO {
     public void updateWhiteTeam(String gameID, GameData game) throws GeneralException{
             var statement = "UPDATE game SET whiteUsername=? WHERE gameID=?";
             update.executeUpdate(statement, game.whiteUsername(), Integer.parseInt(gameID));
-
     }
 
     @Override

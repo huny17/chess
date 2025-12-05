@@ -13,9 +13,11 @@ public class ChessGame {
     ChessBoard oldBoard;
     TeamColor turn = TeamColor.WHITE;
     ChessPosition pos;
-    boolean movesAreValid = false;
+    boolean isGameOver = false;
 
-    public ChessGame() {}
+    public ChessGame() {
+        currentBoard.resetBoard();
+    }
 
     /**
      * @return Which team's turn it is
@@ -139,8 +141,7 @@ public class ChessGame {
         return false;
     }
 
-    public void validateMoves(TeamColor color) {
-        movesAreValid = false;
+    public boolean validateMoves(TeamColor color) {
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 pos = currentBoard.getPos(i, j);
@@ -150,14 +151,14 @@ public class ChessGame {
                         Collection<ChessMove> moves = piece.pieceMoves(currentBoard, pos);
                         for (ChessMove move : moves) {
                             if(!validMoves(move.getStartPosition()).isEmpty()){
-                                movesAreValid = true;
-                                break;
+                                return true;
                             }
                         }
                     }
                 }
             }
         }
+        return false;
     }
 
     /**
@@ -167,8 +168,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        validateMoves(teamColor);
-        if (!movesAreValid & isInCheck(teamColor)) {
+        if (!validateMoves(teamColor) & isInCheck(teamColor)) {
             return true;
         }
         return false;
@@ -182,8 +182,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        validateMoves(teamColor);
-        if (!isInCheck(teamColor) & !isInCheckmate(teamColor) & !movesAreValid) { //& if no legal moves
+        if (!isInCheck(teamColor) & !isInCheckmate(teamColor) & !validateMoves(teamColor)) { //& if no legal moves
             return true;
         }
         return false;
@@ -204,27 +203,26 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        for (int i = currentBoard.board.length-1; i >= 0; i--) {
-            for (int j = 0; j < currentBoard.board[i].length; j++) {
-                if(currentBoard.board[i][j] != null) {
-                    return currentBoard;
-                }
-            }
-        }
-        currentBoard.resetBoard();
         return currentBoard;
+    }
+
+    public void setGameOver(){
+        isGameOver = true;
+    }
+    public Boolean getIsGameOver(){
+        return isGameOver;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()){ return false;}
         ChessGame chessGame = (ChessGame) o;
-        return movesAreValid == chessGame.movesAreValid && Objects.equals(currentBoard, chessGame.currentBoard) && Objects.equals(oldBoard, chessGame.oldBoard) && turn == chessGame.turn && Objects.equals(pos, chessGame.pos);
+        return Objects.equals(currentBoard, chessGame.currentBoard) && Objects.equals(oldBoard, chessGame.oldBoard) && turn == chessGame.turn && Objects.equals(pos, chessGame.pos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(currentBoard, oldBoard, turn, pos, movesAreValid);
+        return Objects.hash(currentBoard, oldBoard, turn, pos, isGameOver);
     }
 
     @Override
@@ -234,7 +232,6 @@ public class ChessGame {
                 ", oldBoard=" + oldBoard +
                 ", turn=" + turn +
                 ", pos=" + pos +
-                ", movesAreValid=" + movesAreValid +
                 '}';
     }
 }

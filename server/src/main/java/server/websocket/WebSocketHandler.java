@@ -18,7 +18,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     AuthDAO authDAO;
     GameDAO gameDAO;
     MakeMoveHandler moveHelper;
-    ArrayList<String> resigned = new ArrayList<>();
 
     public WebSocketHandler(GameDAO gameDAO, AuthDAO authDAO){
         this.gameDAO = gameDAO;
@@ -67,14 +66,16 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void makeMove(String token, int id, ChessMove move, Session session) throws IOException, GeneralException{
-        if(checkPlayer(token, id) & !resigned.contains(gameDAO.getGame(id).whiteUsername()) & !resigned.contains(gameDAO.getGame(id).blackUsername())){
-            if(moveHelper.checkGameOver(gameDAO.getGame(id).chessGame())){
-                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
-            }
-            else if(moveHelper.allowedMove(gameDAO.getGame(id).chessGame(), move, moveHelper.getTeam(token, gameDAO.getGame(id)))) {
-                moveHelper.updateMove(gameDAO.getGame(id), move);
-                connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
-                connections.broadcastOthers(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
+        GameData game = gameDAO.getGame(id);
+        boolean check = game.chessGame().getIsGameOver();
+        if(checkPlayer(token, id) && !check){
+            if(moveHelper.allowedMove(game.chessGame(), move, moveHelper.getTeam(token, game))){
+                moveHelper.updateMove(game, move);
+                ChessGame newGame = game.chessGame();
+                moveHelper.updateGameOver(newGame);
+                gameDAO.updateGame(Integer.toString(id), new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), newGame));
+                connections.broadcastRoot(id, session, new LoadGameMessage(game.chessGame()));
+                connections.broadcastOthers(id, session, new LoadGameMessage(game.chessGame()));
                 connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s", authDAO.getUser(token), move)));
             }
             else{
@@ -87,23 +88,20 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void leave(String token, int id, Session session) throws IOException, GeneralException{
-        if(!resigned.contains(gameDAO.getGame(id).whiteUsername()) & !resigned.contains(gameDAO.getGame(id).blackUsername())) {
-            removeUser(token, id);
-            connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s left the game", authDAO.getUser(token))));
-            connections.remove(id, session);
-            resigned.remove(authDAO.getAuth(token).username());
-        }
-        else{
-            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
-        }
+        removeUser(token, id);
+        connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s left the game", authDAO.getUser(token))));
+        connections.remove(id, session);
     }
 
     private void resign(String token, int id, Session session) throws IOException, GeneralException{
-        if(checkPlayer(token, id) & !resigned.contains(gameDAO.getGame(id).whiteUsername()) & !resigned.contains(gameDAO.getGame(id).blackUsername())) {
+        if(checkPlayer(token, id) & !gameDAO.getGame(id).chessGame().getIsGameOver()) {
+            GameData game = gameDAO.getGame(id);
             connections.broadcastRoot(id, session, new NotificationMessage("You resigned"));
             connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s resigned the game", authDAO.getUser(token))));
             connections.remove(id, session);
-            resigned.add(authDAO.getAuth(token).username());
+            ChessGame newGame = game.chessGame();
+            newGame.setGameOver();
+            gameDAO.updateGame(Integer.toString(id), new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), newGame));
         }
         else{
             session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));

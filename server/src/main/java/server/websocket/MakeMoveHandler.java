@@ -72,10 +72,13 @@ public class MakeMoveHandler {
         return false;
     }
 
-    public boolean checkGameOver(ChessGame game){
-        if(game.isInCheckmate(ChessGame.TeamColor.WHITE) | (game.isInCheck(ChessGame.TeamColor.BLACK))){
-            return true;
+    public void updateGameOver(ChessGame game){
+        if(game.isInCheckmate(ChessGame.TeamColor.WHITE) || game.isInStalemate(ChessGame.TeamColor.WHITE)){
+            game.setGameOver();
         }
-        return false;
+        if(game.isInCheckmate(ChessGame.TeamColor.BLACK) || game.isInStalemate(ChessGame.TeamColor.BLACK)){
+            game.setGameOver();
+        }
     }
+
 }
