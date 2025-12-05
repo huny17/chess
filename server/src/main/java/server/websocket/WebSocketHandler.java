@@ -10,6 +10,7 @@ import websocket.commands.*;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
 
@@ -17,7 +18,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     AuthDAO authDAO;
     GameDAO gameDAO;
     MakeMoveHandler moveHelper;
-    Boolean resigned = false;
+    ArrayList<String> resigned = new ArrayList<>();
 
     public WebSocketHandler(GameDAO gameDAO, AuthDAO authDAO){
         this.gameDAO = gameDAO;
@@ -66,7 +67,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void makeMove(String token, int id, ChessMove move, Session session) throws IOException, GeneralException{
-        if(checkPlayer(token, id) & !resigned) {
+        if(checkPlayer(token, id) & !resigned.contains(gameDAO.getGame(id).whiteUsername()) & !resigned.contains(gameDAO.getGame(id).blackUsername())){
             if(moveHelper.checkGameOver(gameDAO.getGame(id).chessGame())){
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
             }
@@ -86,19 +87,23 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void leave(String token, int id, Session session) throws IOException, GeneralException{
-        if(!resigned) {
+        if(!resigned.contains(gameDAO.getGame(id).whiteUsername()) & !resigned.contains(gameDAO.getGame(id).blackUsername())) {
             removeUser(token, id);
             connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s left the game", authDAO.getUser(token))));
             connections.remove(id, session);
+            resigned.remove(authDAO.getAuth(token).username());
+        }
+        else{
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
         }
     }
 
     private void resign(String token, int id, Session session) throws IOException, GeneralException{
-        if(checkPlayer(token, id) & !resigned) {
+        if(checkPlayer(token, id) & !resigned.contains(gameDAO.getGame(id).whiteUsername()) & !resigned.contains(gameDAO.getGame(id).blackUsername())) {
             connections.broadcastRoot(id, session, new NotificationMessage("You resigned"));
             connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s resigned the game", authDAO.getUser(token))));
             connections.remove(id, session);
-            resigned = true;
+            resigned.add(authDAO.getAuth(token).username());
         }
         else{
             session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
