@@ -111,5 +111,4 @@ public class Postlogin {
         return listedGames.get(Integer.parseInt(params[1]));
     }
 
-    public GameData updateGameData(){return chessGame;}
 }

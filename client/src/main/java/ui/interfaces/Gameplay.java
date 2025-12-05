@@ -11,7 +11,10 @@ import ui.theboard.BoardView;
 import ui.theboard.Highlight;
 import ui.websocket.WebSocketFacade;
 
+import java.util.Scanner;
+
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
+import static ui.EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY;
 
 public class Gameplay {
 
@@ -40,8 +43,8 @@ public class Gameplay {
             assignTeamColor(gameData, team);
             ChessPosition start = inputToPos(params[0]);
             ChessPosition end = inputToPos(params[1]);
-            moveClass.updateMove(gameData, new ChessMove(start, end, null), color); //FIGURE OUT PROMO
-            piece = gameData.chessGame().getBoard().getPiece(end);
+            ChessMove move = new ChessMove(start, end, null);
+            ws.makeMove(server.getToken(), gameData.gameID(), move);
         }
         else {
             throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position> <end position>");
@@ -49,12 +52,14 @@ public class Gameplay {
         return String.format("%s moved %s %s", username, piece, new ChessMove(inputToPos(params[0]), inputToPos(params[1]), null));
     }
 
-    public String resign(GameData gameData, String team) throws GeneralException {
-        ws.resignGame(server.getToken(), gameData.gameID());
+    public String resign(GameData gameData) throws GeneralException {
+        if(confirm()) {
+            ws.resignGame(server.getToken(), gameData.gameID());
+        }
         return null;
     }
 
-    public String leave(GameData gameData, String team) throws GeneralException {
+    public String leave(GameData gameData) throws GeneralException {
         ws.leaveGame(server.getToken(), gameData.gameID());
         return null;
     }
@@ -92,5 +97,19 @@ public class Gameplay {
             color = ChessGame.TeamColor.BLACK;
             username = game.blackUsername();
         }
+    }
+
+    public boolean confirm(){
+        System.out.print("Are you sure you want to resign?");
+        Scanner scanner = new Scanner(System.in);
+        var result = "";
+        System.out.print("\n" + SET_TEXT_COLOR_LIGHT_GREY + ">>> " + SET_TEXT_COLOR_BLUE);
+        result = scanner.nextLine();
+        System.out.print(result);
+        if(result.equalsIgnoreCase("yes")){
+            return true;
+        }
+        return false;
+
     }
 }

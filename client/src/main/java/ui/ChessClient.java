@@ -7,6 +7,8 @@ import server.ServerFacade;
 import ui.interfaces.*;
 import ui.websocket.WebSocketFacade;
 import websocket.Notification;
+import websocket.messages.ServerMessage;
+
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
@@ -46,8 +48,8 @@ public class ChessClient {
         System.out.println();
     }
 
-    public void notify(Notification notification){
-        System.out.println(notification.message());
+    public void notify(ServerMessage notification){
+        System.out.println(SET_TEXT_COLOR_GREEN + notification);
         printPrompt();
     }
 
@@ -92,8 +94,6 @@ public class ChessClient {
                     chessGame = postlogin.getGameData(params);
                     color = params[0];
                     state = State.INGAME;
-                    chessGame = postlogin.updateGameData(); //how is updating game and how to call it
-                    //notify
                     help = new HelpConsole(state);
                 }
                 case "observe" ->{
@@ -101,8 +101,6 @@ public class ChessClient {
                     result = postlogin.observe(params);
                     color = "white";
                     state = State.INGAME;
-                    chessGame = postlogin.updateGameData();
-                    //notify
                     help = new HelpConsole(state);
                 }
                 case "redraw" ->{
@@ -111,23 +109,20 @@ public class ChessClient {
                 }
                 case "leave" ->{
                     assertInGame();
-                    result = gameplay.leave(chessGame, color);
+                    result = gameplay.leave(chessGame);
                     color = null;
                     state = State.SIGNEDIN;
-                    //notify
                     help = new HelpConsole(state);
                 }
                 case "move" ->{
                     assertInGame();
-                    //notify
                     result = gameplay.makeMove(chessGame, color, params);
                 }
                 case "resign" ->{
                     assertInGame();
-                    result = gameplay.resign(chessGame, color);
+                    result = gameplay.resign(chessGame);
                     color = null;
                     state = State.SIGNEDIN;
-                    //notify
                     help = new HelpConsole(state);
                 }
                 case "highlight" ->{

@@ -2,9 +2,7 @@ package ui.interfaces;
 
 import chess.*;
 import exceptions.GeneralException;
-import model.GameData;
 import server.ServerFacade;
-import ui.theboard.BoardView;
 import ui.websocket.WebSocketFacade;
 
 public class MakeMove {
@@ -42,17 +40,5 @@ public class MakeMove {
             throw new GeneralException(GeneralException.ExceptionType.invalid, "Waiting for opponent to make a move");
         }
         return true;
-    }
-
-    public void updateMove(GameData data, ChessMove move, ChessGame.TeamColor color) throws GeneralException{
-        checkTeam(data.chessGame(), move.getStartPosition(), color);
-        try {
-            ChessGame game = data.chessGame();
-            game.makeMove(move);
-            //updategame??
-            BoardView.run(game.getBoard(), color.toString().toLowerCase(), null);
-        } catch (InvalidMoveException e) {
-            throw new GeneralException(GeneralException.ExceptionType.invalid, e.getMessage());
-        }
     }
 }
