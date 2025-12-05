@@ -57,26 +57,28 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             connections.broadcastOthers(id, session, new NotificationMessage(message));
         }
         else{
-            ErrorMessage err = new ErrorMessage("Not Authorized");
-            String huh = new Gson().toJson(err);
-            session.getRemote().sendString(huh);
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
         }
     }
 
     private void makeMove(String token, int id, ChessMove move, Session session) throws IOException, GeneralException{
-        if(checkPlayer(token, id)) {
-            if (moveHelper.allowedMove(gameDAO.getGame(id).chessGame(), move.getEndPosition(), move, moveHelper.getTeam(token, gameDAO.getGame(id)))) {
-                moveHelper.updateMove(gameDAO.getGame(id), move, moveHelper.getTeam(token, gameDAO.getGame(id)));
+        if(checkPlayer(token, id, session) ) {
+            if(moveHelper.checkGameOver(gameDAO.getGame(id).chessGame())){
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
+                session.getRemote().sendString(new Gson().toJson(new LoadGameMessage(gameDAO.getGame(id).chessGame())));
+            }
+            else if(moveHelper.allowedMove(gameDAO.getGame(id).chessGame(), move, moveHelper.getTeam(token, gameDAO.getGame(id)))) {
+                moveHelper.updateMove(gameDAO.getGame(id), move);
                 connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
                 connections.broadcastOthers(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
                 connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s", authDAO.getUser(token), move)));
-                connections.remove(id, session);
+            }
+            else{
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
             }
         }
         else{
-            ErrorMessage err = new ErrorMessage("Not Authorized");
-            String huh = new Gson().toJson(err);
-            session.getRemote().sendString(huh);
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
         }
     }
 
@@ -99,8 +101,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         return true;
     }
 
-    private boolean checkPlayer(String token, int id) throws GeneralException{
-        if(authDAO.getUser(token).equals(gameDAO.getGame(id).whiteUsername()) | authDAO.getUser(token).equals(gameDAO.getGame(id).whiteUsername())){
+    private boolean checkPlayer(String token, int id, Session session) throws IOException, GeneralException{
+        if(authDAO.getAuth(token) == null){
+            return false;
+        }
+        if(authDAO.getUser(token).equals(gameDAO.getGame(id).whiteUsername()) | authDAO.getUser(token).equals(gameDAO.getGame(id).blackUsername())){
             return true;
         }
         return false;
