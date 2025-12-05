@@ -110,6 +110,9 @@ public class Gameplay {
             return true;
         }
         return false;
-
     }
+
+//    public ChessGame updateGame(){
+//        return
+//    }
 }

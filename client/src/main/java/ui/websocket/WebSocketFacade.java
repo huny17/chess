@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import jakarta.websocket.*;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
@@ -35,7 +37,18 @@ public class WebSocketFacade extends Endpoint{
                 public void onMessage(String message){
                     ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
                     switch(serverMessage.getServerMessageType()) {
-                        case NOTIFICATION -> serverMessageHandler.notify((NotificationMessage) serverMessage);
+                        case NOTIFICATION ->{
+                            NotificationMessage notification = new Gson().fromJson(message, NotificationMessage.class);
+                            serverMessageHandler.notify(notification);
+                        }
+                        case LOAD_GAME -> {
+                            LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
+                            serverMessageHandler.notify(loadGame);
+                        }
+                        case ERROR -> {
+                            ErrorMessage err = new Gson().fromJson(message, ErrorMessage.class);
+                            serverMessageHandler.notify(err);
+                        }
                     }
                 }
             });

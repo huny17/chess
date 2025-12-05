@@ -6,9 +6,7 @@ import model.*;
 import server.ServerFacade;
 import ui.interfaces.*;
 import ui.websocket.WebSocketFacade;
-import websocket.Notification;
 import websocket.messages.ServerMessage;
-
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
