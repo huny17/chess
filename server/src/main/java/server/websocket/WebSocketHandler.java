@@ -65,7 +65,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         if(checkPlayer(token, id, session) ) {
             if(moveHelper.checkGameOver(gameDAO.getGame(id).chessGame())){
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
-                session.getRemote().sendString(new Gson().toJson(new LoadGameMessage(gameDAO.getGame(id).chessGame())));
             }
             else if(moveHelper.allowedMove(gameDAO.getGame(id).chessGame(), move, moveHelper.getTeam(token, gameDAO.getGame(id)))) {
                 moveHelper.updateMove(gameDAO.getGame(id), move);
