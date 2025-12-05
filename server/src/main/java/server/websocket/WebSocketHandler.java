@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import exceptions.GeneralException;
 import io.javalin.websocket.*;
+import model.GameData;
 import websocket.commands.*;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.*;
@@ -16,6 +17,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     AuthDAO authDAO;
     GameDAO gameDAO;
     MakeMoveHandler moveHelper;
+    Boolean resigned = false;
 
     public WebSocketHandler(GameDAO gameDAO, AuthDAO authDAO){
         this.gameDAO = gameDAO;
@@ -38,6 +40,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 case MAKE_MOVE -> { MakeMoveCommand moveCommand = new Gson().fromJson(ctx.message(), MakeMoveCommand.class);
                     makeMove(moveCommand.getAuthToken(), moveCommand.getGameID(), moveCommand.getChessMove(), ctx.session);
                 }
+                case LEAVE -> leave(command.getAuthToken(), command.getGameID(), ctx.session);
+                case RESIGN -> resign(command.getAuthToken(), command.getGameID(), ctx.session);
             }
         }catch(IOException | GeneralException e){
             e.getMessage();
@@ -62,7 +66,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void makeMove(String token, int id, ChessMove move, Session session) throws IOException, GeneralException{
-        if(checkPlayer(token, id, session) ) {
+        if(checkPlayer(token, id) & !resigned) {
             if(moveHelper.checkGameOver(gameDAO.getGame(id).chessGame())){
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
             }
@@ -82,15 +86,23 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void leave(String token, int id, Session session) throws IOException, GeneralException{
-        connections.broadcastRoot(id, session, new NotificationMessage("You left the game"));
-        connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s left the game", authDAO.getUser(token))));
-        connections.remove(id, session);
+        if(!resigned) {
+            removeUser(token, id);
+            connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s left the game", authDAO.getUser(token))));
+            connections.remove(id, session);
+        }
     }
 
     private void resign(String token, int id, Session session) throws IOException, GeneralException{
-        connections.broadcastRoot(id, session, new NotificationMessage("You resigned"));
-        connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s resigned the game", authDAO.getUser(token))));
-        connections.remove(id, session);
+        if(checkPlayer(token, id) & !resigned) {
+            connections.broadcastRoot(id, session, new NotificationMessage("You resigned"));
+            connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s resigned the game", authDAO.getUser(token))));
+            connections.remove(id, session);
+            resigned = true;
+        }
+        else{
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Not Authorized")));
+        }
     }
 
     private boolean checkInput(String token, int id) throws GeneralException{
@@ -100,7 +112,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         return true;
     }
 
-    private boolean checkPlayer(String token, int id, Session session) throws IOException, GeneralException{
+    private boolean checkPlayer(String token, int id) throws GeneralException{
         if(authDAO.getAuth(token) == null){
             return false;
         }
@@ -108,6 +120,15 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             return true;
         }
         return false;
+    }
+
+    private void removeUser(String token, int id) throws GeneralException{
+        if(authDAO.getUser(token).equals(gameDAO.getGame(id).whiteUsername())){
+            gameDAO.updateWhiteTeam(Integer.toString(id), new GameData(id, null, gameDAO.getGame(id).blackUsername(), gameDAO.getGame(id).gameName(), gameDAO.getGame(id).chessGame()));
+        }
+        if(authDAO.getUser(token).equals(gameDAO.getGame(id).blackUsername())){
+            gameDAO.updateBlackTeam(Integer.toString(id), new GameData(id, gameDAO.getGame(id).whiteUsername(), null, gameDAO.getGame(id).gameName(), gameDAO.getGame(id).chessGame()));
+        }
     }
 
 }

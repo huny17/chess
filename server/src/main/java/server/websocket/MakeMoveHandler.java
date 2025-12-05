@@ -5,7 +5,6 @@ import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import exceptions.GeneralException;
 import model.GameData;
-
 import java.util.Collection;
 
 public class MakeMoveHandler {
