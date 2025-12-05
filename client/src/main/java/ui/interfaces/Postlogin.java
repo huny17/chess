@@ -1,12 +1,10 @@
 package ui.interfaces;
 
-import chess.ChessGame;
 import exceptions.GeneralException;
 import model.*;
 import model.request.*;
 import model.result.*;
 import server.ServerFacade;
-import ui.theboard.BoardView;
 import ui.websocket.WebSocketFacade;
 import java.util.TreeMap;
 import static ui.EscapeSequences.*;
@@ -17,6 +15,7 @@ public class Postlogin {
     private final ServerFacade server;
     private final WebSocketFacade ws;
     private GameData savedGame;
+    private String team = null;
 
     public Postlogin(ServerFacade server, WebSocketFacade ws){
         this.server = server;
@@ -81,8 +80,7 @@ public class Postlogin {
                 savedGame = listedGames.get(id);
                 if(savedGame != null){
                     ws.makeConnection(server.getToken(), savedGame.gameID());
-                    String notification = String.format(SET_TEXT_COLOR_BLUE+"You are now observing %s", savedGame.gameName());
-                    return notification;
+                    return String.format(SET_TEXT_COLOR_BLUE+"You are now observing %s", savedGame.gameName());
                 }
             }catch(NumberFormatException ignored){
             }
@@ -92,6 +90,7 @@ public class Postlogin {
 
     private boolean checkTeam(String color) throws GeneralException{
         if(color.equals("white") | color.equals("black")){
+            team = color;
             return true;
         }
         throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: [WHITE|BLACK] <ID>");
@@ -116,4 +115,7 @@ public class Postlogin {
         return null;
     }
 
+    public String getTeam() {
+        return team;
+    }
 }

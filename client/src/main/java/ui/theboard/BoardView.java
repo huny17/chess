@@ -28,7 +28,6 @@ public class BoardView {
         out.println();
         drawCheckers(out, board);
         out.print(RESET_BG_COLOR+RESET_TEXT_COLOR+RESET_TEXT_BOLD_FAINT);
-        //out.println();
     }
 
     private static void drawBorders(PrintStream out, int index, int end) {

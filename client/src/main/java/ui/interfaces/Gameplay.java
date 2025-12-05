@@ -10,24 +10,19 @@ import server.ServerFacade;
 import ui.theboard.BoardView;
 import ui.theboard.Highlight;
 import ui.websocket.WebSocketFacade;
-
-import java.util.Scanner;
-
-import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
-import static ui.EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY;
+import static ui.EscapeSequences.*;
 
 public class Gameplay {
 
     private final ServerFacade server;
     private final WebSocketFacade ws;
-    private final MakeMove moveClass;
+    private final MakeMove moveClass = new MakeMove();
     private ChessGame.TeamColor color;
     ChessPiece piece;
 
-    public Gameplay(ServerFacade server, WebSocketFacade ws) throws GeneralException{
+    public Gameplay(ServerFacade server, WebSocketFacade ws){
         this.server = server;
         this.ws = ws;
-        moveClass = new MakeMove(server, ws);
     }
 
     public String redraw(GameData gameData, String team) throws GeneralException {
@@ -42,10 +37,10 @@ public class Gameplay {
             ChessPosition start = inputToPos(params[0]);
             ChessPosition end = inputToPos(params[1]);
             piece = gameData.chessGame().getBoard().getPiece(start);
-            if(moveClass.checkTeam(gameData.chessGame(), start, color) && moveClass.checkTurn(gameData.chessGame(), start, color)) {
-                ChessMove move = new ChessMove(start, end, null);
-                ws.makeMove(server.getToken(), gameData.gameID(), move);
-            }
+            ChessMove move = new ChessMove(start, end, null);
+            ws.makeMove(server.getToken(), gameData.gameID(), move);
+            moveClass.checkTeam(gameData.chessGame(), start, color);
+            moveClass.checkTurn(gameData.chessGame(), start);
         }
         else {
             throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position> <end position>");
@@ -57,7 +52,7 @@ public class Gameplay {
         if(moveClass.confirm()) {
             ws.resignGame(server.getToken(), gameData.gameID());
         }
-        return String.format("You resigned %s", gameData.gameName());
+        return "";//String.format("You resigned %s", gameData.gameName());
     }
 
     public String leave(GameData gameData) throws GeneralException {

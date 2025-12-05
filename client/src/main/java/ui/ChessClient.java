@@ -1,7 +1,6 @@
 package ui;
 
 import java.util.*;
-
 import chess.ChessGame;
 import exceptions.*;
 import model.*;
@@ -10,7 +9,6 @@ import ui.interfaces.*;
 import ui.theboard.BoardView;
 import ui.websocket.WebSocketFacade;
 import websocket.ServerMessageHandler;
-import websocket.messages.ServerMessage;
 import static ui.EscapeSequences.*;
 
 public class ChessClient implements ServerMessageHandler {
@@ -19,8 +17,6 @@ public class ChessClient implements ServerMessageHandler {
     private final Postlogin postlogin;
     private final Gameplay gameplay;
     private HelpConsole help;
-    private GameData chessGame;
-    private String color = null;
 
     public ChessClient(String serverUrl) throws GeneralException{
         ServerFacade server = new ServerFacade(serverUrl);
@@ -59,7 +55,7 @@ public class ChessClient implements ServerMessageHandler {
         printPrompt();
     }
     public void loadingGame(ChessGame game){
-        BoardView.run(game.getBoard(), color, null);
+        BoardView.run(game.getBoard(), postlogin.getTeam(), null);
         printPrompt();
     }
 
@@ -101,45 +97,36 @@ public class ChessClient implements ServerMessageHandler {
                 case "play" ->{
                     assertSignedIn();
                     result = postlogin.play(params);
-                    chessGame = postlogin.getGameData();
-                    color = params[0];
                     state = State.INGAME;
                     help = new HelpConsole(state);
                 }
                 case "observe" ->{
                     assertSignedIn();
                     result = postlogin.observe(params);
-                    chessGame = postlogin.getGameData();
-                    color = "white";
                     state = State.INGAME;
                     help = new HelpConsole(state);
                 }
                 case "redraw" ->{
                     assertInGame();
-                    result = gameplay.redraw(chessGame, color);
+                    result = gameplay.redraw(postlogin.getGameData(), postlogin.getTeam());
                 }
                 case "leave" ->{
                     assertInGame();
-                    chessGame = postlogin.getGameData();
-                    result = gameplay.leave(chessGame);
-                    color = null;
+                    result = gameplay.leave(postlogin.getGameData());
                     state = State.SIGNEDIN;
                     help = new HelpConsole(state);
                 }
                 case "move" ->{
                     assertInGame();
-                    result = gameplay.makeMove(chessGame, color, params);
-                    chessGame = postlogin.getGameData();
+                    result = gameplay.makeMove(postlogin.getGameData(), postlogin.getTeam(), params);
                 }
                 case "resign" ->{
                     assertInGame();
-                    chessGame = postlogin.getGameData();
-                    result = gameplay.resign(chessGame);
+                    result = gameplay.resign(postlogin.getGameData());
                 }
                 case "highlight" ->{
                     assertInGame();
-                    chessGame = postlogin.getGameData();
-                    result = gameplay.highlight(chessGame, color, params);
+                    result = gameplay.highlight(postlogin.getGameData(), postlogin.getTeam(), params);
                 }
                 case "quit" -> result = "quit";
                 default -> result = help.helpScreen();
