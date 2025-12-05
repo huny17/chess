@@ -1,13 +1,14 @@
 package ui;
 
+import exceptions.GeneralException;
+
 import static ui.EscapeSequences.*;
 
 public class HelpConsole {
 
-    private State state;
+    private State state = State.SIGNEDOUT;
 
-    public HelpConsole(State state){
-        this.state = state;
+    public HelpConsole(){
     }
 
     public String helpScreen(){
@@ -33,10 +34,7 @@ public class HelpConsole {
                     help - with possible commands
                     """;
         }
-        return SET_TEXT_COLOR_WHITE+
-                """
-                WELCOME TO CHESS
-                """ +SET_TEXT_COLOR_BLUE+
+        return SET_TEXT_COLOR_BLUE+
                 """
                 register <username> <password> <email> - to create an account
                 login <username> <password> - to play chess
@@ -45,4 +43,20 @@ public class HelpConsole {
                 """;
 
         }
+
+    public void setState(State state){
+        this.state = state;
+    }
+
+    public void assertSignedIn() throws GeneralException {
+        if(state == State.SIGNEDOUT){
+            throw new GeneralException(GeneralException.ExceptionType.unauthorized, "Please login to use these commands");
+        }
+    }
+
+    public void assertInGame() throws GeneralException{
+        if(state != State.INGAME){
+            throw new GeneralException(GeneralException.ExceptionType.unauthorized, "Please play or observe a game to use these commands");
+        }
+    }
 }

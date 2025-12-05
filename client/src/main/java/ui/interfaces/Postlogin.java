@@ -1,5 +1,6 @@
 package ui.interfaces;
 
+import chess.ChessGame;
 import exceptions.GeneralException;
 import model.*;
 import model.request.*;
@@ -25,7 +26,7 @@ public class Postlogin {
 
     public String logout() throws GeneralException {
         server.logout();
-        return String.format("%s LOGGED_OUT", visitorName);
+        return String.format("LOGGED_OUT", visitorName);
     }
 
     public String createGame(String... params) throws GeneralException{
@@ -77,6 +78,7 @@ public class Postlogin {
         if(params.length == 1) {
             try{
                 int id = Integer.parseInt(params[0]);
+                team = "white";
                 savedGame = listedGames.get(id);
                 if(savedGame != null){
                     ws.makeConnection(server.getToken(), savedGame.gameID());

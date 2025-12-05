@@ -12,7 +12,7 @@ import websocket.ServerMessageHandler;
 import static ui.EscapeSequences.*;
 
 public class ChessClient implements ServerMessageHandler {
-    private State state = State.SIGNEDOUT;
+
     private final Prelogin prelogin;
     private final Postlogin postlogin;
     private final Gameplay gameplay;
@@ -24,11 +24,12 @@ public class ChessClient implements ServerMessageHandler {
         prelogin = new Prelogin(server);
         postlogin = new Postlogin(server, ws);
         gameplay = new Gameplay(server, ws);
-        help = new HelpConsole(state);
+        help = new HelpConsole();
     }
 
     public void run() {
         System.out.println();
+        System.out.print(SET_TEXT_COLOR_WHITE+ "WELCOME TO CHESS"+"\n");
         System.out.print(help.helpScreen());
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -72,60 +73,54 @@ public class ChessClient implements ServerMessageHandler {
             switch (cmd){
                 case "login"->{
                     result = prelogin.login(params);
-                    state = State.SIGNEDIN;
-                    help = new HelpConsole(state);
+                    help.setState(State.SIGNEDIN);
                 }
                 case "register" ->{
                     result = prelogin.register(params);
-                    state = State.SIGNEDIN;
-                    help = new HelpConsole(state);
+                    help.setState(State.SIGNEDIN);
                 }
                 case "logout" ->{
-                    assertSignedIn();
+                    help.assertSignedIn();
                     result = postlogin.logout();
-                    state = State.SIGNEDOUT;
-                    help = new HelpConsole(state);
+                    help.setState(State.SIGNEDOUT);
                 }
                 case "create" -> {
-                    assertSignedIn();
+                    help.assertSignedIn();
                     result = postlogin.createGame(params);
                 }
                 case "list" ->{
-                    assertSignedIn();
+                    help.assertSignedIn();
                     result = postlogin.list();
                 }
                 case "play" ->{
-                    assertSignedIn();
+                    help.assertSignedIn();
                     result = postlogin.play(params);
-                    state = State.INGAME;
-                    help = new HelpConsole(state);
+                    help.setState(State.INGAME);
                 }
                 case "observe" ->{
-                    assertSignedIn();
+                    help.assertSignedIn();
                     result = postlogin.observe(params);
-                    state = State.INGAME;
-                    help = new HelpConsole(state);
+                    help.setState(State.INGAME);
                 }
                 case "redraw" ->{
-                    assertInGame();
+                    help.assertInGame();
                     result = gameplay.redraw(postlogin.getGameData(), postlogin.getTeam());
                 }
                 case "leave" ->{
-                    assertInGame();
+                    help.assertInGame();
                     result = gameplay.leave(postlogin.getGameData());
-                    state = State.SIGNEDIN;
-                    help = new HelpConsole(state);
+                    help.setState(State.SIGNEDIN);
                 }
                 case "move" ->{
-                    assertInGame();
+                    help.assertInGame();
                     result = gameplay.makeMove(postlogin.getGameData(), postlogin.getTeam(), params);
                 }
                 case "resign" ->{
-                    assertInGame();
+                    help.assertInGame();
                     result = gameplay.resign(postlogin.getGameData());
                 }
                 case "highlight" ->{
-                    assertInGame();
+                    help.assertInGame();
                     result = gameplay.highlight(postlogin.getGameData(), postlogin.getTeam(), params);
                 }
                 case "quit" -> result = "quit";
@@ -137,15 +132,4 @@ public class ChessClient implements ServerMessageHandler {
         }
     }
 
-    private void assertSignedIn() throws GeneralException{
-        if(state == State.SIGNEDOUT){
-            throw new GeneralException(GeneralException.ExceptionType.unauthorized, "Please login to use these commands");
-        }
-    }
-
-    private void assertInGame() throws GeneralException{
-        if(state != State.INGAME){
-            throw new GeneralException(GeneralException.ExceptionType.unauthorized, "Please play or observe a game to use these commands");
-        }
-    }
 }
