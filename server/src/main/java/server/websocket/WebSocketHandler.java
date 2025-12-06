@@ -75,7 +75,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 connections.broadcastRoot(id, session, new LoadGameMessage(game.chessGame()));
                 connections.broadcastOthers(id, session, new LoadGameMessage(game.chessGame()));
                 connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s %s", authDAO.getUser(token), game.chessGame().getBoard().getPiece(move.getEndPosition()), move)));
-                if(game.chessGame().getIsGameOver()){
+                if(moveHelper.areInCheck(game.chessGame())){
                     connections.broadcastOthers(id, session, new NotificationMessage(moveHelper.checkMesage(game)));
                     connections.broadcastRoot(id, session, new NotificationMessage(moveHelper.checkMesage(game)));
                 }

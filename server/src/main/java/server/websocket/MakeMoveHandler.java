@@ -56,7 +56,7 @@ public class MakeMoveHandler {
         if(piece == null){
             return false;
         }
-        Collection<ChessMove> validMoves = piece.pieceMoves(game.getBoard(), pos);
+        Collection<ChessMove> validMoves = game.validMoves(pos);
         if(validMoves.contains(move)){
             return true;
         }
@@ -79,6 +79,10 @@ public class MakeMoveHandler {
         if(game.isInCheckmate(ChessGame.TeamColor.BLACK) || game.isInStalemate(ChessGame.TeamColor.BLACK)){
             game.setGameOver();
         }
+    }
+
+    public boolean areInCheck(ChessGame game){
+        return game.isInCheck(ChessGame.TeamColor.WHITE) | game.isInCheck(ChessGame.TeamColor.BLACK);
     }
 
     public String checkMesage(GameData gameInfo){
