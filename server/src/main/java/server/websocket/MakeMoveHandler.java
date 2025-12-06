@@ -64,6 +64,9 @@ public class MakeMoveHandler {
     }
 
     public boolean allowedMove(ChessGame game, ChessMove move, ChessGame.TeamColor color) throws GeneralException{
+        if(game.getBoard().getPiece(move.getStartPosition()) == null){
+            return false;
+        }
         if(checkTeam(game, move.getStartPosition(), color)){
             if(checkMoveValidity(game, move.getStartPosition(), move)) {
                 return true;

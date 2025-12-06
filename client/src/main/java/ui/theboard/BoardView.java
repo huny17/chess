@@ -1,9 +1,6 @@
 package ui.theboard;
 
-import chess.ChessBoard;
-import chess.ChessMove;
-import chess.ChessPosition;
-
+import chess.*;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -17,9 +14,11 @@ public class BoardView {
     private static String team;
     private static ChessBoard board;
     private static Collection<ChessMove> moves;
+    private static ChessGame game;
 
-    public static void run(ChessBoard theBoard, String color, Collection<ChessMove> theMoves) {
-        board = theBoard;
+    public static void run(ChessGame theGame, String color, Collection<ChessMove> theMoves) {
+        board = theGame.getBoard();
+        game = theGame;
         team = color;
         moves = theMoves;
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -142,5 +141,15 @@ public class BoardView {
 
     public static ChessBoard getBoard() {
         return board;
+    }
+
+    public static ChessGame getGame() {
+        return game;
+    }
+
+    public static Collection<ChessMove> getMoves (ChessPosition pos){
+        Collection<ChessMove> moves = game.validMoves(pos);
+        board = game.getBoard();
+        return moves;
     }
 }

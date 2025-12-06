@@ -26,7 +26,7 @@ public class Gameplay {
     }
 
     public String redraw(GameData gameData, String team) throws GeneralException {
-        BoardView.run(gameData.chessGame().getBoard(), team, null);
+        BoardView.run(gameData.chessGame(), team, null);
         String notification = String.format("%s was redrawn", gameData.gameName());
         return SET_TEXT_COLOR_BLUE + notification;
     }
@@ -36,11 +36,13 @@ public class Gameplay {
             color = moveClass.assignTeamColor(gameData, team);
             ChessPosition start = inputToPos(params[0]);
             ChessPosition end = inputToPos(params[1]);
-            piece = gameData.chessGame().getBoard().getPiece(start);
-            ChessMove move = moveClass.checkPromotion(gameData.chessGame(), new ChessMove(start, end, null));
-            ws.makeMove(server.getToken(), gameData.gameID(), move);
-            //moveClass.checkTeam(gameData.chessGame(), start, color);
-            //moveClass.checkTurn(gameData.chessGame(), start);
+            if(moveClass.isPiece(gameData, start)){
+                piece = gameData.chessGame().getBoard().getPiece(start);
+                ChessMove move = moveClass.checkPromotion(gameData.chessGame(), new ChessMove(start, end, null));
+                ws.makeMove(server.getToken(), gameData.gameID(), move);
+            }else {
+                throw new GeneralException(GeneralException.ExceptionType.invalid, "There is not a piece there");
+            }
         }
         else {
             throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position> <end position>");

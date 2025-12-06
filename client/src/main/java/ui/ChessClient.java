@@ -56,7 +56,7 @@ public class ChessClient implements ServerMessageHandler {
         printPrompt();
     }
     public void loadingGame(ChessGame game){
-        BoardView.run(game.getBoard(), postlogin.getTeam(), null);
+        BoardView.run(game, postlogin.getTeam(), null);
         printPrompt();
     }
 

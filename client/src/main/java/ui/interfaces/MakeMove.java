@@ -85,4 +85,11 @@ public class MakeMove {
         return type;
     }
 
+    public boolean isPiece(GameData gameData, ChessPosition start) {
+        if (gameData.chessGame().getBoard().getPiece(start) == null) {
+            return false;
+        }
+        return true;
+    }
+
 }
