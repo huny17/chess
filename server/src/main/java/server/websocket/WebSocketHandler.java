@@ -55,7 +55,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void connect(String token, int id, Session session) throws IOException, GeneralException {
         if (checkInput(token, id)) {
             connections.add(id, session);
-            var message = String.format("%s connected", authDAO.getUser(token));
+            String message = playerTeamMessage(token, id);
             connections.broadcastRoot(id, session, new LoadGameMessage(gameDAO.getGame(id).chessGame()));
             connections.broadcastOthers(id, session, new NotificationMessage(message));
         }
@@ -74,7 +74,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 gameDAO.updateGame(Integer.toString(id), new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), newGame));
                 connections.broadcastRoot(id, session, new LoadGameMessage(game.chessGame()));
                 connections.broadcastOthers(id, session, new LoadGameMessage(game.chessGame()));
-                connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s %s", authDAO.getUser(token), game.chessGame().getBoard().getPiece(move.getEndPosition()), move)));
+                String message = moveHelper.moveMessage(authDAO.getUser(token), move, game);
+                connections.broadcastOthers(id, session, new NotificationMessage(message));
             }
             else{
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You cannot make this move")));
@@ -132,4 +133,17 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
     }
 
+    private String playerTeamMessage(String token, int id)throws GeneralException{
+        String message;
+        if(authDAO.getUser(token).equals(gameDAO.getGame(id).whiteUsername()) ) {
+            message = String.format("%s connected as WHITE", authDAO.getUser(token));
+        }
+        else if(authDAO.getUser(token).equals(gameDAO.getGame(id).blackUsername()) ) {
+            message = String.format("%s connected as BLACK", authDAO.getUser(token));
+        }
+        else{
+            message = String.format("%s connected as observer", authDAO.getUser(token));
+        }
+        return message;
+    }
 }
