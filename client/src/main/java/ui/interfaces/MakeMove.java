@@ -55,16 +55,17 @@ public class MakeMove {
         return null;
     }
 
-    public boolean confirm(){
-        System.out.print("Are you sure you want to resign?");
-        Scanner scanner = new Scanner(System.in);
-        var result = "";
-        System.out.print("\n" + SET_TEXT_COLOR_LIGHT_GREY + ">>> " + SET_TEXT_COLOR_BLUE);
-        result = scanner.nextLine();
-        return result.equalsIgnoreCase("yes");
+    public boolean confirm(ChessGame game) {
+        if(!game.getIsGameOver()){
+            System.out.print("Are you sure you want to resign?");
+            Scanner scanner = new Scanner(System.in);
+            var result = "";
+            System.out.print("\n" + SET_TEXT_COLOR_LIGHT_GREY + ">>> " + SET_TEXT_COLOR_BLUE);
+            result = scanner.nextLine();
+            return result.equalsIgnoreCase("yes");
+        }
+        System.out.print("The game is already over");
+        return false;
     }
 
-    public String getUsername() {
-        return username;
-    }
 }

@@ -14,7 +14,7 @@ public class HelpConsole {
     public String helpScreen(){
         if(state == State.INGAME){
             return  SET_TEXT_COLOR_BLUE + """
-                    move <start position(row, col)> <end position(row, col)> - a piece
+                    move <start position(col, row)> <end position(col, row)> - a piece
                     redraw - the chessboard
                     leave - exiting the current game
                     resign - admitting defeat

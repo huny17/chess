@@ -81,45 +81,39 @@ public class MakeMoveHandler {
         }
     }
 
-    public String moveMessage(String user, ChessMove move, GameData gameInfo){
-        String message;
+    public String checkMesage(String user, ChessMove move, GameData gameInfo){
         if(getTeamState(gameInfo, ChessGame.TeamColor.BLACK) != null){
-            message = getTeamState(gameInfo, ChessGame.TeamColor.BLACK);
+            return getTeamState(gameInfo, ChessGame.TeamColor.BLACK);
         }
         else if(getTeamState(gameInfo, ChessGame.TeamColor.WHITE) != null){
-            message = getTeamState(gameInfo, ChessGame.TeamColor.WHITE);
+            return getTeamState(gameInfo, ChessGame.TeamColor.WHITE);
         }
-        else{
-        message = String.format("%s made move %s %s", user, gameInfo.chessGame().getBoard().getPiece(move.getEndPosition()), move);
-        }
-        return message;
+        return null;
     }
 
     public String getTeamState(GameData gameInfo, ChessGame.TeamColor color){
-        String message = null;
         String user = getPlayer(gameInfo, color);
         ChessGame game = gameInfo.chessGame();
-        if(game.isInCheck(color)){
-            message = String.format("%s is in Check", user);
+        if(game.isInCheckmate(color)){
+            return String.format("%s is in Checkmate", user);
         }
         else if(game.isInStalemate(color)){
-            message = "Stalemate";
+            return "Stalemate";
         }
-        else if(game.isInCheckmate(color)){
-            message = String.format("%s is in Checkmate", user);
+        else if(game.isInCheck(color)){
+            return String.format("%s is in Check", user);
         }
-        return message;
+        return null;
     }
 
     public String getPlayer(GameData gameInfo, ChessGame.TeamColor color){
-        String user = null;
         if(color == ChessGame.TeamColor.WHITE){
-            user = gameInfo.whiteUsername();
+            return gameInfo.whiteUsername();
         }
         if(color == ChessGame.TeamColor.BLACK){
-            user = gameInfo.blackUsername();
+            return gameInfo.blackUsername();
         }
-        return user;
+        return null;
     }
 
 }

@@ -49,10 +49,10 @@ public class Gameplay {
     }
 
     public String resign(GameData gameData) throws GeneralException {
-        if(moveClass.confirm()) {
+        if(moveClass.confirm(gameData.chessGame())) {
             ws.resignGame(server.getToken(), gameData.gameID());
         }
-        return "";//String.format("You resigned %s", gameData.gameName());
+        return "";
     }
 
     public String leave(GameData gameData) throws GeneralException {
@@ -64,7 +64,6 @@ public class Gameplay {
         if (params.length == 1) {
             color = moveClass.assignTeamColor(gameData, team);
             ChessPosition pos = inputToPos(params[0]);
-            moveClass.checkTeam(gameData.chessGame(), pos, color);
             Highlight.run(pos);
             return String.format(SET_TEXT_COLOR_BLUE + "Moves for %s highlighted", params[0].toUpperCase());
         } else {
@@ -74,8 +73,8 @@ public class Gameplay {
 
     public ChessPosition inputToPos(String input) throws GeneralException{
         String i = input.toLowerCase();
-        char letter = i.charAt(1);
-        int row = Character.getNumericValue(i.charAt(0));
+        char letter = i.charAt(0);
+        int row = Character.getNumericValue(i.charAt(1));
         int col = moveClass.colLetterToInt(letter);
         if(col == 0){
             throw new GeneralException(GeneralException.ExceptionType.invalid, "Please input col as a letter [A-H]");

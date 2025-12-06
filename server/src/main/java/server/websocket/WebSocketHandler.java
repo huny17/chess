@@ -74,8 +74,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 gameDAO.updateGame(Integer.toString(id), new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), newGame));
                 connections.broadcastRoot(id, session, new LoadGameMessage(game.chessGame()));
                 connections.broadcastOthers(id, session, new LoadGameMessage(game.chessGame()));
-                String message = moveHelper.moveMessage(authDAO.getUser(token), move, game);
-                connections.broadcastOthers(id, session, new NotificationMessage(message));
+                connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s %s", authDAO.getUser(token), game.chessGame().getBoard().getPiece(move.getEndPosition()), move)));
+                if(game.chessGame().getIsGameOver()){
+                    connections.broadcastOthers(id, session, new NotificationMessage(moveHelper.checkMesage(authDAO.getUser(token), move, game)));
+                    connections.broadcastRoot(id, session, new NotificationMessage(moveHelper.checkMesage(authDAO.getUser(token), move, game)));
+                }
             }
             else{
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You cannot make this move")));
@@ -103,7 +106,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             gameDAO.updateGame(Integer.toString(id), new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), newGame));
         }
         else{
-            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You aren't a player or this game is over")));
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You aren't a player or this game is already over")));
         }
     }
 
