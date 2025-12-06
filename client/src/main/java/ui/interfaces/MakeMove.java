@@ -1,15 +1,12 @@
 package ui.interfaces;
 
 import chess.*;
-import exceptions.GeneralException;
 import model.GameData;
 import java.util.Scanner;
-
 import static chess.ChessPiece.PieceType.*;
 import static ui.EscapeSequences.*;
 
 public class MakeMove {
-    private String username;
 
     public MakeMove(){
     }
@@ -30,28 +27,12 @@ public class MakeMove {
         return num;
     }
 
-    public void checkTeam(ChessGame game, ChessPosition pos, ChessGame.TeamColor team) throws GeneralException{
-        ChessPiece piece = game.getBoard().getPiece(pos);
-        if(!piece.getTeamColor().equals(team)){
-            throw new GeneralException(GeneralException.ExceptionType.invalid, "You can only move pieces from your own team");
-        }
-    }
-
-    public void checkTurn(ChessGame game, ChessPosition pos) throws GeneralException{
-        ChessPiece piece = game.getBoard().getPiece(pos);
-        if(!piece.getTeamColor().equals(game.getTeamTurn())){
-            throw new GeneralException(GeneralException.ExceptionType.invalid, "Waiting for opponent to make a move");
-        }
-    }
-
     public ChessGame.TeamColor assignTeamColor(GameData game, String team){
         String lowerCaseTeam = team.toLowerCase();
         if (lowerCaseTeam.equals("white")){
-            username = game.whiteUsername();
             return ChessGame.TeamColor.WHITE;
         }
         if (lowerCaseTeam.equals("black")){
-            username = game.blackUsername();
             return ChessGame.TeamColor.BLACK;
         }
         return null;
@@ -75,12 +56,7 @@ public class MakeMove {
             if (game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == ChessGame.TeamColor.BLACK) {
                 if (move.getEndPosition().getRow() == 1) {
                     System.out.println();
-
-                    ChessPiece.PieceType p = askPromo();
-                    ChessMove m = new ChessMove(move.getStartPosition(), move.getEndPosition(), p);
-                    System.out.println(p);
-                    System.out.println(m);
-                    return m;
+                    return new ChessMove(move.getStartPosition(), move.getEndPosition(), askPromo());
                 }
             }
             if (game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == ChessGame.TeamColor.WHITE) {

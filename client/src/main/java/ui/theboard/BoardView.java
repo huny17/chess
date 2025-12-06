@@ -13,7 +13,7 @@ import static ui.EscapeSequences.*;
 public class BoardView {
 
     public static boolean isWhite = false;
-    public static final PrintPieces pieces = new PrintPieces();
+    public static final PrintPieces printPieces = new PrintPieces();
     private static String team;
     private static ChessBoard board;
     private static Collection<ChessMove> moves;
@@ -127,11 +127,11 @@ public class BoardView {
         }
         if (board.getPiece(pos) != null && isWhite) {
             out.print(SET_BG_COLOR_LIGHT_BLUE);
-            pieces.printPlayer(out, board.getPiece(pos));
+            printPieces.printPlayer(out, board.getPiece(pos));
         }
         if (board.getPiece(pos) != null && !isWhite) {
             out.print(SET_BG_COLOR_BLUE);
-            pieces.printPlayer(out, board.getPiece(pos));
+            printPieces.printPlayer(out, board.getPiece(pos));
 
         }
     }

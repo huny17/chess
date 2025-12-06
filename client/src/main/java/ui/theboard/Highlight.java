@@ -64,11 +64,11 @@ public class Highlight {
         }
         if (board.getPiece(pos) != null && BoardView.isWhite) {
             out.print(SET_BG_COLOR_GREEN_YELLOW);
-            BoardView.pieces.printPlayer(out, board.getPiece(pos));
+            BoardView.printPieces.printPlayer(out, board.getPiece(pos));
         }
         if (board.getPiece(pos) != null && !BoardView.isWhite) {
             out.print(SET_BG_COLOR_DARK_YELLOW);
-            BoardView.pieces.printPlayer(out, board.getPiece(pos));
+            BoardView.printPieces.printPlayer(out, board.getPiece(pos));
 
         }
     }
