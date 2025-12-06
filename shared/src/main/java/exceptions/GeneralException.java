@@ -21,6 +21,11 @@ public class GeneralException extends Exception {
         this.type = type;
     }
 
+    public GeneralException(ExceptionType type, String message, Throwable cause) {
+        super(message, cause);
+        this.type = type;
+    }
+
     public int getType(){
         return statusCode();
     }

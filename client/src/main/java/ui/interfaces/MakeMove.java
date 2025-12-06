@@ -4,6 +4,8 @@ import chess.*;
 import exceptions.GeneralException;
 import model.GameData;
 import java.util.Scanner;
+
+import static chess.ChessPiece.PieceType.*;
 import static ui.EscapeSequences.*;
 
 public class MakeMove {
@@ -66,6 +68,45 @@ public class MakeMove {
         }
         System.out.print("The game is already over");
         return false;
+    }
+
+    public ChessMove checkPromotion(ChessGame game, ChessMove move){
+        if(game.getBoard().getPiece(move.getStartPosition()).getPieceType() == PAWN) {
+            if (game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == ChessGame.TeamColor.BLACK) {
+                if (move.getEndPosition().getRow() == 1) {
+                    System.out.println();
+
+                    ChessPiece.PieceType p = askPromo();
+                    ChessMove m = new ChessMove(move.getStartPosition(), move.getEndPosition(), p);
+                    System.out.println(p);
+                    System.out.println(m);
+                    return m;
+                }
+            }
+            if (game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == ChessGame.TeamColor.WHITE) {
+                if (move.getEndPosition().getRow() == 8) {
+                    return new ChessMove(move.getStartPosition(), move.getEndPosition(), askPromo());
+                }
+            }
+        }
+        return move;
+    }
+
+    private ChessPiece.PieceType askPromo() {
+        System.out.print(SET_TEXT_COLOR_BLUE + "Choose your Pawn's promotion: <QUEEN, BISHOP, KNIGHT, ROOK>");
+        Scanner scanner = new Scanner(System.in);
+        var result = "";
+        System.out.print("\n" + SET_TEXT_COLOR_LIGHT_GREY + ">>> " + SET_TEXT_COLOR_BLUE);
+        result = scanner.nextLine();
+        ChessPiece.PieceType type;
+        switch(result.toLowerCase()){
+            case "bishop" -> type = BISHOP;
+            case "knight" -> type = KNIGHT;
+            case "rook" -> type = ROOK;
+            default -> type = QUEEN;
+        };
+        System.out.println(type);
+        return type;
     }
 
 }

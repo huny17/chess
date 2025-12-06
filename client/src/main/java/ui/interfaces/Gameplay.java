@@ -37,10 +37,10 @@ public class Gameplay {
             ChessPosition start = inputToPos(params[0]);
             ChessPosition end = inputToPos(params[1]);
             piece = gameData.chessGame().getBoard().getPiece(start);
-            ChessMove move = new ChessMove(start, end, null);
+            ChessMove move = moveClass.checkPromotion(gameData.chessGame(), new ChessMove(start, end, null));
             ws.makeMove(server.getToken(), gameData.gameID(), move);
-            moveClass.checkTeam(gameData.chessGame(), start, color);
-            moveClass.checkTurn(gameData.chessGame(), start);
+            //moveClass.checkTeam(gameData.chessGame(), start, color);
+            //moveClass.checkTurn(gameData.chessGame(), start);
         }
         else {
             throw new GeneralException(GeneralException.ExceptionType.invalid, "Expected: <start position> <end position>");

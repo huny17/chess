@@ -43,7 +43,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 case RESIGN -> resign(command.getAuthToken(), command.getGameID(), ctx.session);
             }
         }catch(IOException | GeneralException e){
-            e.getMessage();
+            System.out.print(e.getMessage());
         }
     }
 
@@ -76,8 +76,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 connections.broadcastOthers(id, session, new LoadGameMessage(game.chessGame()));
                 connections.broadcastOthers(id, session, new NotificationMessage(String.format("%s made move %s %s", authDAO.getUser(token), game.chessGame().getBoard().getPiece(move.getEndPosition()), move)));
                 if(game.chessGame().getIsGameOver()){
-                    connections.broadcastOthers(id, session, new NotificationMessage(moveHelper.checkMesage(authDAO.getUser(token), move, game)));
-                    connections.broadcastRoot(id, session, new NotificationMessage(moveHelper.checkMesage(authDAO.getUser(token), move, game)));
+                    connections.broadcastOthers(id, session, new NotificationMessage(moveHelper.checkMesage(game)));
+                    connections.broadcastRoot(id, session, new NotificationMessage(moveHelper.checkMesage(game)));
                 }
             }
             else{

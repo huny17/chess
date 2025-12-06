@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
+import io.javalin.websocket.WsContext;
 import memory.MemoryAuthDAO;
 import memory.MemoryGameDAO;
 import memory.MemoryUserDAO;
@@ -64,6 +65,7 @@ public class Server {
             ws.onClose(wsHandler);
         });
         /*exception*/
+        server.wsException(GeneralException.class, this::generalExceptionHandler);
         server.exception(GeneralException.class, this::generalExceptionHandler);
     }
 
@@ -133,6 +135,10 @@ public class Server {
         int exceptionStatus = e.getType();
         ctx.status(exceptionStatus);
         ctx.json(message);
+    }
+
+    private void generalExceptionHandler(GeneralException e, WsContext ctx){
+        System.out.println(e.getMessage());
     }
 
     private boolean authorized(Context ctx) throws GeneralException{

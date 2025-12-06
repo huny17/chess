@@ -23,7 +23,7 @@ public class MakeMoveHandler {
             game.makeMove(move);
             gameDAO.updateGame(data.gameID().toString(), new GameData(data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName(), game));
         } catch (InvalidMoveException e) {
-            throw new GeneralException(GeneralException.ExceptionType.invalid, e.getMessage());
+            throw new GeneralException(GeneralException.ExceptionType.invalid, e.getMessage(), e);
         }
     }
 
@@ -81,7 +81,7 @@ public class MakeMoveHandler {
         }
     }
 
-    public String checkMesage(String user, ChessMove move, GameData gameInfo){
+    public String checkMesage(GameData gameInfo){
         if(getTeamState(gameInfo, ChessGame.TeamColor.BLACK) != null){
             return getTeamState(gameInfo, ChessGame.TeamColor.BLACK);
         }
